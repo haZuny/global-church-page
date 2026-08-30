@@ -23,6 +23,16 @@ menuToggle?.addEventListener("click", () => {
 
 mobileLinks?.forEach((link) => link.addEventListener("click", () => setMenu(false)));
 
+document.addEventListener("pointerdown", (event) => {
+  if (menuToggle?.getAttribute("aria-expanded") !== "true") return;
+  if (mobileMenu?.contains(event.target) || menuToggle?.contains(event.target)) return;
+  setMenu(false);
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") setMenu(false);
+});
+
 window.addEventListener("resize", () => {
   if (window.innerWidth > 780) setMenu(false);
 });
@@ -60,6 +70,36 @@ if (desktopSectionScroll && homeSections.length) {
     },
     { passive: false },
   );
+}
+
+const mobileSectionScroll = homePage && !desktopSectionScroll;
+let touchStartY = null;
+
+if (mobileSectionScroll && homeSections.length) {
+  window.addEventListener("touchstart", (event) => {
+    touchStartY = event.touches[0]?.clientY ?? null;
+  }, { passive: true });
+
+  window.addEventListener("touchend", (event) => {
+    if (touchStartY === null || sectionScrollLocked) return;
+    const touchEndY = event.changedTouches[0]?.clientY ?? touchStartY;
+    const deltaY = touchStartY - touchEndY;
+    touchStartY = null;
+    if (Math.abs(deltaY) < 36) return;
+
+    const currentIndex = homeSections.reduce((closest, section, index) => {
+      const distance = Math.abs(window.scrollY - section.offsetTop);
+      return distance < closest.distance ? { index, distance } : closest;
+    }, { index: 0, distance: Infinity }).index;
+    const nextIndex = deltaY > 0 ? currentIndex + 1 : currentIndex - 1;
+    if (nextIndex < 0 || nextIndex >= homeSections.length) return;
+
+    sectionScrollLocked = true;
+    window.scrollTo({ top: homeSections[nextIndex].offsetTop, behavior: "auto" });
+    window.setTimeout(() => {
+      sectionScrollLocked = false;
+    }, 350);
+  }, { passive: true });
 }
 
 const revealItems = document.querySelectorAll(".reveal");

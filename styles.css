@@ -28,6 +28,10 @@ html {
   scroll-padding-top: 86px;
 }
 
+.home-page {
+  scroll-snap-type: y mandatory;
+}
+
 body {
   margin: 0;
   overflow-x: hidden;
@@ -117,6 +121,10 @@ blockquote {
 .home-page > .site-footer {
   scroll-snap-align: start;
   scroll-snap-stop: always;
+}
+
+.home-page .home-updates {
+  background: #e5dccd;
 }
 
 .eyebrow {
@@ -2609,8 +2617,10 @@ blockquote {
     flex-direction: column;
     justify-content: center;
     padding: 110px 26px 40px;
-    background: var(--paper);
+    background: rgba(251, 250, 246, 0.99);
     color: var(--ink);
+    box-shadow: 0 18px 48px rgba(21, 31, 26, 0.16);
+    backdrop-filter: blur(18px);
   }
 
   .mobile-menu[hidden] {
@@ -2623,9 +2633,9 @@ blockquote {
   }
 
   .mobile-menu nav a {
-    padding: 13px 0;
+    padding: 11px 0;
     font-family: var(--serif);
-    font-size: clamp(34px, 10vw, 48px);
+    font-size: clamp(25px, 7.5vw, 34px);
     letter-spacing: -0.06em;
     line-height: 1.1;
   }
