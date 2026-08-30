@@ -52,16 +52,21 @@ function jumpToHomeSection(section) {
   window.scrollTo({ top: section.offsetTop, behavior: "smooth" });
 }
 
+function getCurrentHomeSectionIndex() {
+  const position = window.scrollY + 12;
+  const index = homeSections.findIndex((section) => {
+    return position >= section.offsetTop && position < section.offsetTop + section.offsetHeight;
+  });
+  return index === -1 ? 0 : index;
+}
+
 if (desktopSectionScroll && homeSections.length) {
   window.addEventListener(
     "wheel",
     (event) => {
       if (Math.abs(event.deltaY) < 1 || sectionScrollLocked) return;
 
-      const currentIndex = homeSections.reduce((closest, section, index) => {
-        const distance = Math.abs(window.scrollY - section.offsetTop);
-        return distance < closest.distance ? { index, distance } : closest;
-      }, { index: 0, distance: Infinity }).index;
+      const currentIndex = getCurrentHomeSectionIndex();
       const nextIndex = event.deltaY > 0 ? currentIndex + 1 : currentIndex - 1;
       if (nextIndex < 0 || nextIndex >= homeSections.length) return;
 
@@ -95,10 +100,12 @@ if (mobileSectionScroll && homeSections.length) {
     touchStartY = null;
     if (Math.abs(deltaY) < 14 && velocity < 0.25) return;
 
-    const currentIndex = homeSections.reduce((closest, section, index) => {
-      const distance = Math.abs(window.scrollY - section.offsetTop);
-      return distance < closest.distance ? { index, distance } : closest;
-    }, { index: 0, distance: Infinity }).index;
+    const currentIndex = getCurrentHomeSectionIndex();
+    const currentSection = homeSections[currentIndex];
+    const atSectionStart = window.scrollY <= currentSection.offsetTop + 12;
+    const atSectionEnd = window.scrollY + window.innerHeight >= currentSection.offsetTop + currentSection.offsetHeight - 12;
+    if ((deltaY > 0 && !atSectionEnd) || (deltaY < 0 && !atSectionStart)) return;
+
     const nextIndex = deltaY > 0 ? currentIndex + 1 : currentIndex - 1;
     if (nextIndex < 0 || nextIndex >= homeSections.length) return;
 
