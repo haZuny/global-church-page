@@ -241,6 +241,11 @@ blockquote {
   backdrop-filter: blur(14px);
 }
 
+/* 메뉴를 전체 화면에 고정하기 위해 열림 상태에서는 헤더의 필터 기준을 제거합니다. */
+.site-header.is-menu-open {
+  backdrop-filter: none;
+}
+
 .site-header--solid {
   border-bottom-color: var(--line);
   background: rgba(251, 250, 246, 0.96);
@@ -2529,6 +2534,17 @@ blockquote {
 }
 
 @media (max-width: 780px) {
+  html,
+  body {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
   :root {
     --shell: calc(100vw - 40px);
   }
@@ -2537,8 +2553,18 @@ blockquote {
     font-size: 15px;
   }
 
+  .home-page #main-content > section:not(.hero) {
+    min-height: 0;
+  }
+
+  .home-page .hero {
+    height: 100dvh;
+    min-height: 100dvh;
+    max-height: none;
+  }
+
   .section {
-    padding-block: 92px;
+    padding-block: 56px;
   }
 
   .site-header,
@@ -2593,6 +2619,16 @@ blockquote {
     border-radius: 50%;
   }
 
+  .site-header.is-menu-open .menu-toggle {
+    background: var(--ink);
+    color: var(--white);
+  }
+
+  .site-header.is-scrolled .menu-toggle {
+    background: var(--ink);
+    color: var(--white);
+  }
+
   .menu-toggle span {
     display: block;
     width: 24px;
@@ -2611,12 +2647,13 @@ blockquote {
 
   .mobile-menu {
     position: fixed;
-    inset: 0;
+    top: 68px;
+    right: 0;
+    left: 0;
     z-index: 101;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding: 110px 26px 40px;
+    padding: 14px 22px 22px;
     background: rgba(251, 250, 246, 0.99);
     color: var(--ink);
     box-shadow: 0 18px 48px rgba(21, 31, 26, 0.16);
@@ -2633,19 +2670,38 @@ blockquote {
   }
 
   .mobile-menu nav a {
-    padding: 11px 0;
-    font-family: var(--serif);
-    font-size: clamp(25px, 7.5vw, 34px);
-    letter-spacing: -0.06em;
-    line-height: 1.1;
+    padding: 13px 2px;
+    border-bottom: 1px solid var(--line);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.3;
   }
 
+  .site-header.is-menu-open .mobile-menu nav a {
+    animation: mobile-menu-item-in 260ms ease both;
+  }
+
+  .site-header.is-menu-open .mobile-menu nav a:nth-child(2) { animation-delay: 35ms; }
+  .site-header.is-menu-open .mobile-menu nav a:nth-child(3) { animation-delay: 70ms; }
+  .site-header.is-menu-open .mobile-menu nav a:nth-child(4) { animation-delay: 105ms; }
+
   .mobile-menu > p {
-    margin-top: auto;
-    padding-top: 24px;
-    border-top: 1px solid var(--line);
+    margin-top: 18px;
     color: var(--muted);
-    font-size: 13px;
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  @keyframes mobile-menu-item-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .hero {
@@ -2669,8 +2725,9 @@ blockquote {
   }
 
   .hero h1 {
-    max-width: 520px;
-    font-size: clamp(47px, 13vw, 70px);
+    max-width: 430px;
+    font-size: clamp(36px, 10.5vw, 52px);
+    line-height: 1.08;
   }
 
   .hero__copy {
@@ -2722,21 +2779,27 @@ blockquote {
   }
 
   .section-heading h2 {
-    font-size: clamp(40px, 11.6vw, 58px);
+    font-size: clamp(30px, 9vw, 44px);
+    line-height: 1.18;
+  }
+
+  .intro__body .intro__lead {
+    font-size: 16px;
+    line-height: 1.55;
   }
 
   .home-updates__heading {
     display: block;
-    margin-bottom: 48px;
+    margin-bottom: 32px;
   }
 
   .home-updates__heading > p {
-    margin-top: 26px;
+    margin-top: 18px;
   }
 
   .home-updates__grid {
     grid-template-columns: 1fr;
-    gap: 74px;
+    gap: 42px;
   }
 
   .latest-story__image {
@@ -2748,17 +2811,17 @@ blockquote {
   }
 
   .intro__body {
-    margin-top: 50px;
+    margin-top: 34px;
   }
 
   .values {
     grid-template-columns: 1fr;
     gap: 0;
-    margin-top: 72px;
+    margin-top: 46px;
   }
 
   .values article {
-    padding: 26px 0 30px;
+    padding: 18px 0 22px;
     border-bottom: 1px solid var(--line);
   }
 
@@ -2766,8 +2829,18 @@ blockquote {
     padding-top: 0;
   }
 
+  .values h3 {
+    font-size: 18px;
+  }
+
+  .values p {
+    margin-top: 10px;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
   .worship .section-heading {
-    margin-bottom: 64px;
+    margin-bottom: 46px;
   }
 
   .schedule__primary {
@@ -2787,7 +2860,7 @@ blockquote {
   }
 
   .schedule__primary > strong {
-    font-size: 64px !important;
+    font-size: 48px !important;
   }
 
   .stories__heading {
@@ -3211,17 +3284,17 @@ blockquote {
 
   .location__map {
     position: relative;
-    height: 420px;
+    height: 300px;
   }
 
   .location__card {
     width: 100%;
     min-height: auto;
-    padding: 76px 20px 82px;
+    padding: 48px 20px 56px;
   }
 
   .location__card h2 {
-    font-size: 52px;
+    font-size: 44px;
   }
 
   .map-pin {

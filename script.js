@@ -48,11 +48,15 @@ const homeSections = [".hero", ".intro", ".home-updates", ".worship", ".location
   .filter(Boolean);
 let sectionScrollLocked = false;
 
+function jumpToHomeSection(section) {
+  window.scrollTo({ top: section.offsetTop, behavior: "smooth" });
+}
+
 if (desktopSectionScroll && homeSections.length) {
   window.addEventListener(
     "wheel",
     (event) => {
-      if (Math.abs(event.deltaY) < 4 || sectionScrollLocked) return;
+      if (Math.abs(event.deltaY) < 1 || sectionScrollLocked) return;
 
       const currentIndex = homeSections.reduce((closest, section, index) => {
         const distance = Math.abs(window.scrollY - section.offsetTop);
@@ -63,7 +67,7 @@ if (desktopSectionScroll && homeSections.length) {
 
       event.preventDefault();
       sectionScrollLocked = true;
-      window.scrollTo({ top: homeSections[nextIndex].offsetTop, behavior: "auto" });
+      jumpToHomeSection(homeSections[nextIndex]);
       window.setTimeout(() => {
         sectionScrollLocked = false;
       }, 350);
@@ -74,18 +78,22 @@ if (desktopSectionScroll && homeSections.length) {
 
 const mobileSectionScroll = homePage && !desktopSectionScroll;
 let touchStartY = null;
+let touchStartedAt = 0;
 
 if (mobileSectionScroll && homeSections.length) {
   window.addEventListener("touchstart", (event) => {
     touchStartY = event.touches[0]?.clientY ?? null;
+    touchStartedAt = performance.now();
   }, { passive: true });
 
   window.addEventListener("touchend", (event) => {
     if (touchStartY === null || sectionScrollLocked) return;
     const touchEndY = event.changedTouches[0]?.clientY ?? touchStartY;
     const deltaY = touchStartY - touchEndY;
+    const elapsed = Math.max(performance.now() - touchStartedAt, 1);
+    const velocity = Math.abs(deltaY) / elapsed;
     touchStartY = null;
-    if (Math.abs(deltaY) < 36) return;
+    if (Math.abs(deltaY) < 14 && velocity < 0.25) return;
 
     const currentIndex = homeSections.reduce((closest, section, index) => {
       const distance = Math.abs(window.scrollY - section.offsetTop);
@@ -95,10 +103,10 @@ if (mobileSectionScroll && homeSections.length) {
     if (nextIndex < 0 || nextIndex >= homeSections.length) return;
 
     sectionScrollLocked = true;
-    window.scrollTo({ top: homeSections[nextIndex].offsetTop, behavior: "auto" });
+    jumpToHomeSection(homeSections[nextIndex]);
     window.setTimeout(() => {
       sectionScrollLocked = false;
-    }, 350);
+    }, 500);
   }, { passive: true });
 }
 
