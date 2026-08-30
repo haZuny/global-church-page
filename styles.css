@@ -22,16 +22,6 @@ html {
   scroll-behavior: smooth;
 }
 
-/* 홈은 주요 섹션의 시작점에 맞춰 한 화면씩 이동합니다. */
-.home-document {
-  scroll-snap-type: y mandatory;
-  scroll-padding-top: 86px;
-}
-
-.home-page {
-  scroll-snap-type: y mandatory;
-}
-
 body {
   margin: 0;
   overflow-x: hidden;
@@ -114,14 +104,6 @@ blockquote {
 .home-page #main-content > .home-updates { order: 3; }
 .home-page #main-content > .worship { order: 4; }
 .home-page #main-content > .location { order: 5; }
-.home-page #main-content > section:not(.hero) {
-  min-height: 100svh;
-}
-.home-page #main-content > section,
-.home-page > .site-footer {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-}
 
 .home-page .home-updates {
   background: #e5dccd;
@@ -3283,8 +3265,7 @@ blockquote {
   }
 
   .location__map {
-    position: relative;
-    height: 300px;
+    display: none;
   }
 
   .location__card {
