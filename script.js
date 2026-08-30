@@ -30,6 +30,38 @@ window.addEventListener("resize", () => {
 window.addEventListener("scroll", updateHeader, { passive: true });
 updateHeader();
 
+// 데스크톱 홈에서는 작은 휠 입력도 다음 섹션 이동으로 연결합니다.
+const homePage = document.body.classList.contains("home-page");
+const desktopSectionScroll = homePage && window.matchMedia("(min-width: 781px)").matches;
+const homeSections = [".hero", ".intro", ".home-updates", ".worship", ".location"]
+  .map((selector) => document.querySelector(selector))
+  .filter(Boolean);
+let sectionScrollLocked = false;
+
+if (desktopSectionScroll && homeSections.length) {
+  window.addEventListener(
+    "wheel",
+    (event) => {
+      if (Math.abs(event.deltaY) < 4 || sectionScrollLocked) return;
+
+      const currentIndex = homeSections.reduce((closest, section, index) => {
+        const distance = Math.abs(window.scrollY - section.offsetTop);
+        return distance < closest.distance ? { index, distance } : closest;
+      }, { index: 0, distance: Infinity }).index;
+      const nextIndex = event.deltaY > 0 ? currentIndex + 1 : currentIndex - 1;
+      if (nextIndex < 0 || nextIndex >= homeSections.length) return;
+
+      event.preventDefault();
+      sectionScrollLocked = true;
+      window.scrollTo({ top: homeSections[nextIndex].offsetTop, behavior: "auto" });
+      window.setTimeout(() => {
+        sectionScrollLocked = false;
+      }, 350);
+    },
+    { passive: false },
+  );
+}
+
 const revealItems = document.querySelectorAll(".reveal");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
