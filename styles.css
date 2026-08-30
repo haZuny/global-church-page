@@ -3276,6 +3276,7 @@ blockquote {
     display: flex;
     flex-direction: column;
     min-height: auto;
+    background: var(--cream);
   }
 
   .location__map {
