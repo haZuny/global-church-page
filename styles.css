@@ -334,8 +334,9 @@ blockquote {
 }
 
 .hero__image {
-  object-fit: cover;
-  object-position: center 42%;
+  object-fit: contain;
+  object-position: center;
+  background: var(--forest);
   animation: hero-arrive 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -2706,7 +2707,7 @@ blockquote {
   }
 
   .hero__image {
-    object-position: center 34%;
+    object-position: center;
   }
 
   .hero__veil {
