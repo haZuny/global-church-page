@@ -109,6 +109,20 @@ blockquote {
   background: #e5dccd;
 }
 
+.about-page main {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-page main > .about-hero { order: 1; }
+.about-page main > .about-local-nav { order: 2; }
+.about-page main > .pastor-message { order: 3; }
+.about-page main > .church-introduction { order: 4; }
+.about-page main > .vision-section { order: 5; }
+.about-page main > .ministers-section { order: 6; }
+.about-page main > .denomination-section { order: 7; }
+.about-page main > .archive-bridge { order: 8; }
+
 .eyebrow {
   margin-bottom: 24px;
   color: var(--forest-light);
