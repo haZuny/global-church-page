@@ -74,7 +74,20 @@
 
 ## 7. 구현 원칙
 
-기술 스택이 확정되기 전에는 특정 프레임워크를 전제로 문서를 변경하지 않습니다.
+### 7.1 확정된 개발 스택
+
+- 공개 웹은 `Next.js` App Router와 `React`, `TypeScript`로 구현합니다. 방문자 페이지는 검색 엔진이 읽을 수 있도록 서버 렌더링 또는 정적 생성 기반으로 제공합니다.
+- 기존 정적 데모의 시각 디자인과 콘텐츠 흐름을 유지하며, UI는 재사용 가능한 React 컴포넌트로 이전합니다.
+- 스타일은 전역 토큰과 기본 요소에만 전역 SCSS를 사용하고, 컴포넌트별 스타일은 SCSS CSS Modules(`*.module.scss`)로 분리합니다. `sass` 외에 스타일링 의존성은 추가하지 않습니다.
+- 콘텐츠 관리와 관리자 화면은 Node.js 기반 Headless CMS인 `Directus`를 사용합니다. 초기 데이터베이스는 `SQLite`로 운영합니다.
+- 공개 웹은 SQLite에 직접 접근하거나 SQL을 작성하지 않고, Directus REST API 또는 SDK를 통해 콘텐츠를 조회합니다.
+- Directus의 공개 읽기 권한은 `published` 콘텐츠로 제한합니다. `draft`와 `archived` 콘텐츠, 사용자 정보, 관리자 설정은 공개 API에 노출하지 않습니다.
+- 관리자 로그인은 Directus의 Google OpenID Connect를 사용합니다. OAuth 인증과 Directus 역할·정책 기반 인가를 분리하고, 승인된 계정에만 최소 권한을 부여합니다.
+- 콘텐츠 API와 관리 기능은 Directus가 담당합니다. 방문 문의나 외부 서비스 연동처럼 사이트 고유의 서버 처리가 필요할 때만 Next.js Route Handler를 추가합니다.
+- 공개 경로는 `/`, `/about`, `/worship`, `/stories`, `/stories/[slug]`, `/sermons`, `/sermons/[slug]`, `/news`, `/news/[slug]`처럼 명시적으로 구성합니다. React의 클라이언트 전환 여부와 별개로 모든 공개 콘텐츠에는 고유 URL을 제공합니다.
+- 페이지별 메타데이터, canonical URL, Open Graph 이미지, `robots.txt`, `sitemap.xml`, 구조화 데이터는 Next.js에서 관리합니다.
+
+배포, 도메인, HTTPS, 리버스 프록시, 컨테이너 운영 방식은 별도 배포 단계에서 결정합니다.
 
 구현이 시작된 후에는 다음을 지킵니다.
 
