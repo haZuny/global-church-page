@@ -1,0 +1,4 @@
+import type { Metadata } from "next";
+import { LegacyPage } from "@/components/legacy-page/legacy-page";
+export const metadata: Metadata = { title: "교회 이야기" };
+export default function StoriesPage() { return <LegacyPage file="stories.html" pageClass="stories-page" />; }

@@ -201,7 +201,8 @@ function showMissingDetail(root, type) {
 const storyDetail = document.querySelector("[data-story-detail]");
 
 if (storyDetail) {
-  const entry = storyEntries[new URLSearchParams(window.location.search).get("id")];
+  const storyId = new URLSearchParams(window.location.search).get("id") || window.location.pathname.split("/").filter(Boolean).at(-1);
+  const entry = storyEntries[storyId];
   if (!entry) {
     showMissingDetail(storyDetail, "story");
   } else {
@@ -248,7 +249,8 @@ if (storyDetail) {
 const bulletinDetail = document.querySelector("[data-bulletin-detail]");
 
 if (bulletinDetail) {
-  const entry = bulletinEntries[new URLSearchParams(window.location.search).get("date")];
+  const bulletinId = new URLSearchParams(window.location.search).get("date") || window.location.pathname.split("/").filter(Boolean).at(-1);
+  const entry = bulletinEntries[bulletinId];
   if (!entry) {
     showMissingDetail(bulletinDetail, "bulletin");
   } else {
