@@ -1,0 +1,112 @@
+.home :global(.home-page) { display:flex; flex-direction:column; }
+.home :global(.home-page > .hero) { order:1; }
+.home :global(.home-page > .intro) { order:2; }
+.home :global(.home-page > .home-updates) { order:3; background:#e5dccd; }
+.home :global(.home-page > .worship) { order:4; }
+.home :global(.home-page > .location) { order:5; }
+
+.about :global(main) { display:flex; flex-direction:column; }
+.about :global(main > .about-hero) { order:1; }
+.about :global(main > .about-local-nav) { order:2; }
+.about :global(main > .pastor-message) { order:3; }
+.about :global(main > .church-introduction) { order:4; }
+.about :global(main > .vision-section) { order:5; }
+.about :global(main > .ministers-section) { order:6; }
+.about :global(main > .denomination-section) { order:7; }
+.about :global(main > .archive-bridge) { order:8; }
+.about :global(.subpage main), .worship :global(.subpage main), .stories :global(.subpage main), .news :global(.subpage main), .sermons :global(.subpage main) { padding-top:86px; }
+
+.home :global(.reveal), .about :global(.reveal), .worship :global(.reveal), .stories :global(.reveal), .news :global(.reveal), .sermons :global(.reveal) { opacity:0; transform:translateY(34px); transition:opacity 820ms ease,transform 820ms cubic-bezier(.22,1,.36,1); }
+.home :global(.reveal.is-visible), .about :global(.reveal.is-visible), .worship :global(.reveal.is-visible), .stories :global(.reveal.is-visible), .news :global(.reveal.is-visible), .sermons :global(.reveal.is-visible) { opacity:1; transform:translateY(0); }
+
+.stories :global(.archive-toolbar), .news :global(.archive-toolbar), .sermons :global(.archive-toolbar) { display:flex; align-items:center; justify-content:space-between; margin-bottom:72px; padding-bottom:20px; border-bottom:1px solid var(--line); }
+.stories :global(.archive-toolbar nav), .news :global(.archive-toolbar nav), .sermons :global(.archive-toolbar nav) { display:flex; flex-wrap:wrap; gap:12px 30px; }
+.stories :global(.archive-toolbar nav > *), .news :global(.archive-toolbar nav > *), .sermons :global(.archive-toolbar nav > *) { display:inline-block; color:var(--muted); font-size:13px; font-weight:700; }
+.stories :global(.archive-toolbar nav > .is-active), .news :global(.archive-toolbar nav > .is-active), .sermons :global(.archive-toolbar nav > .is-active) { color:var(--ink); }
+.stories :global(.archive-toolbar > span), .news :global(.archive-toolbar > span), .sermons :global(.archive-toolbar > span) { color:var(--muted); font-size:10px; font-weight:700; letter-spacing:.14em; }
+
+.about :global(.archive-bridge), .stories :global(.archive-bridge), .news :global(.archive-bridge) { padding-block:68px; background:#e7dfd1; }
+.about :global(.archive-bridge .page-shell), .stories :global(.archive-bridge .page-shell), .news :global(.archive-bridge .page-shell) { display:flex; align-items:center; justify-content:space-between; }
+.about :global(.archive-bridge p), .stories :global(.archive-bridge p), .news :global(.archive-bridge p) { color:var(--muted); font-size:14px; }
+.about :global(.archive-bridge a), .stories :global(.archive-bridge a), .news :global(.archive-bridge a) { font-family:var(--serif); font-size:28px; font-weight:600; letter-spacing:-.04em; }
+.about :global(.archive-bridge a span), .stories :global(.archive-bridge a span), .news :global(.archive-bridge a span) { margin-left:18px; }
+
+.stories :global(.detail-hero), .sermons :global(.detail-hero) { background:var(--cream); }
+.news :global(.detail-hero--bulletin) { background:#e7dfd1; }
+.stories :global(.detail-hero__inner), .news :global(.detail-hero__inner), .sermons :global(.detail-hero__inner) { max-width:1040px; padding-block:72px 86px; }
+.stories :global(.detail-back), .news :global(.detail-back), .sermons :global(.detail-back) { display:inline-flex; align-items:center; gap:10px; margin-bottom:74px; color:var(--muted); font-size:13px; font-weight:700; }
+.stories :global(.detail-back:hover), .news :global(.detail-back:hover), .sermons :global(.detail-back:hover) { color:var(--ink); }
+.stories :global(.detail-meta), .news :global(.detail-meta), .sermons :global(.detail-meta) { display:flex; align-items:center; gap:18px; color:var(--forest-light); font-size:11px; font-weight:700; letter-spacing:.06em; }
+.stories :global(.detail-meta > * + *::before), .news :global(.detail-meta > * + *::before), .sermons :global(.detail-meta > * + *::before) { margin-right:18px; color:var(--muted); content:"·"; }
+.stories :global(.detail-hero h1), .news :global(.detail-hero h1), .sermons :global(.detail-hero h1) { max-width:920px; margin-top:23px; font-family:var(--serif); font-size:clamp(52px,6.5vw,86px); font-weight:400; letter-spacing:-.07em; line-height:1.09; text-wrap:balance; }
+.stories :global(.detail-hero__inner > p), .news :global(.detail-hero__inner > p), .sermons :global(.detail-hero__inner > p) { max-width:660px; margin-top:28px; color:var(--muted); font-size:16px; }
+.stories :global(.detail-hero .detail-subtitle), .sermons :global(.detail-hero .detail-subtitle) { max-width:760px; margin-top:24px; color:var(--ink); font-family:var(--serif); font-size:clamp(22px,2.2vw,31px); letter-spacing:-.04em; line-height:1.45; }
+.stories :global(.detail-hero .detail-subtitle + p), .sermons :global(.detail-hero .detail-subtitle + p) { margin-top:16px; }
+
+.stories :global(.story-detail), .news :global(.bulletin-detail) { background:var(--paper); }
+.stories :global(.story-detail__visual) { max-width:940px; margin:0 auto; background:var(--cream); }
+.stories :global(.story-detail__visual img) { width:100%; max-height:980px; object-fit:contain; }
+.stories :global(.story-detail__gallery) { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; max-width:940px; margin:24px auto 0; }
+.stories :global(.story-detail__gallery[hidden]) { display:none; }
+.stories :global(.story-detail__gallery figure) { margin:0; overflow:hidden; background:var(--cream); }
+.stories :global(.story-detail__gallery img) { display:block; width:100%; aspect-ratio:4 / 3; object-fit:cover; }
+.stories :global(.story-detail__body) { max-width:720px; margin:86px auto 0; font-size:18px; line-height:1.9; }
+.stories :global(.story-detail__body > * + *) { margin-top:30px; }
+.stories :global(.story-detail__quote) { margin-block:52px; padding:42px 46px; border-block:1px solid var(--line); color:var(--forest); font-family:var(--serif); font-size:clamp(27px,3.2vw,39px); letter-spacing:-.045em; line-height:1.55; white-space:pre-line; }
+.stories :global(.story-detail__note) { color:var(--forest-light); font-size:12px; font-weight:700; letter-spacing:.04em; }
+.stories :global(.detail-nav), .news :global(.detail-nav), .sermons :global(.detail-nav) { display:flex; align-items:center; justify-content:space-between; max-width:940px; margin:110px auto 0; padding-top:28px; border-top:1px solid var(--line); font-size:14px; font-weight:700; }
+.stories :global(.detail-nav a:last-child span), .news :global(.detail-nav a:last-child span), .sermons :global(.detail-nav a:last-child span) { margin-left:10px; }
+
+.news :global(.bulletin-document) { max-width:1040px; margin:0 auto; border:1px solid var(--line); background:var(--cream); }
+.news :global(.bulletin-document__toolbar) { display:flex; align-items:center; justify-content:space-between; min-height:70px; padding-inline:28px; border-bottom:1px solid var(--line); }
+.news :global(.bulletin-document__toolbar p) { font-size:12px; font-weight:700; }
+.news :global(.bulletin-document__toolbar span) { color:var(--muted); font-size:12px; }
+.news :global(.bulletin-document__page) { aspect-ratio:840 / 544; overflow:hidden; background:#fdf9e9; }
+.news :global(.bulletin-document__page img) { width:100%; }
+
+.stories :global(.archive-hero), .news :global(.archive-hero), .sermons :global(.archive-hero), .worship :global(.archive-hero) { display:flex; min-height:500px; color:var(--white); }
+.stories :global(.archive-hero--stories) { background:radial-gradient(circle at 83% 14%,rgba(176,194,173,.2),transparent 27%),var(--forest); }
+.news :global(.archive-hero--news) { background:linear-gradient(125deg,transparent 53%,rgba(255,255,255,.07) 53% 54%,transparent 54%),#27352f; }
+.sermons :global(.archive-hero--sermons) { background:radial-gradient(circle at 74% 36%,rgba(169,183,163,.18),transparent 28%),#1c3028; }
+.worship :global(.archive-hero--worship) { background:linear-gradient(125deg,transparent 53%,rgba(255,255,255,.07) 53% 54%,transparent 54%),#20382e; }
+.stories :global(.archive-hero__inner), .news :global(.archive-hero__inner), .sermons :global(.archive-hero__inner), .worship :global(.archive-hero__inner) { display:grid; grid-template-columns:1.15fr .85fr; gap:10%; align-items:end; padding-block:94px 78px; }
+.stories :global(.archive-hero .eyebrow), .news :global(.archive-hero .eyebrow), .sermons :global(.archive-hero .eyebrow), .worship :global(.archive-hero .eyebrow) { color:var(--sage); }
+.stories :global(.archive-hero h1), .news :global(.archive-hero h1), .sermons :global(.archive-hero h1), .worship :global(.archive-hero h1) { font-family:var(--serif); font-size:clamp(62px,7vw,96px); font-weight:400; letter-spacing:-.075em; line-height:1.02; }
+.stories :global(.archive-hero__inner > p), .news :global(.archive-hero__inner > p), .sermons :global(.archive-hero__inner > p), .worship :global(.archive-hero__inner > p) { max-width:480px; padding-bottom:8px; color:rgba(255,255,255,.67); font-size:15px; }
+
+.sermons :global(.sermon-archive) { background:var(--paper); }
+.sermons :global(.sermon-feature) { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr); gap:8%; align-items:center; }
+.sermons :global(.sermon-feature .sermon__content) { min-width:0; }
+.sermons :global(.sermon-feature .sermon-art) { width:100%; min-width:0; min-height:500px; }
+.sermons :global(.sermon-status) { margin-top:28px; padding-top:22px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+
+@media (max-width: 980px) and (min-width: 761px) {
+  .sermons :global(.sermon-feature) { grid-template-columns:1fr; gap:56px; }
+  .sermons :global(.sermon-feature .sermon-art) { min-height:360px; }
+}
+
+@media (max-width: 680px) {
+  .stories :global(.detail-hero__inner), .news :global(.detail-hero__inner), .sermons :global(.detail-hero__inner) { padding-block:50px 62px; }
+  .stories :global(.detail-back), .news :global(.detail-back), .sermons :global(.detail-back) { margin-bottom:54px; }
+  .stories :global(.detail-hero h1), .news :global(.detail-hero h1), .sermons :global(.detail-hero h1) { font-size:clamp(38px,10.5vw,52px); overflow-wrap:break-word; word-break:keep-all; }
+  .stories :global(.detail-hero__inner > p), .news :global(.detail-hero__inner > p), .sermons :global(.detail-hero__inner > p) { font-size:14px; }
+  .stories :global(.story-detail__visual) { width:calc(100% + 40px); margin-left:-20px; }
+  .stories :global(.story-detail__body) { margin-top:58px; font-size:16px; }
+  .stories :global(.story-detail__gallery) { grid-template-columns:1fr; gap:14px; width:calc(100% + 40px); margin-left:-20px; }
+  .stories :global(.story-detail__quote) { margin-block:40px; padding:32px 8px; font-size:28px; }
+  .stories :global(.detail-nav), .news :global(.detail-nav), .sermons :global(.detail-nav) { align-items:flex-start; flex-direction:column; gap:18px; margin-top:78px; }
+  .news :global(.bulletin-detail) { padding-top:40px; }
+  .news :global(.bulletin-document) { width:calc(100% + 40px); margin-left:-20px; border-inline:0; }
+  .news :global(.bulletin-document__toolbar) { padding-inline:20px; }
+  .news :global(.bulletin-document__toolbar span) { max-width:130px; text-align:right; }
+}
+
+@media (max-width: 760px) {
+  .about :global(.subpage main), .worship :global(.subpage main), .stories :global(.subpage main), .news :global(.subpage main), .sermons :global(.subpage main) { padding-top:68px; }
+  .stories :global(.archive-hero), .news :global(.archive-hero), .sermons :global(.archive-hero), .worship :global(.archive-hero) { min-height:440px; }
+  .stories :global(.archive-hero__inner), .news :global(.archive-hero__inner), .sermons :global(.archive-hero__inner), .worship :global(.archive-hero__inner) { grid-template-columns:1fr; gap:44px; align-content:end; padding-block:76px 64px; }
+  .stories :global(.archive-hero h1), .news :global(.archive-hero h1), .sermons :global(.archive-hero h1), .worship :global(.archive-hero h1) { font-size:clamp(44px,12vw,60px); }
+  .stories :global(.archive-hero__inner > p), .news :global(.archive-hero__inner > p), .sermons :global(.archive-hero__inner > p), .worship :global(.archive-hero__inner > p) { font-size:14px; }
+  .sermons :global(.sermon-feature) { grid-template-columns:1fr; gap:56px; }
+  .sermons :global(.sermon-feature .sermon-art) { min-height:300px; aspect-ratio:16 / 10; }
+}

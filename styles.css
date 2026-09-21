@@ -93,36 +93,6 @@ blockquote {
   padding-block: 150px;
 }
 
-/* 홈의 방문 흐름: 교회 이야기 → 예배 시간 → 오시는 길 */
-.home-page #main-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.home-page #main-content > .hero { order: 1; }
-.home-page #main-content > .intro { order: 2; }
-.home-page #main-content > .home-updates { order: 3; }
-.home-page #main-content > .worship { order: 4; }
-.home-page #main-content > .location { order: 5; }
-
-.home-page .home-updates {
-  background: #e5dccd;
-}
-
-.about-page main {
-  display: flex;
-  flex-direction: column;
-}
-
-.about-page main > .about-hero { order: 1; }
-.about-page main > .about-local-nav { order: 2; }
-.about-page main > .pastor-message { order: 3; }
-.about-page main > .church-introduction { order: 4; }
-.about-page main > .vision-section { order: 5; }
-.about-page main > .ministers-section { order: 6; }
-.about-page main > .denomination-section { order: 7; }
-.about-page main > .archive-bridge { order: 8; }
-
 .eyebrow {
   margin-bottom: 24px;
   color: var(--forest-light);
@@ -1339,103 +1309,9 @@ blockquote {
   font-size: 10px;
 }
 
-.subpage main {
-  padding-top: 86px;
-}
-
-.archive-hero {
-  display: flex;
-  min-height: 500px;
-  color: var(--white);
-}
-
-.archive-hero--stories {
-  background:
-    radial-gradient(circle at 83% 14%, rgba(176, 194, 173, 0.2), transparent 27%),
-    var(--forest);
-}
-
-.archive-hero--news {
-  background:
-    linear-gradient(125deg, transparent 53%, rgba(255, 255, 255, 0.07) 53% 54%, transparent 54%),
-    #27352f;
-}
-
-.archive-hero--sermons {
-  background:
-    radial-gradient(circle at 74% 36%, rgba(169, 183, 163, 0.18), transparent 28%),
-    #1c3028;
-}
-
-.archive-hero--worship {
-  background:
-    linear-gradient(125deg, transparent 53%, rgba(255, 255, 255, 0.07) 53% 54%, transparent 54%),
-    #20382e;
-}
-
-.archive-hero__inner {
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: 10%;
-  align-items: end;
-  padding-block: 94px 78px;
-}
-
-.archive-hero .eyebrow {
-  color: var(--sage);
-}
-
-.archive-hero h1 {
-  font-family: var(--serif);
-  font-size: clamp(62px, 7vw, 96px);
-  font-weight: 400;
-  letter-spacing: -0.075em;
-  line-height: 1.02;
-}
-
-.archive-hero__inner > p {
-  max-width: 480px;
-  padding-bottom: 8px;
-  color: rgba(255, 255, 255, 0.67);
-  font-size: 15px;
-}
-
 .archive-content,
 .notice-archive {
   background: var(--paper);
-}
-
-.archive-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 72px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--line);
-}
-
-.archive-toolbar nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 30px;
-}
-
-.archive-toolbar nav > * {
-  display: inline-block;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.archive-toolbar nav > .is-active {
-  color: var(--ink);
-}
-
-.archive-toolbar > span {
-  color: var(--muted);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
 }
 
 .archive-feature > a {
@@ -1560,33 +1436,6 @@ blockquote {
   color: var(--muted);
   font-size: 12px;
   text-align: center;
-}
-
-.archive-bridge {
-  padding-block: 68px;
-  background: #e7dfd1;
-}
-
-.archive-bridge .page-shell {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.archive-bridge p {
-  color: var(--muted);
-  font-size: 14px;
-}
-
-.archive-bridge a {
-  font-family: var(--serif);
-  font-size: 28px;
-  font-weight: 600;
-  letter-spacing: -0.04em;
-}
-
-.archive-bridge a span {
-  margin-left: 18px;
 }
 
 .bulletin-feature {
@@ -1770,205 +1619,6 @@ blockquote {
   color: var(--forest-light);
   font-style: normal;
   text-align: right;
-}
-
-.detail-hero {
-  background: var(--cream);
-}
-
-.detail-hero--bulletin {
-  background: #e7dfd1;
-}
-
-.detail-hero__inner {
-  max-width: 1040px;
-  padding-block: 72px 86px;
-}
-
-.detail-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 74px;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.detail-back:hover {
-  color: var(--ink);
-}
-
-.detail-meta {
-  display: flex;
-  gap: 18px;
-  align-items: center;
-  color: var(--forest-light);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-}
-
-.detail-meta > * + *::before {
-  margin-right: 18px;
-  color: var(--muted);
-  content: "·";
-}
-
-.detail-hero h1 {
-  max-width: 920px;
-  margin-top: 23px;
-  font-family: var(--serif);
-  font-size: clamp(52px, 6.5vw, 86px);
-  font-weight: 400;
-  letter-spacing: -0.07em;
-  line-height: 1.09;
-  text-wrap: balance;
-}
-
-.detail-hero__inner > p {
-  max-width: 660px;
-  margin-top: 28px;
-  color: var(--muted);
-  font-size: 16px;
-}
-
-.detail-hero .detail-subtitle {
-  max-width: 760px;
-  margin-top: 24px;
-  color: var(--ink);
-  font-family: var(--serif);
-  font-size: clamp(22px, 2.2vw, 31px);
-  letter-spacing: -0.04em;
-  line-height: 1.45;
-}
-
-.detail-hero .detail-subtitle + p {
-  margin-top: 16px;
-}
-
-.story-detail,
-.bulletin-detail {
-  background: var(--paper);
-}
-
-.story-detail__visual {
-  max-width: 940px;
-  margin: 0 auto;
-  background: var(--cream);
-}
-
-.story-detail__visual img {
-  width: 100%;
-  max-height: 980px;
-  object-fit: contain;
-}
-
-.story-detail__gallery {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
-  max-width: 940px;
-  margin: 24px auto 0;
-}
-
-.story-detail__gallery[hidden] {
-  display: none;
-}
-
-.story-detail__gallery figure {
-  margin: 0;
-  overflow: hidden;
-  background: var(--cream);
-}
-
-.story-detail__gallery img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-}
-
-.story-detail__body {
-  max-width: 720px;
-  margin: 86px auto 0;
-  font-size: 18px;
-  line-height: 1.9;
-}
-
-.story-detail__body > * + * {
-  margin-top: 30px;
-}
-
-.story-detail__quote {
-  margin-block: 52px;
-  padding: 42px 46px;
-  border-block: 1px solid var(--line);
-  color: var(--forest);
-  font-family: var(--serif);
-  font-size: clamp(27px, 3.2vw, 39px);
-  letter-spacing: -0.045em;
-  line-height: 1.55;
-  white-space: pre-line;
-}
-
-.story-detail__note {
-  color: var(--forest-light);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-}
-
-.detail-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 940px;
-  margin: 110px auto 0;
-  padding-top: 28px;
-  border-top: 1px solid var(--line);
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.detail-nav a:last-child span {
-  margin-left: 10px;
-}
-
-.bulletin-document {
-  max-width: 1040px;
-  margin: 0 auto;
-  border: 1px solid var(--line);
-  background: var(--cream);
-}
-
-.bulletin-document__toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 70px;
-  padding-inline: 28px;
-  border-bottom: 1px solid var(--line);
-}
-
-.bulletin-document__toolbar p {
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.bulletin-document__toolbar span {
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.bulletin-document__page {
-  aspect-ratio: 840 / 544;
-  overflow: hidden;
-  background: #fdf9e9;
-}
-
-.bulletin-document__page img {
-  width: 100%;
 }
 
 .about-hero {
@@ -2270,48 +1920,8 @@ blockquote {
   font-size: 14px;
 }
 
-.sermon-archive {
-  background: var(--paper);
-}
-
-.sermon-feature {
-  display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
-  gap: 8%;
-  align-items: center;
-}
-
-.sermon-feature .sermon__content {
-  min-width: 0;
-}
-
-.sermon-feature .sermon-art {
-  width: 100%;
-  min-width: 0;
-  min-height: 500px;
-}
-
-.sermon-status {
-  margin-top: 28px;
-  padding-top: 22px;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 12px;
-}
-
 .worship-page-section {
   min-height: 620px;
-}
-
-@media (max-width: 980px) and (min-width: 761px) {
-  .sermon-feature {
-    grid-template-columns: 1fr;
-    gap: 56px;
-  }
-
-  .sermon-feature .sermon-art {
-    min-height: 360px;
-  }
 }
 
 .worship-visit {
@@ -2436,19 +2046,6 @@ blockquote {
 
 .site-footer__bottom > p:last-child {
   justify-self: end;
-}
-
-.reveal {
-  opacity: 0;
-  transform: translateY(34px);
-  transition:
-    opacity 820ms ease,
-    transform 820ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 @keyframes hero-arrive {
@@ -2921,29 +2518,6 @@ blockquote {
     margin-bottom: 60px;
   }
 
-  .subpage main {
-    padding-top: 68px;
-  }
-
-  .archive-hero {
-    min-height: 440px;
-  }
-
-  .archive-hero__inner {
-    grid-template-columns: 1fr;
-    gap: 44px;
-    align-content: end;
-    padding-block: 76px 64px;
-  }
-
-  .archive-hero h1 {
-    font-size: clamp(44px, 12vw, 60px);
-  }
-
-  .archive-hero__inner > p {
-    font-size: 14px;
-  }
-
   .archive-toolbar {
     align-items: flex-start;
     margin-bottom: 48px;
@@ -3088,73 +2662,6 @@ blockquote {
     display: none;
   }
 
-  .detail-hero__inner {
-    padding-block: 50px 62px;
-  }
-
-  .detail-back {
-    margin-bottom: 54px;
-  }
-
-  .detail-hero h1 {
-    font-size: clamp(38px, 10.5vw, 52px);
-    overflow-wrap: break-word;
-    word-break: keep-all;
-  }
-
-  .detail-hero__inner > p {
-    font-size: 14px;
-  }
-
-  .story-detail__visual {
-    width: calc(100% + 40px);
-    margin-left: -20px;
-  }
-
-  .story-detail__body {
-    margin-top: 58px;
-    font-size: 16px;
-  }
-
-  .story-detail__gallery {
-    grid-template-columns: 1fr;
-    gap: 14px;
-    width: calc(100% + 40px);
-    margin-left: -20px;
-  }
-
-  .story-detail__quote {
-    margin-block: 40px;
-    padding: 32px 8px;
-    font-size: 28px;
-  }
-
-  .detail-nav {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 18px;
-    margin-top: 78px;
-  }
-
-  .bulletin-detail {
-    padding-top: 40px;
-  }
-
-  .bulletin-document {
-    width: calc(100% + 40px);
-    margin-left: -20px;
-    border-inline: 0;
-  }
-
-  .bulletin-document__toolbar {
-    padding-inline: 20px;
-  }
-
-  .bulletin-document__toolbar span {
-    max-width: 130px;
-    text-align: right;
-  }
-
   .about-hero,
   .about-hero__inner {
     min-height: 540px;
@@ -3181,8 +2688,7 @@ blockquote {
   .church-introduction__grid,
   .denomination-section__grid,
   .vision-section__heading,
-  .ministers-section__heading,
-  .sermon-feature {
+  .ministers-section__heading {
     grid-template-columns: 1fr;
   }
 
@@ -3244,15 +2750,6 @@ blockquote {
     grid-template-columns: 1fr;
     gap: 68px;
     margin-top: 56px;
-  }
-
-  .sermon-feature {
-    gap: 56px;
-  }
-
-  .sermon-feature .sermon-art {
-    min-height: 300px;
-    aspect-ratio: 16 / 10;
   }
 
   .worship-page-section {
