@@ -7,18 +7,18 @@ import { SiteHeader } from "@/components/site-header/site-header";
 
 export function SiteChrome({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const isHome = pathname === "/";
+  const isReactPage = pathname === "/" || ["/about", "/worship", "/stories", "/news", "/sermons"].some((path) => pathname === path || pathname.startsWith(`${path}/`));
 
   return (
     <>
-      {isHome && (
+      {isReactPage && (
         <>
           <a className="skip-link" href="#main-content">본문으로 바로가기</a>
           <SiteHeader />
         </>
       )}
       {children}
-      {isHome && <SiteFooter />}
+      {isReactPage && <SiteFooter variant={pathname === "/worship" ? "worship" : "default"} />}
     </>
   );
 }

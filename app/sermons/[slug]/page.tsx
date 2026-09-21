@@ -1,2 +1,8 @@
-import { LegacyPage } from "@/components/legacy-page/legacy-page";
-export default function SermonDetailPage() { return <LegacyPage file="sermons.html" pageClass="sermons-page" />; }
+import Link from "next/link";
+import { notFound } from "next/navigation";
+
+export default async function SermonDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  if (slug !== "love-abide") notFound();
+  return <div className="subpage"><main id="main-content"><section className="detail-hero detail-hero--story"><div className="page-shell detail-hero__inner"><Link className="detail-back" href="/sermons"><span aria-hidden="true">←</span> 설교</Link><div className="detail-meta"><span>MESSAGE</span><time>실제 정보 입력 예정</time></div><h1>사랑 안에<br/>머무는 연습</h1><p className="detail-subtitle">요한복음 15:9–12</p><p>빠르게 답을 찾기보다 사랑 안에 오래 머무는 삶에 관해 이야기합니다.</p></div></section><article className="sermon-archive section" aria-label="설교 내용"><div className="page-shell"><article className="sermon-feature"><div className="sermon-art" aria-label="설교 영상 등록 예정"><span className="sermon-art__book">JOHN</span><span className="sermon-art__verse">15:9</span><span className="play-button" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 7 8 5-8 5V7Z"/></svg></span><span className="sermon-art__caption">SAMPLE MESSAGE</span></div><div className="sermon__content"><p className="eyebrow">SAMPLE MESSAGE</p><h2>사랑 안에<br/>머무는 연습</h2><p className="sermon__summary">현재 설교 영상과 설교자·날짜 정보는 실제 운영 전 입력이 필요합니다.</p><dl className="sermon__info"><div><dt>말씀</dt><dd>요한복음 15:9–12</dd></div><div><dt>설교자</dt><dd>실제 정보 입력 예정</dd></div><div><dt>날짜</dt><dd>실제 정보 입력 예정</dd></div></dl></div></article><nav className="detail-nav" aria-label="설교 탐색"><Link href="/sermons">모든 설교 보기</Link><Link href="/worship">예배 안내 보기 <span aria-hidden="true">→</span></Link></nav></div></article></main></div>;
+}
