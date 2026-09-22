@@ -1479,9 +1479,6 @@
 }
 
 .about-local-nav {
-  position: sticky;
-  top: 74px;
-  z-index: 20;
   border-bottom: 1px solid var(--line);
   background: rgba(251, 250, 246, 0.94);
   backdrop-filter: blur(14px);
@@ -2501,10 +2498,6 @@
   .about-hero h1 {
     font-size: clamp(43px, 12vw, 61px);
     word-break: normal;
-  }
-
-  .about-local-nav {
-    top: 68px;
   }
 
   .about-local-nav .page-shell {
