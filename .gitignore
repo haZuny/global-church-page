@@ -3,8 +3,3 @@ node_modules/
 tsconfig.tsbuildinfo
 .DS_Store
 **/.DS_Store
-directus/.env
-directus/database/
-directus/uploads/
-directus/extensions/
-.env.local

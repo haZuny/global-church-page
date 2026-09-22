@@ -45,7 +45,6 @@
 
 - [제품 및 UX 기획서](docs/PRODUCT_SPEC.md)
 - [콘텐츠 모델 초안](docs/CONTENT_MODEL.md)
-- [Directus 로컬 운영 환경](docs/DIRECTUS_LOCAL.md)
 - [Codex 작업 지침](AGENTS.md)
 
 ## 데모 실행
