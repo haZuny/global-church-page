@@ -13,7 +13,7 @@ export default function HomePage() {
       <section className="hero" id="home" aria-labelledby="hero-title">
         <Image
           className="hero__image"
-          src="/assets/images/church-building-3.png"
+          src="/assets/images/church-building.png"
           alt="푸른 하늘 아래 자리한 글로벌교회 건물 전경"
           fill
           priority

@@ -131,6 +131,12 @@
   animation: hero-arrive 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+@media (min-width: 1600px) {
+  .hero__image {
+    object-position: center top;
+  }
+}
+
 .hero__veil {
   background:
     linear-gradient(90deg, rgba(18, 33, 26, 0.86) 0%, rgba(18, 33, 26, 0.57) 34%, rgba(18, 33, 26, 0.05) 68%),
