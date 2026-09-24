@@ -26,4 +26,7 @@ for (const collection of collections) {
   if (!existing) await request("/permissions", "POST", { collection, action: "read", fields: ["*"], permissions: { status: { _eq: "published" } }, policy: publicPolicy.id });
 }
 
+const storyMediaPermission = permissions.find((permission) => permission.policy === publicPolicy.id && permission.collection === "story_media" && permission.action === "read");
+if (!storyMediaPermission) await request("/permissions", "POST", { collection: "story_media", action: "read", fields: ["*"], permissions: { story: { status: { _eq: "published" } } }, policy: publicPolicy.id });
+
 console.log("Published-only public read policy applied.");

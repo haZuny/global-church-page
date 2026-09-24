@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { bulletinRows } from "@/lib/content";
+import { getNewsEntries } from "@/lib/directus-content";
 
 export const metadata: Metadata = { title: "주보·소식" };
 
-export default function NewsPage() {
+export const dynamic = "force-dynamic";
+export default async function NewsPage() {
+  const entries = await getNewsEntries();
+  const latestBulletin = entries.find((entry) => entry.kind === "bulletin");
   return (
     <div className="subpage">
       <main id="main-content">
@@ -24,7 +27,7 @@ export default function NewsPage() {
             <p>
               매주 예배 순서와 공동체 일정을 확인하고,
               <br />
-              앞으로 함께할 모임과 행사 소식을 살펴보세요.
+              앞으로 함께할 모임과 공지 내용을 살펴보세요.
             </p>
           </div>
         </section>
@@ -38,7 +41,6 @@ export default function NewsPage() {
                 <span className="is-active">전체</span>
                 <span>주보</span>
                 <span>공지</span>
-                <span>행사</span>
                 <span>자료</span>
               </nav>
               <span>2026</span>
@@ -63,9 +65,7 @@ export default function NewsPage() {
                   있습니다.
                 </p>
                 <div>
-                  <Link className="button button--dark" href="/news/2026-03-15">
-                    이번 주보 보기
-                  </Link>
+                  {latestBulletin && <Link className="button button--dark" href={`/news/${latestBulletin.href}`}>이번 주보 보기</Link>}
                   <a className="text-link" href="#bulletin-list">
                     지난 주보 보기
                   </a>
@@ -96,21 +96,15 @@ export default function NewsPage() {
                 <span>제목</span>
                 <span />
               </div>
-              {bulletinRows.map(([slug, bulletin]) => (
-                <Link href={`/news/${slug}`} key={slug}>
-                  <time
-                    dateTime={
-                      slug.startsWith("2026-") && slug !== "2026-lunar-new-year"
-                        ? slug
-                        : undefined
-                    }
-                  >
-                    {bulletin.date}
+              {entries.map((entry) => (
+                <Link href={`/news/${entry.href}`} key={`${entry.kind}-${entry.id}`}>
+                  <time dateTime={entry.dateTime}>
+                    {entry.date}
                   </time>
-                  <span>{bulletin.category}</span>
+                  <span>{entry.category}</span>
                   <div>
-                    <strong>{bulletin.title}</strong>
-                    <p>{bulletin.summary}</p>
+                    <strong>{entry.title}</strong>
+                    <p>{entry.summary}</p>
                   </div>
                   <i aria-hidden="true">→</i>
                 </Link>
