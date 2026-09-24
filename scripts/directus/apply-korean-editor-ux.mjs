@@ -35,7 +35,9 @@ for (const [collection, [label, note, labels]] of Object.entries(models)) {
     const currentField = fields.find((item) => item.field === field);
     if (!currentField) continue;
     const statusOptions = field === "status" ? { interface: "select-dropdown", options: { choices: [{ text: "초안", value: "draft" }, { text: "게시됨", value: "published" }, { text: "보관됨", value: "archived" }] } } : {};
-    await request(`/fields/${collection}/${field}`, "PATCH", { meta: { ...currentField.meta, ...statusOptions, sort: currentField.meta?.sort ?? 1, translations: [{ language: "ko-KR", translation }] } });
+    const fileOptions = field === "document_file" ? { interface: "file" } : {};
+    const legacyPath = field.endsWith("_url") || field.endsWith("_width") || field.endsWith("_height");
+    await request(`/fields/${collection}/${field}`, "PATCH", { meta: { ...currentField.meta, ...statusOptions, ...fileOptions, hidden: legacyPath, sort: currentField.meta?.sort ?? 1, translations: [{ language: "ko-KR", translation }] } });
   }
 }
 
