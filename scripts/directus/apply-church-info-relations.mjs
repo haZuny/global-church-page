@@ -13,6 +13,11 @@ const request = async (path, method = "GET", body) => {
   return json.data;
 };
 
+const directusFileFields = await request("/fields/directus_files");
+if (!directusFileFields.some((field) => field.field === "minister_photo_files")) {
+  await request("/fields/directus_files", "POST", { field: "minister_photo_files", type: "alias", meta: { special: ["o2m"], hidden: true, interface: "list-o2m", readonly: true }, schema: null });
+}
+
 const settingsFields = await request("/fields/site_settings");
 const ministersField = settingsFields.find((field) => field.field === "ministers");
 const options = { layout: "list", template: "{{role}} · {{name}}", enableCreate: true, enableSelect: false, enableLink: false, sort: "sort", sortDirection: "+" };
@@ -28,7 +33,7 @@ const addRelation = async (field, relatedCollection, meta, schema) => {
   await request("/relations", "POST", { collection: "church_ministers", field, related_collection: relatedCollection, meta, schema });
 };
 await addRelation("site_settings", "site_settings", { many_collection: "church_ministers", many_field: "site_settings", one_collection: "site_settings", one_field: "ministers", one_deselect_action: "delete" }, { table: "church_ministers", column: "site_settings", foreign_key_table: "site_settings", foreign_key_column: "id", on_delete: "CASCADE", on_update: "NO ACTION" });
-await addRelation("photo", "directus_files", { many_collection: "church_ministers", many_field: "photo", one_collection: "directus_files", one_field: null, one_deselect_action: "nullify" }, { table: "church_ministers", column: "photo", foreign_key_table: "directus_files", foreign_key_column: "id", on_delete: "SET NULL", on_update: "NO ACTION" });
+await addRelation("photo", "directus_files", { many_collection: "church_ministers", many_field: "photo", one_collection: "directus_files", one_field: "minister_photo_files", one_deselect_action: "nullify" }, { table: "church_ministers", column: "photo", foreign_key_table: "directus_files", foreign_key_column: "id", on_delete: "SET NULL", on_update: "NO ACTION" });
 
 const ministerFields = await request("/fields/church_ministers");
 for (const field of ministerFields.filter((item) => ["site_settings", "sort"].includes(item.field))) {

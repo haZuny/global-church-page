@@ -13,6 +13,11 @@ const request = async (path, method = "GET", body) => {
   return json.data;
 };
 
+const directusFileFields = await request("/fields/directus_files");
+if (!directusFileFields.some((field) => field.field === "bulletin_media_files")) {
+  await request("/fields/directus_files", "POST", { field: "bulletin_media_files", type: "alias", meta: { special: ["o2m"], hidden: true, interface: "list-o2m", readonly: true }, schema: null });
+}
+
 const bulletinFields = await request("/fields/bulletins");
 const bulletinMediaCollection = (await request("/collections")).find((collection) => collection.collection === "bulletin_media");
 await request("/collections/bulletin_media", "PATCH", { meta: { ...bulletinMediaCollection.meta, display_template: "{{file.filename_download}}" } });
@@ -37,6 +42,6 @@ const addRelation = async (field, relatedCollection, meta, schema) => {
 };
 
 await addRelation("bulletin", "bulletins", { many_collection: "bulletin_media", many_field: "bulletin", one_collection: "bulletins", one_field: "media", one_deselect_action: "delete" }, { table: "bulletin_media", column: "bulletin", foreign_key_table: "bulletins", foreign_key_column: "id", on_delete: "CASCADE", on_update: "NO ACTION" });
-await addRelation("file", "directus_files", { many_collection: "bulletin_media", many_field: "file", one_collection: "directus_files", one_field: null, one_deselect_action: "nullify" }, { table: "bulletin_media", column: "file", foreign_key_table: "directus_files", foreign_key_column: "id", on_delete: "SET NULL", on_update: "NO ACTION" });
+await addRelation("file", "directus_files", { many_collection: "bulletin_media", many_field: "file", one_collection: "directus_files", one_field: "bulletin_media_files", one_deselect_action: "nullify" }, { table: "bulletin_media", column: "file", foreign_key_table: "directus_files", foreign_key_column: "id", on_delete: "SET NULL", on_update: "NO ACTION" });
 
 console.log("Bulletin multi-file relations applied.");

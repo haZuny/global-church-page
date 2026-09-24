@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { getChurchInfo, getWorshipServices } from "@/lib/directus-content";
+import { getChurchInfo, getNewsEntries, getStories, getWorshipServices } from "@/lib/directus-content";
 export const metadata: Metadata = { title: "함께 비전을 세우는 공동체" };
 export const dynamic = "force-dynamic";
 const Arrow = () => (
@@ -10,7 +10,10 @@ const Arrow = () => (
   </svg>
 );
 export default async function HomePage() {
-  const [church, services] = await Promise.all([getChurchInfo(), getWorshipServices()]);
+  const [church, services, stories, newsEntries] = await Promise.all([getChurchInfo(), getWorshipServices(), getStories(), getNewsEntries()]);
+  const latestStories = stories.slice(0, 3);
+  const latestStory = latestStories[0];
+  const latestNews = newsEntries[0];
   return (
     <main id="main-content" className="home-page">
       <section className="hero" id="home" aria-labelledby="hero-title">
@@ -33,15 +36,12 @@ export default async function HomePage() {
             {church.heroCopy}
           </p>
           <div className="hero__actions">
-            <Link className="button button--solid" href="/worship">
-              예배 시간 확인
+            <Link className="button button--solid" href="/about">
+              교회 소개 더보기
               <Arrow />
             </Link>
           </div>
         </div>
-        <Link className="hero__bottom-link" href="/about">
-          어떤 교회인가요? <span aria-hidden="true">→</span>
-        </Link>
         <div className="hero__quick-info" aria-label="길 찾기">
           <Link href="#location">
             길 찾기
@@ -50,57 +50,29 @@ export default async function HomePage() {
         </div>
         <span className="demo-label">CONCEPT DEMO</span>
       </section>
-      <section
-        className="intro section"
-        id="about"
-        aria-labelledby="about-title"
-      >
-        <div className="page-shell intro__grid">
-          <div className="section-heading">
-            <p className="eyebrow">OUR HEART</p>
-            <h2 id="about-title">
-              교회는 함께 살아가는
-              <br />
-              사람들의 이야기라고 믿습니다.
-            </h2>
+      {latestStory && <section className="home-updates home-updates--stories section" aria-labelledby="home-stories-title">
+        <div className="page-shell">
+          <div className="home-updates__heading">
+            <div className="section-heading">
+              <p className="eyebrow">CHURCH STORIES</p>
+              <h2 id="home-stories-title">함께 살아가는<br/>이야기</h2>
+            </div>
+            <p>최근의 사진과 기록으로 글로벌교회의 오늘을 전합니다.</p>
           </div>
-          <div className="intro__body">
-            <p className="intro__lead">
-              {church.introduction}
-            </p>
-            <p>
-              {church.visitNotice}
-            </p>
-            <Link className="text-link" href="/about">
-              교회 소개 자세히 보기
-            </Link>
+          <div className="home-updates__grid">
+            <article className="latest-story">
+              <Link href={`/stories/${latestStory.id}`} aria-label={`${latestStory.title} 이야기 보기`}>
+                <div className="latest-story__image"><Image src={latestStory.image} alt={latestStory.alt} fill unoptimized sizes="(max-width: 780px) 100vw, 52vw"/></div>
+                <div className="latest-story__copy"><p><time dateTime={latestStory.dateTime}>{latestStory.date}</time></p><h3>{latestStory.title}</h3></div>
+              </Link>
+            </article>
+            {latestStories.length > 1 && <div className="update-list" aria-label="최근 교회 이야기 목록">
+              {latestStories.slice(1).map((story) => <Link href={`/stories/${story.id}`} key={story.id}><time dateTime={story.dateTime}>{story.date}</time><div><strong>{story.title}</strong></div></Link>)}
+            </div>}
           </div>
+          <Link className="update-list__more" href="/stories">교회 이야기 전체 보기</Link>
         </div>
-        <div className="values page-shell" aria-label="교회의 세 가지 가치">
-          <article>
-            <span>01</span>
-            <h3>삶의 목적을 묻는 말씀</h3>
-            <p>
-              정답을 주입하기보다 하나님의 뜻을 함께 묻고 진지하게 대화합니다.
-            </p>
-          </article>
-          <article>
-            <span>02</span>
-            <h3>함께 자라는 공동체</h3>
-            <p>
-              서로의 속도와 질문을 존중하며 예배와 일상의 자리를 함께 나눕니다.
-            </p>
-          </article>
-          <article>
-            <span>03</span>
-            <h3>다음 세대를 세우는 비전</h3>
-            <p>
-              청소년과 청년이 자신의 부르심을 발견하고 삶으로 살아내도록
-              돕습니다.
-            </p>
-          </article>
-        </div>
-      </section>
+      </section>}
       <section
         className="worship section"
         id="worship"
@@ -112,14 +84,11 @@ export default async function HomePage() {
           <div className="section-heading">
             <p className="eyebrow">SUNDAY WITH US</p>
             <h2 id="worship-title">
-              이번 주일,
+              이번 주
               <br />
-              편안하게 오세요.
+              예배 시간
             </h2>
-            <p>{church.visitNotice}</p>
-            <Link className="button button--cream" href="#location">
-              예배 장소 확인
-            </Link>
+            <p>처음 오신 분도 별도 등록 없이 예배에 참여하실 수 있습니다.</p>
           </div>
           <div className="schedule">
             {services.map((service) => (
@@ -134,6 +103,21 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      {latestNews && <section className="home-updates home-updates--news section" aria-labelledby="home-news-title">
+        <div className="page-shell">
+          <div className="home-updates__heading">
+            <div className="section-heading"><p className="eyebrow">BULLETIN &amp; NEWS</p><h2 id="home-news-title">이번 주<br/>주보·소식</h2></div>
+            <p>가장 최근에 발행된 주보 또는 공지입니다.</p>
+          </div>
+          <article className="latest-story latest-news-card">
+            <Link href={`/news/${latestNews.href}`} aria-label={`${latestNews.title} 보기`}>
+              {latestNews.image && <div className="latest-story__image"><Image src={latestNews.image} alt={latestNews.title} fill unoptimized sizes="(max-width: 780px) 100vw, 52vw"/></div>}
+              <div className="latest-story__copy"><p><time dateTime={latestNews.dateTime}>{latestNews.date}</time><span>{latestNews.category}</span></p><h3>{latestNews.title}</h3></div>
+            </Link>
+          </article>
+          <Link className="update-list__more" href="/news">주보·소식 전체 보기</Link>
+        </div>
+      </section>}
       <section
         className="location section"
         id="location"
@@ -189,13 +173,7 @@ export default async function HomePage() {
             >
               지도에서 길 찾기
             </a>
-            <Link className="text-link" href="#worship">
-              예배 안내 다시 보기
-            </Link>
           </div>
-          <small>
-            {church.visitNotice}
-          </small>
         </div>
       </section>
     </main>

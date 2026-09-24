@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "주보·소식" };
 export const dynamic = "force-dynamic";
 export default async function NewsPage() {
   const entries = await getNewsEntries();
-  const latestBulletin = entries.find((entry) => entry.kind === "bulletin");
+  const latestEntry = entries[0];
   return (
     <div className="subpage">
       <main id="main-content">
@@ -45,50 +45,11 @@ export default async function NewsPage() {
               </nav>
               <span>2026</span>
             </div>
-            <article className="bulletin-feature reveal">
-              <div className="bulletin-feature__date">
-                <span>MAR</span>
-                <strong>15</strong>
-                <small>2026</small>
-              </div>
-              <div className="bulletin-feature__copy">
-                <p>
-                  <span>NEW</span> 이번 주 주보
-                </p>
-                <h2>
-                  2026년 3월 15일
-                  <br />
-                  글로벌교회 주보
-                </h2>
-                <p>
-                  예배 순서와 한 주의 안내를 이 페이지에서 바로 확인할 수
-                  있습니다.
-                </p>
-                <div>
-                  {latestBulletin && <Link className="button button--dark" href={`/news/${latestBulletin.href}`}>이번 주보 보기</Link>}
-                  <a className="text-link" href="#bulletin-list">
-                    지난 주보 보기
-                  </a>
-                </div>
-              </div>
-              <div className="bulletin-feature__paper" aria-hidden="true">
-                <span>
-                  GLOBAL
-                  <br />
-                  WEEKLY
-                </span>
-                <strong>
-                  03
-                  <br />
-                  15
-                </strong>
-                <small>
-                  함께 예배하고
-                  <br />
-                  함께 살아갑니다
-                </small>
-              </div>
-            </article>
+            {latestEntry && <article className="bulletin-feature reveal">
+              <div className="bulletin-feature__date"><span>{latestEntry.category}</span><strong>{latestEntry.date}</strong></div>
+              <div className="bulletin-feature__copy"><p><span>NEW</span> 가장 최근 소식</p><h2>{latestEntry.title}</h2><div><Link className="button button--dark" href={`/news/${latestEntry.href}`}>내용 보기</Link></div></div>
+              <div className="bulletin-feature__paper" aria-hidden="true"><span>{latestEntry.category}</span><strong>{latestEntry.date}</strong></div>
+            </article>}
             <div className="notice-list reveal" id="bulletin-list">
               <div className="notice-list__head" aria-hidden="true">
                 <span>날짜</span>
@@ -104,7 +65,6 @@ export default async function NewsPage() {
                   <span>{entry.category}</span>
                   <div>
                     <strong>{entry.title}</strong>
-                    <p>{entry.summary}</p>
                   </div>
                   <i aria-hidden="true">→</i>
                 </Link>
@@ -114,14 +74,6 @@ export default async function NewsPage() {
               주보와 예배 자료를 날짜순으로 모았습니다. 각 항목을 누르면 이
               사이트 안에서 내용을 바로 확인할 수 있습니다.
             </p>
-          </div>
-        </section>
-        <section className="archive-bridge">
-          <div className="page-shell">
-            <p>처음 방문을 준비하고 있다면</p>
-            <Link href="/worship">
-              예배 안내 보기 <span aria-hidden="true">→</span>
-            </Link>
           </div>
         </section>
       </main>

@@ -84,8 +84,9 @@ export async function getStories() {
   const [items, mediaItems] = await Promise.all([readCollection<any>("stories?sort=-published_at&limit=-1"), readCollection<any>("story_media?sort=sort&limit=-1")]);
   return items.map((item): StoryEntry => {
     const media = mediaItems.filter((media) => media.story === item.id).map((media) => ({ image: `${directusAssetsUrl}/assets/${media.file}`, alt: media.alt || item.title }));
-    const image = media[0]?.image ?? (item.cover_image ? `${directusAssetsUrl}/assets/${item.cover_image}` : item.cover_image_url);
-    return { id: item.id, date: dateLabel(item.published_at), dateTime: item.published_at.slice(0, 10), title: item.title, summary: item.summary, image, imageWidth: item.cover_image_width ?? 1600, imageHeight: item.cover_image_height ?? 1067, alt: media[0]?.alt ?? item.cover_alt ?? item.title, blocks: storyBlocks(item.body), media };
+    const latestMedia = media.at(-1);
+    const image = latestMedia?.image ?? (item.cover_image ? `${directusAssetsUrl}/assets/${item.cover_image}` : item.cover_image_url);
+    return { id: item.id, date: dateLabel(item.published_at), dateTime: item.published_at.slice(0, 10), title: item.title, summary: item.summary, image, imageWidth: item.cover_image_width ?? 1600, imageHeight: item.cover_image_height ?? 1067, alt: latestMedia?.alt ?? item.cover_alt ?? item.title, blocks: storyBlocks(item.body), media };
   });
 }
 

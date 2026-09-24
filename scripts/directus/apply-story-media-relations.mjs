@@ -13,6 +13,11 @@ const request = async (path, method = "GET", body) => {
   return json.data;
 };
 
+const directusFileFields = await request("/fields/directus_files");
+if (!directusFileFields.some((field) => field.field === "story_media_files")) {
+  await request("/fields/directus_files", "POST", { field: "story_media_files", type: "alias", meta: { special: ["o2m"], hidden: true, interface: "list-o2m", readonly: true }, schema: null });
+}
+
 const storyFields = await request("/fields/stories");
 const storyMediaCollection = (await request("/collections")).find((collection) => collection.collection === "story_media");
 await request("/collections/story_media", "PATCH", { meta: { ...storyMediaCollection.meta, display_template: "{{file.filename_download}}" } });
@@ -35,5 +40,5 @@ const addRelation = async (field, relatedCollection, meta, schema) => {
   await request("/relations", "POST", { collection: "story_media", field, related_collection: relatedCollection, meta, schema });
 };
 await addRelation("story", "stories", { many_collection: "story_media", many_field: "story", one_collection: "stories", one_field: "media", one_deselect_action: "delete" }, { table: "story_media", column: "story", foreign_key_table: "stories", foreign_key_column: "id", on_delete: "CASCADE", on_update: "NO ACTION" });
-await addRelation("file", "directus_files", { many_collection: "story_media", many_field: "file", one_collection: "directus_files", one_field: null, one_deselect_action: "nullify" }, { table: "story_media", column: "file", foreign_key_table: "directus_files", foreign_key_column: "id", on_delete: "SET NULL", on_update: "NO ACTION" });
+await addRelation("file", "directus_files", { many_collection: "story_media", many_field: "file", one_collection: "directus_files", one_field: "story_media_files", one_deselect_action: "nullify" }, { table: "story_media", column: "file", foreign_key_table: "directus_files", foreign_key_column: "id", on_delete: "SET NULL", on_update: "NO ACTION" });
 console.log("Story multi-image relations applied.");
