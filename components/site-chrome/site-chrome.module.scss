@@ -72,6 +72,8 @@
 .stories :global(.story-detail__quote) { margin-block:52px; padding:42px 46px; border-block:1px solid var(--line); color:var(--forest); font-family:var(--serif); font-size:clamp(27px,3.2vw,39px); letter-spacing:-.045em; line-height:1.55; white-space:pre-line; }
 .stories :global(.story-detail__note) { color:var(--forest-light); font-size:12px; font-weight:700; letter-spacing:.04em; }
 .stories :global(.detail-nav), .news :global(.detail-nav), .sermons :global(.detail-nav) { display:flex; align-items:center; justify-content:space-between; max-width:940px; margin:110px auto 0; padding-top:28px; border-top:1px solid var(--line); font-size:14px; font-weight:700; }
+.stories :global(.detail-nav--stories) { gap:24px; }
+.stories :global(.detail-nav--stories a:last-child) { margin-left:auto; text-align:right; }
 .stories :global(.detail-nav a:last-child span), .news :global(.detail-nav a:last-child span), .sermons :global(.detail-nav a:last-child span) { margin-left:10px; }
 
 .news :global(.bulletin-document) { max-width:1040px; margin:0 auto; border:1px solid var(--line); background:var(--cream); }
