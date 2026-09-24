@@ -39,6 +39,7 @@ export default function NewsPage() {
                 <span>주보</span>
                 <span>공지</span>
                 <span>행사</span>
+                <span>자료</span>
               </nav>
               <span>2026</span>
             </div>

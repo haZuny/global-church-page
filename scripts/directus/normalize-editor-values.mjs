@@ -12,4 +12,7 @@ for (const [before, after] of Object.entries(storyCategories)) {
   const { data: items } = await response.json();
   await Promise.all(items.map((item) => fetch(`${baseUrl}/items/stories/${item.id}`, { method: "PATCH", headers, body: JSON.stringify({ category: after }) })));
 }
+const bulletinResponse = await fetch(`${baseUrl}/items/bulletins?filter[category][_eq]=${encodeURIComponent("가정예배 자료")}&fields=id&limit=-1`, { headers });
+const { data: bulletins } = await bulletinResponse.json();
+await Promise.all(bulletins.map((item) => fetch(`${baseUrl}/items/bulletins/${item.id}`, { method: "PATCH", headers, body: JSON.stringify({ category: "자료" }) })));
 console.log("Existing editor values normalized.");

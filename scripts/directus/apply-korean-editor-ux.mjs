@@ -35,11 +35,13 @@ for (const [collection, [label, note, labels]] of Object.entries(models)) {
     const currentField = fields.find((item) => item.field === field);
     if (!currentField) continue;
     const statusOptions = field === "status" ? { interface: "select-dropdown", options: { choices: [{ text: "초안", value: "draft" }, { text: "게시됨", value: "published" }, { text: "보관됨", value: "archived" }] } } : {};
-    const categoryOptions = field === "category" ? { interface: "select-dropdown", options: { choices: collection === "stories" ? ["예배", "공동체", "다음 세대", "이웃 섬김", "기타"].map((value) => ({ text: value, value })) : ["주보", "가정예배 자료"].map((value) => ({ text: value, value })) } } : {};
+    const categoryOptions = field === "category" ? { interface: "select-dropdown", options: { choices: collection === "stories" ? ["예배", "공동체", "다음 세대", "이웃 섬김", "기타"].map((value) => ({ text: value, value })) : ["주보", "자료"].map((value) => ({ text: value, value })) } } : {};
+    const typeOptions = field === "type" ? { interface: "select-dropdown", options: { choices: [{ text: "공지", value: "notice" }, { text: "행사", value: "event" }] } } : {};
+    const weekdayOptions = field === "weekday" ? { interface: "select-dropdown", options: { choices: ["주일", "수요일", "금요일", "토요일", "기타"].map((value) => ({ text: value, value })) } } : {};
     const dateOptions = field === "published_at" || field.endsWith("_at") ? { interface: "datetime" } : {};
     const fileOptions = field === "document_file" ? { interface: "file" } : {};
     const legacyPath = field.endsWith("_url") || field.endsWith("_width") || field.endsWith("_height");
-    await request(`/fields/${collection}/${field}`, "PATCH", { meta: { ...currentField.meta, ...statusOptions, ...categoryOptions, ...dateOptions, ...fileOptions, hidden: legacyPath || field === "slug", sort: currentField.meta?.sort ?? 1, translations: [{ language: "ko-KR", translation }] } });
+    await request(`/fields/${collection}/${field}`, "PATCH", { meta: { ...currentField.meta, ...statusOptions, ...categoryOptions, ...typeOptions, ...weekdayOptions, ...dateOptions, ...fileOptions, hidden: legacyPath || field === "slug", sort: currentField.meta?.sort ?? 1, translations: [{ language: "ko-KR", translation }] } });
   }
 }
 
