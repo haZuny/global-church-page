@@ -3,6 +3,7 @@ export type StoryEntry = { slug: string; category: string; subtitle: string; dat
 export type BulletinEntry = { slug: string; title: string; date: string; category: string; summary: string; image: string; imageWidth: number; imageHeight: number };
 
 const directusUrl = process.env.DIRECTUS_URL ?? "http://127.0.0.1:8055";
+const directusAssetsUrl = process.env.DIRECTUS_ASSETS_URL ?? directusUrl;
 const dateLabel = (value: string) => value.slice(0, 10).replaceAll("-", ". ");
 
 async function readCollection<T>(path: string): Promise<T[]> {
@@ -13,7 +14,7 @@ async function readCollection<T>(path: string): Promise<T[]> {
 
 export async function getStories() {
   const items = await readCollection<any>("stories?sort=-published_at&limit=-1");
-  return items.map((item): StoryEntry => ({ slug: item.slug, category: item.category, subtitle: item.subtitle, date: dateLabel(item.published_at), dateTime: item.published_at.slice(0, 10), title: item.title, summary: item.summary, image: item.cover_image_url, imageWidth: item.cover_image_width, imageHeight: item.cover_image_height, alt: item.cover_alt, blocks: typeof item.body === "string" ? JSON.parse(item.body) : item.body }));
+  return items.map((item): StoryEntry => ({ slug: item.slug, category: item.category, subtitle: item.subtitle, date: dateLabel(item.published_at), dateTime: item.published_at.slice(0, 10), title: item.title, summary: item.summary, image: item.cover_image ? `${directusAssetsUrl}/assets/${item.cover_image}` : item.cover_image_url, imageWidth: item.cover_image_width, imageHeight: item.cover_image_height, alt: item.cover_alt, blocks: typeof item.body === "string" ? JSON.parse(item.body) : item.body }));
 }
 
 export async function getStory(slug: string) {
