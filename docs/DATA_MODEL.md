@@ -50,12 +50,11 @@
 | `id` | uuid | 예 | 기본 키 |
 | `slug` | string, unique | 예 | 상세 URL 키 |
 | `title` | string | 예 | 제목 |
-| `subtitle` | text | 예 | 소제목 |
+| `subtitle` | text | 아니오 | 이전 데이터 호환용 내부 필드(관리자 화면 비노출) |
 | `summary` | text | 예 | 목록 요약 |
-| `category` | select | 예 | 예배 / 공동체 / 이웃 섬김 / 다음 세대 |
+| `category` | string | 아니오 | 이전 데이터 호환용 내부 필드(관리자 화면 비노출) |
 | `body` | json | 예 | 문단·인용·안내 블록 배열 |
-| `cover_image` | M2O `directus_files` | 예 | 대표 이미지 |
-| `cover_alt` | string | 예 | 대표 이미지 대체 텍스트 |
+| `media` | O2M `story_media` | 아니오 | 본문에 추가하는 여러 이미지 |
 | `published_at` | datetime | 조건부 | 게시일 |
 | `status` | select | 예 | `draft` / `published` / `archived` |
 
@@ -84,40 +83,48 @@
 | `preacher` | string | 예 | 설교자 |
 | `sermon_date` | date | 예 | 설교일 |
 | `video_url` | string | 아니오 | 승인된 외부 영상 URL |
+| `video_file` | M2O `directus_files` | 아니오 | Directus에서 업로드하는 설교 영상 |
 | `cover_image` | M2O `directus_files` | 아니오 | 썸네일 |
 | `cover_alt` | string | 조건부 | 썸네일 대체 텍스트 |
 | `status` | select | 예 | `draft` / `published` / `archived` |
 
 ### `bulletins`
 
-주보 문서와 웹에서 읽을 핵심 일정을 관리합니다.
+주보와 웹에서 읽을 핵심 안내를 관리합니다. 상세 주소는 자동 생성된 `id`를 사용하므로 `slug`은 이전 데이터 호환용 내부 필드입니다.
 
 | 필드 | 형식 | 필수 | 설명 |
 | --- | --- | --- | --- |
-| `slug` | string, unique | 예 | 상세 URL 키 |
+| `slug` | string | 아니오 | 이전 데이터 호환용 내부 키(관리자 화면 비노출) |
 | `title` | string | 예 | 제목 |
+| `category` | select | 예 | `주보` / `자료` |
 | `summary` | text | 예 | 웹용 핵심 일정 요약 |
-| `document` | M2O `directus_files` | 예 | 주보 문서 또는 이미지 |
-| `document_alt` | string | 예 | 문서 대체 텍스트 |
+| `body` | text | 아니오 | 웹에서 함께 보여 줄 본문 안내 |
+| `media` | O2M `bulletin_media` | 아니오 | 주보에 연결하는 여러 이미지·자료 |
 | `published_at` | datetime | 조건부 | 발행일 |
 | `status` | select | 예 | `draft` / `published` / `archived` |
 
-### `news_items`
+### `bulletin_media`
 
-공지와 행사를 같은 목록에서 보여 주기 위한 컬렉션입니다.
+주보 하나에 여러 이미지와 자료를 연결합니다. 각 첨부 항목은 주보 편집 화면의 `첨부 파일`에서 추가합니다.
 
 | 필드 | 형식 | 필수 | 설명 |
 | --- | --- | --- | --- |
-| `slug` | string, unique | 예 | 상세 URL 키 |
-| `type` | select | 예 | `notice` / `event` |
+| `bulletin` | M2O `bulletins` | 예 | 소속 주보 |
+| `file` | M2O `directus_files` | 예 | 업로드 파일 |
+| `alt` | string | 아니오 | 이미지 대체 텍스트 |
+| `caption` | string | 아니오 | 파일 또는 이미지 설명 |
+| `sort` | integer | 예 | 노출 순서 |
+
+### `news_items`
+
+공지 내용을 관리하는 컬렉션입니다. 행사 일정이나 장소가 필요하면 본문에 자연어로 작성합니다.
+
+| 필드 | 형식 | 필수 | 설명 |
+| --- | --- | --- | --- |
+| `slug` | string | 아니오 | 이전 데이터 호환용 내부 키(관리자 화면 비노출) |
 | `title` | string | 예 | 제목 |
 | `summary` | text | 예 | 목록 요약 |
 | `body` | json | 아니오 | 본문 블록 |
-| `event_starts_at` | datetime | 행사만 | 행사 시작일 |
-| `event_ends_at` | datetime | 아니오 | 행사 종료일 |
-| `location` | string | 아니오 | 행사 장소 |
-| `cover_image` | M2O `directus_files` | 아니오 | 대표 이미지 |
-| `cover_alt` | string | 조건부 | 대표 이미지 대체 텍스트 |
 | `published_at` | datetime | 조건부 | 게시일 |
 | `status` | select | 예 | `draft` / `published` / `archived` |
 
