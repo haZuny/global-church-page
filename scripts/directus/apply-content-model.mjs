@@ -41,10 +41,10 @@ const request = async (path, method, body) => {
 const fields = {
   site_settings: [["church_name", "string", true], ["introduction", "text", true], ["address", "text", true], ["map_url", "string", false], ["phone", "string", false], ["visit_notice", "text", false]],
   worship_services: [["name", "string", true], ["audience", "string", true], ["weekday", "string", true], ["start_time", "time", true], ["location", "string", true], ["description", "text", false], ["sort", "integer", true], ["status", "string", true]],
-  stories: [["slug", "string", true], ["title", "string", true], ["subtitle", "text", true], ["summary", "text", true], ["category", "string", true], ["body", "json", true], ["cover_image_url", "string", true], ["cover_image_width", "integer", true], ["cover_image_height", "integer", true], ["cover_alt", "string", true], ["published_at", "timestamp", false], ["status", "string", true]],
+  stories: [["slug", "string", true], ["title", "string", true], ["subtitle", "text", true], ["summary", "text", true], ["category", "string", true], ["body", "json", true], ["cover_image_url", "string", true], ["cover_image", "uuid", false], ["cover_image_width", "integer", true], ["cover_image_height", "integer", true], ["cover_alt", "string", true], ["published_at", "timestamp", false], ["status", "string", true]],
   story_media: [["story", "integer", true], ["file", "string", true], ["alt", "string", true], ["caption", "string", false], ["sort", "integer", true]],
   sermons: [["slug", "string", true], ["title", "string", true], ["summary", "text", true], ["scripture", "string", true], ["preacher", "string", true], ["sermon_date", "date", true], ["video_url", "string", false], ["status", "string", true]],
-  bulletins: [["slug", "string", true], ["title", "string", true], ["category", "string", true], ["summary", "text", true], ["document_image_url", "string", true], ["document_image_width", "integer", true], ["document_image_height", "integer", true], ["document_alt", "string", true], ["published_at", "timestamp", false], ["status", "string", true]],
+  bulletins: [["slug", "string", true], ["title", "string", true], ["category", "string", true], ["summary", "text", true], ["document_image_url", "string", true], ["document_file", "uuid", false], ["document_image_width", "integer", true], ["document_image_height", "integer", true], ["document_alt", "string", true], ["published_at", "timestamp", false], ["status", "string", true]],
   news_items: [["slug", "string", true], ["type", "string", true], ["title", "string", true], ["summary", "text", true], ["body", "json", false], ["event_starts_at", "timestamp", false], ["event_ends_at", "timestamp", false], ["location", "string", false], ["published_at", "timestamp", false], ["status", "string", true]],
 };
 
@@ -55,7 +55,7 @@ for (const [collection, collectionFields] of Object.entries(fields)) {
   const existingFields = await request(`/fields/${collection}`, "GET");
   for (const [field, type, required] of collectionFields) {
     const existingField = existingFields.find((item) => item.field === field);
-    if (!existingField) await request(`/fields/${collection}`, "POST", { field, type, meta: { interface: type === "text" ? "input-multiline" : "input", required }, schema: { name: field, data_type: type === "integer" ? "integer" : type === "json" ? "json" : type === "timestamp" ? "datetime" : type, is_nullable: !required } });
+    if (!existingField) await request(`/fields/${collection}`, "POST", { field, type, meta: { interface: type === "text" ? "input-multiline" : type === "uuid" ? "file-image" : "input", special: type === "uuid" ? ["file"] : undefined, required }, schema: { name: field, data_type: type === "integer" ? "integer" : type === "json" ? "json" : type === "timestamp" ? "datetime" : type === "uuid" ? "char" : type, max_length: type === "uuid" ? 36 : undefined, is_nullable: !required } });
   }
 }
 

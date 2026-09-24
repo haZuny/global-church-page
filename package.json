@@ -12,7 +12,8 @@
     "cms:model:apply": "node scripts/directus/apply-content-model.mjs",
     "cms:seed": "node scripts/directus/seed-initial-content.mjs",
     "cms:permissions:apply": "node scripts/directus/apply-public-read-policy.mjs",
-    "cms:editor:ko": "node scripts/directus/apply-korean-editor-ux.mjs"
+    "cms:editor:ko": "node scripts/directus/apply-korean-editor-ux.mjs",
+    "cms:media:migrate": "node scripts/directus/upload-legacy-media.mjs"
   },
   "dependencies": {
     "directus": "^11.3.5",
