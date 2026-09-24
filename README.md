@@ -45,7 +45,69 @@
 
 - [제품 및 UX 기획서](docs/PRODUCT_SPEC.md)
 - [콘텐츠 모델 초안](docs/CONTENT_MODEL.md)
+- [Directus SQLite 데이터 모델](docs/DATA_MODEL.md)
 - [Codex 작업 지침](AGENTS.md)
+
+## Directus SQLite 데이터 모델
+
+공개 웹은 SQLite를 직접 조회하지 않고 Directus API에서 `published` 콘텐츠만 읽습니다. 필드 정의와 공개 역할 정책은 [데이터 모델 문서](docs/DATA_MODEL.md)를 기준으로 합니다.
+
+```mermaid
+erDiagram
+  SITE_SETTINGS {
+    string church_name
+    string address
+    string map_url
+  }
+  WORSHIP_SERVICES {
+    uuid id PK
+    string name
+    string audience
+    time start_time
+    string status
+  }
+  STORIES {
+    uuid id PK
+    string slug UK
+    string category
+    datetime published_at
+    string status
+  }
+  STORY_MEDIA {
+    uuid id PK
+    string alt
+    integer sort
+  }
+  SERMONS {
+    uuid id PK
+    string slug UK
+    date sermon_date
+    string status
+  }
+  BULLETINS {
+    uuid id PK
+    string slug UK
+    datetime published_at
+    string status
+  }
+  NEWS_ITEMS {
+    uuid id PK
+    string slug UK
+    string type
+    datetime published_at
+    string status
+  }
+  DIRECTUS_FILES {
+    uuid id PK
+  }
+
+  STORIES ||--o{ STORY_MEDIA : has
+  DIRECTUS_FILES ||--o{ STORY_MEDIA : stores
+  DIRECTUS_FILES ||--o{ STORIES : covers
+  DIRECTUS_FILES ||--o{ SERMONS : covers
+  DIRECTUS_FILES ||--o{ BULLETINS : documents
+  DIRECTUS_FILES ||--o{ NEWS_ITEMS : covers
+```
 
 ## 데모 실행
 
