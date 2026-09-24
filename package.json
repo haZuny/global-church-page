@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "cms:bootstrap": "directus bootstrap",
-    "cms:start": "directus start"
+    "cms:start": "directus start",
+    "cms:model:apply": "node scripts/directus/apply-content-model.mjs"
   },
   "dependencies": {
     "directus": "^11.3.5",
