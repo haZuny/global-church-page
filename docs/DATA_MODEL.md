@@ -6,7 +6,7 @@
 
 - 공개 콘텐츠 컬렉션은 모두 `status`(`draft`, `published`, `archived`)와 `published_at`을 가집니다.
 - `published_at`은 `published` 상태에서만 필수입니다. 목록 기본 정렬은 `published_at` 내림차순입니다.
-- `slug`은 컬렉션 안에서 고유하며 공개 상세 URL에 사용합니다.
+- 공개 상세 URL은 Directus가 자동 생성하는 `id`를 사용합니다. 기존 `slug`은 이전 데이터 식별용으로만 유지하며 관리자 화면에는 노출하지 않습니다.
 - 이미지 파일은 `directus_files` 관계로 저장하고, 화면에 노출되는 이미지에는 별도 대체 텍스트 필드를 둡니다.
 - `archived`는 삭제가 아닌 복구 가능한 상태입니다.
 
