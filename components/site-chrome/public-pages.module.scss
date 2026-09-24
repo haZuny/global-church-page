@@ -155,8 +155,7 @@
 
 .hero__eyebrow {
   color: rgba(255, 255, 255, 0.72);
-  opacity: 0;
-  animation: copy-arrive 800ms 260ms ease forwards;
+  opacity: 1;
 }
 
 .hero h1 {
@@ -167,8 +166,7 @@
   letter-spacing: -0.07em;
   line-height: 1.06;
   text-wrap: balance;
-  opacity: 0;
-  animation: copy-arrive 900ms 340ms ease forwards;
+  opacity: 1;
 }
 
 .hero__copy {
@@ -176,8 +174,7 @@
   color: rgba(255, 255, 255, 0.86);
   font-size: 17px;
   line-height: 1.75;
-  opacity: 0;
-  animation: copy-arrive 900ms 440ms ease forwards;
+  opacity: 1;
 }
 
 .hero__actions {
@@ -185,8 +182,7 @@
   align-items: center;
   gap: 32px;
   margin-top: 38px;
-  opacity: 0;
-  animation: copy-arrive 900ms 520ms ease forwards;
+  opacity: 1;
 }
 
 .hero__actions .text-link {
