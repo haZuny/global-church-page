@@ -15,7 +15,8 @@
     "cms:editor:ko": "node scripts/directus/apply-korean-editor-ux.mjs",
     "cms:media:migrate": "node scripts/directus/upload-legacy-media.mjs",
     "cms:media:relations": "node scripts/directus/apply-file-relations.mjs",
-    "cms:values:normalize": "node scripts/directus/normalize-editor-values.mjs"
+    "cms:values:normalize": "node scripts/directus/normalize-editor-values.mjs",
+    "cms:legacy:relax": "node scripts/directus/relax-legacy-field-requirements.mjs"
   },
   "dependencies": {
     "directus": "^11.3.5",
