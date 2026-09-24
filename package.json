@@ -9,7 +9,9 @@
     "lint": "next lint",
     "cms:bootstrap": "directus bootstrap",
     "cms:start": "directus start",
-    "cms:model:apply": "node scripts/directus/apply-content-model.mjs"
+    "cms:model:apply": "node scripts/directus/apply-content-model.mjs",
+    "cms:seed": "node scripts/directus/seed-initial-content.mjs",
+    "cms:permissions:apply": "node scripts/directus/apply-public-read-policy.mjs"
   },
   "dependencies": {
     "directus": "^11.3.5",
