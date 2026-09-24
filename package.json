@@ -16,6 +16,9 @@
     "cms:media:migrate": "node scripts/directus/upload-legacy-media.mjs",
     "cms:media:relations": "node scripts/directus/apply-file-relations.mjs",
     "cms:bulletin:relations": "node scripts/directus/apply-bulletin-media-relations.mjs",
+    "cms:church:relations": "node scripts/directus/apply-church-info-relations.mjs",
+    "cms:church:seed": "node scripts/directus/seed-church-information.mjs",
+    "cms:worship:weekdays:migrate": "node scripts/directus/migrate-worship-weekdays.mjs",
     "cms:story:relations": "node scripts/directus/apply-story-media-relations.mjs",
     "cms:values:normalize": "node scripts/directus/normalize-editor-values.mjs",
     "cms:legacy:relax": "node scripts/directus/relax-legacy-field-requirements.mjs"

@@ -12,18 +12,41 @@
 
 ## 컬렉션
 
-### `site_settings` (singleton)
+### `site_settings` (singleton, 관리자 표기: 교회정보)
 
-공개 사이트의 기본 문구와 방문 정보를 관리합니다.
+공개 사이트의 소개 문구와 방문 정보를 한곳에서 관리합니다. 여러 명의 교역자는 이 항목 안의 `교역자` 목록에서 추가·수정합니다.
 
 | 필드 | 형식 | 필수 | 설명 |
 | --- | --- | --- | --- |
 | `church_name` | string | 예 | 교회명 |
+| `english_name` | string | 아니오 | 영문 교회명 |
+| `hero_title`, `hero_copy` | text | 아니오 | 첫 화면의 제목과 소개 |
 | `introduction` | text | 예 | 한 문장 소개 |
+| `greeting_*`, `pastor_name` | text/string | 아니오 | 환영 인사와 담임목사 이름 |
+| `about_*`, `region` | text/string | 아니오 | 교회 소개 본문과 지역 |
+| `vision_*` | text | 아니오 | 비전 제목·소개·세 가지 가치·한 문장 |
+| `denomination_*` | text/string | 아니오 | 교단·노회와 소개 문구 |
+| `ministers_intro` | text | 아니오 | 교역자 소개 영역의 인삿말 |
 | `address` | text | 예 | 도로명 주소 |
 | `map_url` | string | 아니오 | 승인된 외부 지도 링크 |
 | `phone` | string | 아니오 | 대표 연락처 |
+| `transit_info` | text | 아니오 | 대중교통 안내 |
+| `parking_info` | text | 아니오 | 주차 안내 |
 | `visit_notice` | text | 아니오 | 처음 방문 안내 요약 |
+
+### `church_ministers`
+
+`교회정보` 안에서 관리하는 교역자 목록입니다. 별도 콘텐츠 메뉴에는 노출하지 않습니다.
+
+| 필드 | 형식 | 필수 | 설명 |
+| --- | --- | --- | --- |
+| `site_settings` | M2O `site_settings` | 예 | 소속 교회정보 |
+| `name` | string | 예 | 이름 |
+| `role` | string | 예 | 역할 |
+| `description` | text | 아니오 | 짧은 소개 |
+| `photo` | M2O `directus_files` | 아니오 | 프로필 사진 |
+| `sort` | integer | 예 | 노출 순서 |
+| `status` | select | 예 | `draft` / `published` / `archived` |
 
 ### `worship_services`
 
@@ -33,12 +56,13 @@
 | --- | --- | --- | --- |
 | `id` | uuid | 예 | 기본 키 |
 | `name` | string | 예 | 예배명 |
-| `audience` | string | 예 | 대상 설명 |
-| `weekday` | string | 예 | 요일 |
-| `start_time` | time | 예 | 시작 시간 |
+| `audience` | string | 아니오 | 이전 데이터 호환용 내부 필드(관리자·공개 화면 비노출) |
+| `weekdays` | multiple select | 예 | 월요일~주일, 복수 선택 가능한 예배 요일 |
+| `weekday` | string | 아니오 | 이전 데이터 호환용 내부 필드(관리자·공개 화면 비노출) |
+| `start_time` | select | 예 | 24시간제 `HH:mm`, 00:00~23:50 10분 단위 시작 시간 |
 | `location` | string | 예 | 장소 |
 | `description` | text | 아니오 | 처음 방문자를 위한 설명 |
-| `sort` | integer | 예 | 화면 노출 순서 |
+| `sort` | select | 예 | 첫 번째~스무 번째 화면 노출 순서. 같은 순위를 선택하면 저장한 항목을 우선 배치하고 나머지는 뒤로 밀립니다. |
 | `status` | select | 예 | `draft` / `published` / `archived` |
 
 ### `stories`
@@ -130,7 +154,7 @@
 
 ## 공개 역할·정책
 
-Directus 공개 역할에는 `stories`, `story_media`, `sermons`, `bulletins`, `news_items`, `worship_services`, `site_settings`의 읽기만 허용합니다.
+Directus 공개 역할에는 `site_settings`, `church_ministers`, `stories`, `story_media`, `sermons`, `bulletins`, `news_items`, `worship_services`의 읽기만 허용합니다.
 
 - 콘텐츠 컬렉션의 공개 읽기 필터: `status = "published"`
 - `story_media`는 연결된 `story.status = "published"`일 때만 읽을 수 있게 설정합니다.

@@ -59,6 +59,12 @@ erDiagram
     string address
     string map_url
   }
+  CHURCH_MINISTERS {
+    integer id PK
+    string name
+    string role
+    string status
+  }
   WORSHIP_SERVICES {
     uuid id PK
     string name
@@ -102,6 +108,7 @@ erDiagram
   }
 
   STORIES ||--o{ STORY_MEDIA : has
+  SITE_SETTINGS ||--o{ CHURCH_MINISTERS : has
   DIRECTUS_FILES ||--o{ STORY_MEDIA : stores
   DIRECTUS_FILES ||--o{ STORIES : covers
   DIRECTUS_FILES ||--o{ SERMONS : covers

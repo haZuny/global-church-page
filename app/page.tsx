@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { getChurchInfo, getWorshipServices } from "@/lib/directus-content";
 export const metadata: Metadata = { title: "함께 비전을 세우는 공동체" };
+export const dynamic = "force-dynamic";
 const Arrow = () => (
   <svg viewBox="0 0 20 20" aria-hidden="true">
     <path d="M4 10h11M11 6l4 4-4 4" />
   </svg>
 );
-export default function HomePage() {
+export default async function HomePage() {
+  const [church, services] = await Promise.all([getChurchInfo(), getWorshipServices()]);
   return (
     <main id="main-content" className="home-page">
       <section className="hero" id="home" aria-labelledby="hero-title">
@@ -21,16 +24,13 @@ export default function HomePage() {
         />
         <div className="hero__veil" />
         <div className="hero__content page-shell">
-          <p className="eyebrow hero__eyebrow">GLOBAL COMMUNITY CHURCH</p>
+          <p className="eyebrow hero__eyebrow">{church.englishName}</p>
           <h1 id="hero-title">
-            우리 안의 비전을
-            <br />
-            함께 세우는 교회
+            {church.heroTitle.split(" ").slice(0, -2).join(" ") || church.heroTitle}
+            {church.heroTitle.includes(" ") && <><br />{church.heroTitle.split(" ").slice(-2).join(" ")}</>}
           </h1>
           <p className="hero__copy">
-            믿음이 익숙하지 않아도 괜찮습니다.
-            <br />
-            시흥에서 함께 질문하고, 함께 자라갑니다.
+            {church.heroCopy}
           </p>
           <div className="hero__actions">
             <Link className="button button--solid" href="/worship">
@@ -66,12 +66,10 @@ export default function HomePage() {
           </div>
           <div className="intro__body">
             <p className="intro__lead">
-              글로벌교회는 삶의 목적과 하나님의 뜻을 함께 고민하고, 각 사람 안에
-              주신 비전을 세워가는 공동체를 꿈꿉니다.
+              {church.introduction}
             </p>
             <p>
-              완벽한 사람을 기다리지 않습니다. 질문이 있어도, 믿음이 아직
-              낯설어도 괜찮습니다. 하나님과 이웃을 알아가는 길을 함께 걷습니다.
+              {church.visitNotice}
             </p>
             <Link className="text-link" href="/about">
               교회 소개 자세히 보기
@@ -118,35 +116,19 @@ export default function HomePage() {
               <br />
               편안하게 오세요.
             </h2>
-            <p>
-              아래 시간과 장소는 레이아웃 확인을 위한 예시입니다.
-              <br />
-              운영 전 실제 예배 정보로 교체해 주세요.
-            </p>
+            <p>{church.visitNotice}</p>
             <Link className="button button--cream" href="#location">
               예배 장소 확인
             </Link>
           </div>
           <div className="schedule">
-            <article className="schedule__primary">
-              <p>주일예배</p>
-              <strong>10:30</strong>
-              <div>
-                <span>매주 일요일</span>
-                <span>상세 시간·장소 확인 필요</span>
-              </div>
-            </article>
-            {[
-              ["어린이예배", "4세–초등학생 · 꿈마루 1층", "10:30"],
-              ["청년예배", "대학생·청년 · 지유쓰", "14:00"],
-              ["수요기도회", "누구나 · 작은예배실 3층", "19:30"],
-            ].map(([title, copy, time]) => (
-              <article key={title}>
+            {services.map((service) => (
+              <article key={service.id}>
                 <div>
-                  <p>{title}</p>
-                  <span>{copy}</span>
+                  <p>{service.name}</p>
+                  <span>매주 {service.weekdays.join(" · ")}</span>
                 </div>
-                <strong>{time}</strong>
+                <strong>{service.time}</strong>
               </article>
             ))}
           </div>
@@ -177,33 +159,31 @@ export default function HomePage() {
         <div className="location__card">
           <p className="eyebrow">VISIT US</p>
           <h2 id="location-title">
-            글로벌교회로
+            {church.churchName}로
             <br />
             오시는 길
           </h2>
           <address>
-            경기도 시흥시
-            <br />
-            하상로8번길 12-1
+            {church.address}
           </address>
           <dl>
             <div>
               <dt>지하철</dt>
-              <dd>가까운 대중교통 정보를 입력해 주세요.</dd>
+              <dd>{church.transitInfo || "대중교통 정보는 교회에 문의해 주세요."}</dd>
             </div>
             <div>
               <dt>주차</dt>
-              <dd>주차 가능 여부를 입력해 주세요.</dd>
+              <dd>{church.parkingInfo || "주차 정보는 교회에 문의해 주세요."}</dd>
             </div>
             <div>
               <dt>문의</dt>
-              <dd>연락처 입력 예정</dd>
+              <dd>{church.phone || "연락처 정보는 준비 중입니다."}</dd>
             </div>
           </dl>
           <div className="location__actions">
             <a
               className="button button--dark"
-              href="https://share.google/0DF5W8pHQeUwgCa4t"
+              href={church.mapUrl || "#location"}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -214,7 +194,7 @@ export default function HomePage() {
             </Link>
           </div>
           <small>
-            ※ 예배 시간과 연락처는 운영 전 실제 정보로 확인해 주세요.
+            {church.visitNotice}
           </small>
         </div>
       </section>

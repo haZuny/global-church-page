@@ -19,12 +19,15 @@ const policies = await request("/policies");
 const publicPolicy = policies.find((policy) => policy.name === "$t:public_label");
 if (!publicPolicy) throw new Error("Directus public policy was not found.");
 
-const collections = ["worship_services", "stories", "sermons", "bulletins", "news_items"];
+const collections = ["worship_services", "stories", "sermons", "bulletins", "news_items", "church_ministers"];
 const permissions = await request("/permissions");
 for (const collection of collections) {
   const existing = permissions.find((permission) => permission.policy === publicPolicy.id && permission.collection === collection && permission.action === "read");
   if (!existing) await request("/permissions", "POST", { collection, action: "read", fields: ["*"], permissions: { status: { _eq: "published" } }, policy: publicPolicy.id });
 }
+
+const siteSettingsPermission = permissions.find((permission) => permission.policy === publicPolicy.id && permission.collection === "site_settings" && permission.action === "read");
+if (!siteSettingsPermission) await request("/permissions", "POST", { collection: "site_settings", action: "read", fields: ["*"], permissions: {}, policy: publicPolicy.id });
 
 const storyMediaPermission = permissions.find((permission) => permission.policy === publicPolicy.id && permission.collection === "story_media" && permission.action === "read");
 if (!storyMediaPermission) await request("/permissions", "POST", { collection: "story_media", action: "read", fields: ["*"], permissions: { story: { status: { _eq: "published" } } }, policy: publicPolicy.id });
