@@ -20,6 +20,7 @@
     "cms:church:seed": "node scripts/directus/seed-church-information.mjs",
     "cms:worship:weekdays:migrate": "node scripts/directus/migrate-worship-weekdays.mjs",
     "cms:story:relations": "node scripts/directus/apply-story-media-relations.mjs",
+    "cms:roles": "node scripts/directus/apply-operator-roles.mjs",
     "cms:values:normalize": "node scripts/directus/normalize-editor-values.mjs",
     "cms:legacy:relax": "node scripts/directus/relax-legacy-field-requirements.mjs"
   },
