@@ -6,10 +6,11 @@ const login = await fetch(`${baseUrl}/auth/login`, { method: "POST", headers: { 
 const { data: session } = await login.json();
 if (!session) throw new Error("Directus login failed.");
 const headers = { authorization: `Bearer ${session.access_token}`, "content-type": "application/json" };
-const legacyFields = { stories: ["slug", "cover_image_url", "cover_image_width", "cover_image_height"], bulletins: ["slug", "document_image_url", "document_image_width", "document_image_height"] };
-for (const [collection, fields] of Object.entries(legacyFields)) {
-  for (const field of fields) {
-    const response = await fetch(`${baseUrl}/fields/${collection}/${field}`, { method: "PATCH", headers, body: JSON.stringify({ meta: { required: false, hidden: true }, schema: { is_nullable: true } }) });
+const contentCollections = ["site_settings", "worship_services", "stories", "story_media", "sermons", "bulletins", "bulletin_media", "news_items"];
+for (const collection of contentCollections) {
+  const fields = await fetch(`${baseUrl}/fields/${collection}`, { headers }).then((response) => response.json()).then((body) => body.data);
+  for (const field of fields.filter((item) => item.field !== "id" && item.meta?.hidden && (item.meta?.required || item.schema?.is_nullable === false))) {
+    const response = await fetch(`${baseUrl}/fields/${collection}/${field.field}`, { method: "PATCH", headers, body: JSON.stringify({ meta: { ...field.meta, required: false, hidden: true }, schema: { ...field.schema, is_nullable: true } }) });
     if (!response.ok) throw new Error(await response.text());
   }
 }
