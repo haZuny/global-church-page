@@ -26,6 +26,7 @@ const models = {
   bulletin_media: ["주보 첨부 파일", "주보에 연결하는 이미지와 자료입니다.", { bulletin: "주보", file: "첨부 파일", alt: "이미지 설명", caption: "설명", sort: "노출 순서" }],
   news_items: ["공지", "공지 내용을 자유롭게 작성합니다.", { slug: "주소 이름", type: "유형", title: "제목", summary: "공지 요약", body: "본문", event_starts_at: "행사 시작", event_ends_at: "행사 종료", location: "장소", published_at: "공개일", status: "게시 상태" }],
 };
+const richTextFields = new Set(["stories.body", "bulletins.body", "news_items.body", "site_settings.greeting_body", "site_settings.vision_intro", "site_settings.vision_one_body", "site_settings.vision_two_body", "site_settings.vision_three_body", "site_settings.denomination_detail"]);
 
 const collections = await request("/collections");
 for (const [collection, [label, note, labels]] of Object.entries(models)) {
@@ -53,9 +54,10 @@ for (const [collection, [label, note, labels]] of Object.entries(models)) {
     const retiredSiteField = collection === "site_settings" && ["about_body", "about_body_secondary", "region", "vision_statement", "ministers_intro", "visit_notice"].includes(field);
     const retiredContentField = (collection === "stories" && ["subtitle", "summary", "category", "cover_image", "cover_alt"].includes(field)) || (collection === "bulletins" && ["summary", "document_file", "document_alt"].includes(field)) || (collection === "news_items" && ["summary", "type", "event_starts_at", "event_ends_at", "location"].includes(field));
     const retiredWorshipField = collection === "worship_services" && ["audience", "weekday", "location", "description"].includes(field);
-    const fieldNote = collection === "church_ministers" && field === "description" ? "이 교역자의 사역 방향과 소개를 작성합니다. 각 교역자마다 별도로 입력한 문구가 교회 소개 화면 카드 아래에 표시됩니다." : currentField.meta?.note;
-    const interfaceName = field === "summary" ? "input" : field === "body" ? "input-multiline" : weekdayOptions.interface ?? worshipTimeOptions.interface ?? worshipSortOptions.interface ?? dateOptions.interface ?? fileOptions.interface ?? currentField.meta?.interface;
-    const options = field === "body" ? { softLength: 10000, rows: 12 } : statusOptions.options ?? categoryOptions.options ?? typeOptions.options ?? weekdayOptions.options ?? worshipTimeOptions.options ?? worshipSortOptions.options ?? currentField.meta?.options;
+    const isRichText = richTextFields.has(`${collection}.${field}`);
+    const fieldNote = isRichText ? "제목, 굵게, 기울임, 글자 크기·색상, 목록, 인용, 링크로 읽기 쉬운 본문을 작성합니다. 공개 화면에는 안전한 서식만 표시됩니다." : collection === "church_ministers" && field === "description" ? "이 교역자의 사역 방향과 소개를 작성합니다. 각 교역자마다 별도로 입력한 문구가 교회 소개 화면 카드 아래에 표시됩니다." : currentField.meta?.note;
+    const interfaceName = isRichText ? "input-rich-text-html" : field === "summary" ? "input" : field === "body" ? "input-multiline" : weekdayOptions.interface ?? worshipTimeOptions.interface ?? worshipSortOptions.interface ?? dateOptions.interface ?? fileOptions.interface ?? currentField.meta?.interface;
+    const options = isRichText ? {} : field === "body" ? { softLength: 10000, rows: 12 } : statusOptions.options ?? categoryOptions.options ?? typeOptions.options ?? weekdayOptions.options ?? worshipTimeOptions.options ?? worshipSortOptions.options ?? currentField.meta?.options;
     await request(`/fields/${collection}/${field}`, "PATCH", { meta: { ...currentField.meta, ...statusOptions, ...categoryOptions, ...typeOptions, ...weekdayOptions, ...worshipTimeOptions, ...worshipSortOptions, ...dateOptions, ...fileOptions, special: field === "weekdays" ? ["cast-json"] : currentField.meta?.special, interface: interfaceName, options, note: fieldNote, hidden: legacyPath || field === "slug" || retiredSiteField || retiredContentField || retiredWorshipField || (collection === "sermons" && field === "video_url"), sort: currentField.meta?.sort ?? 1, translations: [{ language: "ko-KR", translation }] } });
   }
 }
