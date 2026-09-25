@@ -23,14 +23,16 @@
     "cms:roles": "node scripts/directus/apply-operator-roles.mjs",
     "cms:values:normalize": "node scripts/directus/normalize-editor-values.mjs",
     "cms:legacy:relax": "node scripts/directus/relax-legacy-field-requirements.mjs",
-    "cms:legacy:media:migrate": "node scripts/directus/migrate-legacy-media-relations.mjs"
+    "cms:legacy:media:migrate": "node scripts/directus/migrate-legacy-media-relations.mjs",
+    "cms:rich-text:migrate": "node scripts/directus/migrate-rich-text-content.mjs"
   },
   "dependencies": {
     "directus": "^11.3.5",
     "next": "15.5.25",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "sass": "1.86.3"
+    "sass": "1.86.3",
+    "sanitize-html": "^2.13.1"
   },
   "devDependencies": {
     "@types/node": "22.15.2",

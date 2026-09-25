@@ -10,6 +10,13 @@
 - 이미지 파일은 게시물 하위의 `story_media`·`bulletin_media` 관계로 저장합니다. 파일명은 관리자 목록에서 자동 표시하고, 별도 캡션·대체 텍스트 입력은 받지 않습니다.
 - `archived`는 삭제가 아닌 복구 가능한 상태입니다.
 
+### 리치 텍스트 본문 규칙 (#29)
+
+- 이야기, 주보, 공지의 `body`와 교회정보의 긴 설명 필드는 Directus 리치 텍스트 편집기로 작성합니다.
+- 관리자 화면에서는 제목, 굵게, 기울임, 밑줄, 취소선, 글자 크기·색상, 목록, 인용, 링크를 사용할 수 있습니다.
+- 공개 웹은 문단, 제목, 목록, 인용, 링크와 제한된 글자 크기·색상만 안전하게 렌더링합니다. 스크립트·임의 임베드·위험한 링크는 표시하지 않습니다.
+- 짧은 제목, 요약, 날짜, 상태, 분류처럼 구조화된 값은 리치 텍스트가 아닌 기존 입력 형식을 유지합니다.
+
 ### 레거시 필드 정리 원칙 (#30)
 
 - 공개 웹과 관리자 입력 화면에서 더 이상 쓰지 않는 필드는 즉시 **숨김·선택값**으로 전환합니다. 기존 데이터와 컬럼은 삭제하지 않습니다.
@@ -28,10 +35,10 @@
 | `english_name` | string | 아니오 | 영문 교회명 |
 | `hero_title`, `hero_copy` | text | 아니오 | 첫 화면의 제목과 소개 |
 | `introduction` | text | 예 | 한 문장 소개 |
-| `greeting_*`, `pastor_name` | text/string | 아니오 | 환영 인사와 담임목사 이름 |
+| `greeting_*`, `pastor_name` | text/string | 아니오 | 환영 인사와 담임목사 이름. `greeting_body`는 리치 텍스트 본문 |
 | `about_title` | text | 아니오 | 교회 소개 페이지 제목 |
-| `vision_title`, `vision_intro`, `vision_*_title`, `vision_*_body` | text | 아니오 | 비전 제목·소개·세 가지 가치 |
-| `denomination_*` | text/string | 아니오 | 교단·노회와 소개 문구 |
+| `vision_title`, `vision_intro`, `vision_*_title`, `vision_*_body` | text | 아니오 | 비전 제목·소개·세 가지 가치. 소개와 설명은 리치 텍스트 본문 |
+| `denomination_*` | text/string | 아니오 | 교단·노회와 소개 문구. `denomination_detail`은 리치 텍스트 본문 |
 | `address` | text | 예 | 도로명 주소 |
 | `map_url` | string | 아니오 | 승인된 외부 지도 링크 |
 | `phone` | string | 아니오 | 대표 연락처 |
@@ -71,13 +78,13 @@
 
 ### `stories`
 
-교회 이야기의 대표 정보와 본문 블록을 저장합니다.
+교회 이야기의 대표 정보와 리치 텍스트 본문을 저장합니다.
 
 | 필드 | 형식 | 필수 | 설명 |
 | --- | --- | --- | --- |
 | `id` | uuid | 예 | 기본 키 |
 | `title` | string | 예 | 제목 |
-| `body` | json | 예 | 문단·인용·안내 블록 배열 |
+| `body` | text (rich text HTML) | 예 | 제목, 굵게, 기울임, 글자 크기·색상, 목록, 인용, 링크를 지원하는 본문 |
 | `media` | O2M `story_media` | 아니오 | 본문에 추가하는 여러 이미지 |
 | `published_at` | datetime | 조건부 | 게시일 |
 | `status` | select | 예 | `draft` / `published` / `archived` |
@@ -118,7 +125,7 @@
 | --- | --- | --- | --- |
 | `title` | string | 예 | 제목 |
 | `category` | select | 예 | `주보` / `자료` |
-| `body` | text | 아니오 | 웹에서 함께 보여 줄 본문 안내 |
+| `body` | text (rich text HTML) | 아니오 | 웹에서 함께 보여 줄 서식 있는 본문 안내 |
 | `media` | O2M `bulletin_media` | 아니오 | 주보에 연결하는 여러 이미지·자료 |
 | `published_at` | datetime | 조건부 | 발행일 |
 | `status` | select | 예 | `draft` / `published` / `archived` |
@@ -142,7 +149,7 @@
 | 필드 | 형식 | 필수 | 설명 |
 | --- | --- | --- | --- |
 | `title` | string | 예 | 제목 |
-| `body` | json | 아니오 | 본문 블록 |
+| `body` | text (rich text HTML) | 아니오 | 제목, 굵게, 기울임, 글자 크기·색상, 목록, 인용, 링크를 지원하는 본문 |
 | `published_at` | datetime | 조건부 | 게시일 |
 | `status` | select | 예 | `draft` / `published` / `archived` |
 

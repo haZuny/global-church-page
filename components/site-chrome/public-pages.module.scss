@@ -1599,6 +1599,7 @@
 }
 
 .vision-section__heading > p,
+.vision-section__intro,
 .ministers-section__heading > p {
   padding-bottom: 8px;
   color: rgba(255, 255, 255, 0.58);
@@ -1641,7 +1642,8 @@
   line-height: 1.35;
 }
 
-.vision-list p {
+.vision-list p,
+.vision-list__body {
   margin-top: 18px;
   color: rgba(255, 255, 255, 0.58);
   font-size: 13px;
@@ -2508,6 +2510,7 @@
   }
 
   .vision-section__heading > p,
+  .vision-section__intro,
   .ministers-section__heading > p {
     padding: 0;
   }
