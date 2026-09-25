@@ -32,4 +32,7 @@ if (!siteSettingsPermission) await request("/permissions", "POST", { collection:
 const storyMediaPermission = permissions.find((permission) => permission.policy === publicPolicy.id && permission.collection === "story_media" && permission.action === "read");
 if (!storyMediaPermission) await request("/permissions", "POST", { collection: "story_media", action: "read", fields: ["*"], permissions: { story: { status: { _eq: "published" } } }, policy: publicPolicy.id });
 
+const bulletinMediaPermission = permissions.find((permission) => permission.policy === publicPolicy.id && permission.collection === "bulletin_media" && permission.action === "read");
+if (!bulletinMediaPermission) await request("/permissions", "POST", { collection: "bulletin_media", action: "read", fields: ["*"], permissions: { bulletin: { status: { _eq: "published" } } }, policy: publicPolicy.id });
+
 console.log("Published-only public read policy applied.");
