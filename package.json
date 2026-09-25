@@ -2,8 +2,42 @@
   "name": "global-church-page",
   "version": "0.1.0",
   "private": true,
-  "scripts": { "dev": "next dev", "build": "next build", "start": "next start", "lint": "next lint" },
-  "dependencies": { "next": "15.5.25", "react": "19.0.0", "react-dom": "19.0.0", "sass": "1.86.3" },
-  "devDependencies": { "@types/node": "22.15.2", "@types/react": "19.0.10", "@types/react-dom": "19.0.4", "typescript": "5.8.3" },
-  "overrides": { "postcss": "8.5.28" }
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "cms:bootstrap": "directus bootstrap",
+    "cms:start": "directus start",
+    "cms:model:apply": "node scripts/directus/apply-content-model.mjs",
+    "cms:seed": "node scripts/directus/seed-initial-content.mjs",
+    "cms:permissions:apply": "node scripts/directus/apply-public-read-policy.mjs",
+    "cms:editor:ko": "node scripts/directus/apply-korean-editor-ux.mjs",
+    "cms:media:migrate": "node scripts/directus/upload-legacy-media.mjs",
+    "cms:media:relations": "node scripts/directus/apply-file-relations.mjs",
+    "cms:bulletin:relations": "node scripts/directus/apply-bulletin-media-relations.mjs",
+    "cms:church:relations": "node scripts/directus/apply-church-info-relations.mjs",
+    "cms:church:seed": "node scripts/directus/seed-church-information.mjs",
+    "cms:worship:weekdays:migrate": "node scripts/directus/migrate-worship-weekdays.mjs",
+    "cms:story:relations": "node scripts/directus/apply-story-media-relations.mjs",
+    "cms:roles": "node scripts/directus/apply-operator-roles.mjs",
+    "cms:values:normalize": "node scripts/directus/normalize-editor-values.mjs",
+    "cms:legacy:relax": "node scripts/directus/relax-legacy-field-requirements.mjs"
+  },
+  "dependencies": {
+    "directus": "^11.3.5",
+    "next": "15.5.25",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "sass": "1.86.3"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.2",
+    "@types/react": "19.0.10",
+    "@types/react-dom": "19.0.4",
+    "typescript": "5.8.3"
+  },
+  "overrides": {
+    "postcss": "8.5.28"
+  }
 }
