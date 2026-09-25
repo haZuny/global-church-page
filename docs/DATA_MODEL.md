@@ -7,8 +7,14 @@
 - 공개 콘텐츠 컬렉션은 모두 `status`(`draft`, `published`, `archived`)와 `published_at`을 가집니다.
 - `published_at`은 `published` 상태에서만 필수입니다. 목록 기본 정렬은 `published_at` 내림차순입니다.
 - 공개 상세 URL은 Directus가 자동 생성하는 `id`를 사용합니다. 기존 `slug`은 이전 데이터 식별용으로만 유지하며 관리자 화면에는 노출하지 않습니다.
-- 이미지 파일은 `directus_files` 관계로 저장하고, 화면에 노출되는 이미지에는 별도 대체 텍스트 필드를 둡니다.
+- 이미지 파일은 게시물 하위의 `story_media`·`bulletin_media` 관계로 저장합니다. 파일명은 관리자 목록에서 자동 표시하고, 별도 캡션·대체 텍스트 입력은 받지 않습니다.
 - `archived`는 삭제가 아닌 복구 가능한 상태입니다.
+
+### 레거시 필드 정리 원칙 (#30)
+
+- 공개 웹과 관리자 입력 화면에서 더 이상 쓰지 않는 필드는 즉시 **숨김·선택값**으로 전환합니다. 기존 데이터와 컬럼은 삭제하지 않습니다.
+- 기존 대표 이미지와 주보 파일은 `cms:legacy:media:migrate`로 하위 첨부 관계에 한 번 이관한 뒤에만 공개 웹의 참조를 제거합니다.
+- 삭제는 백업, 데이터 이관 확인, 참조 코드 제거를 모두 마친 별도 작업에서만 진행합니다. 현재 숨긴 필드는 이력 보존용입니다.
 
 ## 컬렉션
 
@@ -23,16 +29,16 @@
 | `hero_title`, `hero_copy` | text | 아니오 | 첫 화면의 제목과 소개 |
 | `introduction` | text | 예 | 한 문장 소개 |
 | `greeting_*`, `pastor_name` | text/string | 아니오 | 환영 인사와 담임목사 이름 |
-| `about_*`, `region` | text/string | 아니오 | 교회 소개 본문과 지역 |
-| `vision_*` | text | 아니오 | 비전 제목·소개·세 가지 가치·한 문장 |
+| `about_title` | text | 아니오 | 교회 소개 페이지 제목 |
+| `vision_title`, `vision_intro`, `vision_*_title`, `vision_*_body` | text | 아니오 | 비전 제목·소개·세 가지 가치 |
 | `denomination_*` | text/string | 아니오 | 교단·노회와 소개 문구 |
-| `ministers_intro` | text | 아니오 | 교역자 소개 영역의 인삿말 |
 | `address` | text | 예 | 도로명 주소 |
 | `map_url` | string | 아니오 | 승인된 외부 지도 링크 |
 | `phone` | string | 아니오 | 대표 연락처 |
 | `transit_info` | text | 아니오 | 대중교통 안내 |
 | `parking_info` | text | 아니오 | 주차 안내 |
-| `visit_notice` | text | 아니오 | 처음 방문 안내 요약 |
+
+숨김 이력 필드: `about_body`, `about_body_secondary`, `region`, `vision_statement`, `ministers_intro`, `visit_notice`. 현재 화면과 관리 양식에서는 사용하지 않습니다.
 
 ### `church_ministers`
 
@@ -50,20 +56,18 @@
 
 ### `worship_services`
 
-예배 대상별 시간·장소·설명을 관리합니다.
+방문자가 확인할 예배 이름·요일·시간을 관리합니다.
 
 | 필드 | 형식 | 필수 | 설명 |
 | --- | --- | --- | --- |
 | `id` | uuid | 예 | 기본 키 |
 | `name` | string | 예 | 예배명 |
-| `audience` | string | 아니오 | 이전 데이터 호환용 내부 필드(관리자·공개 화면 비노출) |
 | `weekdays` | multiple select | 예 | 월요일~주일, 복수 선택 가능한 예배 요일 |
-| `weekday` | string | 아니오 | 이전 데이터 호환용 내부 필드(관리자·공개 화면 비노출) |
 | `start_time` | select | 예 | 24시간제 `HH:mm`, 00:00~23:50 10분 단위 시작 시간 |
-| `location` | string | 예 | 장소 |
-| `description` | text | 아니오 | 처음 방문자를 위한 설명 |
 | `sort` | select | 예 | 첫 번째~스무 번째 화면 노출 순서. 같은 순위를 선택하면 저장한 항목을 우선 배치하고 나머지는 뒤로 밀립니다. |
 | `status` | select | 예 | `draft` / `published` / `archived` |
+
+숨김 이력 필드: `audience`, `weekday`, `location`, `description`.
 
 ### `stories`
 
@@ -72,11 +76,7 @@
 | 필드 | 형식 | 필수 | 설명 |
 | --- | --- | --- | --- |
 | `id` | uuid | 예 | 기본 키 |
-| `slug` | string, unique | 예 | 상세 URL 키 |
 | `title` | string | 예 | 제목 |
-| `subtitle` | text | 아니오 | 이전 데이터 호환용 내부 필드(관리자 화면 비노출) |
-| `summary` | text | 예 | 목록 요약 |
-| `category` | string | 아니오 | 이전 데이터 호환용 내부 필드(관리자 화면 비노출) |
 | `body` | json | 예 | 문단·인용·안내 블록 배열 |
 | `media` | O2M `story_media` | 아니오 | 본문에 추가하는 여러 이미지 |
 | `published_at` | datetime | 조건부 | 게시일 |
@@ -90,9 +90,9 @@
 | --- | --- | --- | --- |
 | `story` | M2O `stories` | 예 | 소속 이야기 |
 | `file` | M2O `directus_files` | 예 | 업로드 이미지 |
-| `alt` | string | 예 | 이미지 대체 텍스트 |
-| `caption` | string | 아니오 | 사진 설명 |
 | `sort` | integer | 예 | 표시 순서 |
+
+숨김 이력 필드: `stories.slug`, `subtitle`, `summary`, `category`, `cover_image*`, `cover_alt`; `story_media.alt`, `caption`.
 
 ### `sermons`
 
@@ -100,17 +100,15 @@
 
 | 필드 | 형식 | 필수 | 설명 |
 | --- | --- | --- | --- |
-| `slug` | string, unique | 예 | 상세 URL 키 |
 | `title` | string | 예 | 제목 |
 | `summary` | text | 예 | 요약 |
 | `scripture` | string | 예 | 성경 본문 |
 | `preacher` | string | 예 | 설교자 |
 | `sermon_date` | date | 예 | 설교일 |
-| `video_url` | string | 아니오 | 승인된 외부 영상 URL |
 | `video_file` | M2O `directus_files` | 아니오 | Directus에서 업로드하는 설교 영상 |
-| `cover_image` | M2O `directus_files` | 아니오 | 썸네일 |
-| `cover_alt` | string | 조건부 | 썸네일 대체 텍스트 |
 | `status` | select | 예 | `draft` / `published` / `archived` |
+
+숨김 이력 필드: `slug`, `video_url`.
 
 ### `bulletins`
 
@@ -118,10 +116,8 @@
 
 | 필드 | 형식 | 필수 | 설명 |
 | --- | --- | --- | --- |
-| `slug` | string | 아니오 | 이전 데이터 호환용 내부 키(관리자 화면 비노출) |
 | `title` | string | 예 | 제목 |
 | `category` | select | 예 | `주보` / `자료` |
-| `summary` | text | 예 | 웹용 핵심 일정 요약 |
 | `body` | text | 아니오 | 웹에서 함께 보여 줄 본문 안내 |
 | `media` | O2M `bulletin_media` | 아니오 | 주보에 연결하는 여러 이미지·자료 |
 | `published_at` | datetime | 조건부 | 발행일 |
@@ -135,9 +131,9 @@
 | --- | --- | --- | --- |
 | `bulletin` | M2O `bulletins` | 예 | 소속 주보 |
 | `file` | M2O `directus_files` | 예 | 업로드 파일 |
-| `alt` | string | 아니오 | 이미지 대체 텍스트 |
-| `caption` | string | 아니오 | 파일 또는 이미지 설명 |
 | `sort` | integer | 예 | 노출 순서 |
+
+숨김 이력 필드: `bulletins.slug`, `summary`, `document_image_url`, `document_file`, `document_image_width`, `document_image_height`, `document_alt`; `bulletin_media.alt`, `caption`.
 
 ### `news_items`
 
@@ -145,18 +141,19 @@
 
 | 필드 | 형식 | 필수 | 설명 |
 | --- | --- | --- | --- |
-| `slug` | string | 아니오 | 이전 데이터 호환용 내부 키(관리자 화면 비노출) |
 | `title` | string | 예 | 제목 |
-| `summary` | text | 예 | 목록 요약 |
 | `body` | json | 아니오 | 본문 블록 |
 | `published_at` | datetime | 조건부 | 게시일 |
 | `status` | select | 예 | `draft` / `published` / `archived` |
 
+숨김 이력 필드: `slug`, `type`, `summary`, `event_starts_at`, `event_ends_at`, `location`.
+
 ## 공개 역할·정책
 
-Directus 공개 역할에는 `site_settings`, `church_ministers`, `stories`, `story_media`, `sermons`, `bulletins`, `news_items`, `worship_services`의 읽기만 허용합니다.
+Directus 공개 역할에는 `site_settings`, `church_ministers`, `stories`, `story_media`, `sermons`, `bulletins`, `bulletin_media`, `news_items`, `worship_services`의 읽기만 허용합니다.
 
 - 콘텐츠 컬렉션의 공개 읽기 필터: `status = "published"`
 - `story_media`는 연결된 `story.status = "published"`일 때만 읽을 수 있게 설정합니다.
+- `bulletin_media`는 연결된 `bulletin.status = "published"`일 때만 읽을 수 있게 설정합니다.
 - 사용자, 역할, 정책, 관리자 설정과 `draft`·`archived` 콘텐츠는 공개 역할에 권한을 부여하지 않습니다.
 - 파일은 공개 콘텐츠에서 참조되는 항목만 제공하도록 파일 접근 정책을 별도로 검증합니다.

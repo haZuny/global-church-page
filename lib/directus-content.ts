@@ -1,12 +1,12 @@
 export type StoryBlock = { type: "note" | "quote" | "text"; text: string };
 export type StoryImage = { image: string; alt: string };
-export type StoryEntry = { id: number; date: string; dateTime: string; title: string; summary: string; image: string; imageWidth: number; imageHeight: number; alt: string; blocks: StoryBlock[]; media: StoryImage[] };
-export type BulletinEntry = { id: number; title: string; date: string; category: string; summary: string; image: string; imageWidth: number; imageHeight: number };
-export type NewsEntry = { kind: "bulletin" | "notice"; id: number; href: string; title: string; date: string; dateTime: string; category: string; summary: string; image?: string; imageWidth?: number; imageHeight?: number; body: string[] };
+export type StoryEntry = { id: number; date: string; dateTime: string; title: string; image: string; alt: string; blocks: StoryBlock[]; media: StoryImage[] };
+export type BulletinEntry = { id: number; title: string; date: string; category: string; image: string };
+export type NewsEntry = { kind: "bulletin" | "notice"; id: number; href: string; title: string; date: string; dateTime: string; category: string; image?: string; body: string[] };
 export type SermonEntry = { id: number; title: string; summary: string; scripture: string; preacher: string; date: string; dateTime: string; video?: string };
-export type ChurchInfo = { churchName: string; englishName: string; heroTitle: string; heroCopy: string; introduction: string; greetingTitle: string; greetingLead: string; greetingBody: string[]; pastorName: string; aboutTitle: string; aboutBody: string[]; region: string; visionTitle: string; visionIntro: string; visions: { title: string; body: string }[]; visionStatement: string; denominationName: string; denominationIntro: string; denominationDetail: string[]; ministersIntro?: string; address: string; mapUrl?: string; phone?: string; transitInfo?: string; parkingInfo?: string; visitNotice?: string };
+export type ChurchInfo = { churchName: string; englishName: string; heroTitle: string; heroCopy: string; introduction: string; greetingTitle: string; greetingLead: string; greetingBody: string[]; pastorName: string; aboutTitle: string; visionTitle: string; visionIntro: string; visions: { title: string; body: string }[]; denominationName: string; denominationIntro: string; denominationDetail: string[]; address: string; mapUrl?: string; phone?: string; transitInfo?: string; parkingInfo?: string };
 export type Minister = { id: number; name: string; role: string; description: string; photo?: string };
-export type WorshipService = { id: number; name: string; weekdays: string[]; time: string; location: string; description?: string };
+export type WorshipService = { id: number; name: string; weekdays: string[]; time: string };
 
 const directusUrl = process.env.DIRECTUS_URL ?? "http://127.0.0.1:8055";
 const directusAssetsUrl = process.env.DIRECTUS_ASSETS_URL ?? directusUrl;
@@ -51,22 +51,17 @@ export async function getChurchInfo(): Promise<ChurchInfo> {
     greetingBody: paragraphLines(item.greeting_body),
     pastorName: item.pastor_name || "",
     aboutTitle: item.about_title || item.church_name,
-    aboutBody: [item.about_body, item.about_body_secondary].filter(Boolean),
-    region: item.region || "",
     visionTitle: item.vision_title || "",
     visionIntro: item.vision_intro || "",
     visions: [[item.vision_one_title, item.vision_one_body], [item.vision_two_title, item.vision_two_body], [item.vision_three_title, item.vision_three_body]].filter(([title]) => title).map(([title, body]) => ({ title, body: body || "" })),
-    visionStatement: item.vision_statement || "",
     denominationName: item.denomination_name || "",
     denominationIntro: item.denomination_intro || "",
     denominationDetail: paragraphLines(item.denomination_detail),
-    ministersIntro: item.ministers_intro || undefined,
     address: item.address,
     mapUrl: item.map_url || undefined,
     phone: item.phone || undefined,
     transitInfo: item.transit_info || undefined,
     parkingInfo: item.parking_info || undefined,
-    visitNotice: item.visit_notice || undefined,
   };
 }
 
@@ -77,7 +72,7 @@ export async function getMinisters(): Promise<Minister[]> {
 
 export async function getWorshipServices(): Promise<WorshipService[]> {
   const items = await readCollection<any>("worship_services?sort=sort&limit=-1");
-  return items.map((item) => ({ id: item.id, name: item.name, weekdays: Array.isArray(item.weekdays) ? item.weekdays : item.weekday ? [item.weekday] : [], time: clockLabel(item.start_time), location: item.location, description: item.description || undefined }));
+  return items.map((item) => ({ id: item.id, name: item.name, weekdays: Array.isArray(item.weekdays) ? item.weekdays : [], time: clockLabel(item.start_time) }));
 }
 
 export async function getStories() {
@@ -85,8 +80,7 @@ export async function getStories() {
   return items.map((item): StoryEntry => {
     const media = mediaItems.filter((media) => media.story === item.id).map((media) => ({ image: `${directusAssetsUrl}/assets/${media.file}`, alt: media.alt || item.title }));
     const latestMedia = media.at(-1);
-    const image = latestMedia?.image ?? (item.cover_image ? `${directusAssetsUrl}/assets/${item.cover_image}` : item.cover_image_url);
-    return { id: item.id, date: dateLabel(item.published_at), dateTime: item.published_at.slice(0, 10), title: item.title, summary: item.summary, image, imageWidth: item.cover_image_width ?? 1600, imageHeight: item.cover_image_height ?? 1067, alt: latestMedia?.alt ?? item.cover_alt ?? item.title, blocks: storyBlocks(item.body), media };
+    return { id: item.id, date: dateLabel(item.published_at), dateTime: item.published_at.slice(0, 10), title: item.title, image: latestMedia?.image ?? "", alt: latestMedia?.alt ?? item.title, blocks: storyBlocks(item.body), media };
   });
 }
 
@@ -95,8 +89,11 @@ export async function getStory(id: string) {
 }
 
 export async function getBulletins() {
-  const items = await readCollection<any>("bulletins?sort=-published_at&limit=-1");
-  return items.map((item): BulletinEntry => ({ id: item.id, title: item.title, date: dateLabel(item.published_at), category: item.category, summary: item.summary, image: item.document_file ? `${directusAssetsUrl}/assets/${item.document_file}` : item.document_image_url, imageWidth: item.document_image_width ?? 840, imageHeight: item.document_image_height ?? 594 }));
+  const [items, mediaItems] = await Promise.all([readCollection<any>("bulletins?sort=-published_at&limit=-1"), readCollection<any>("bulletin_media?sort=sort&limit=-1")]);
+  return items.map((item): BulletinEntry => {
+    const media = mediaItems.find((media) => media.bulletin === item.id);
+    return { id: item.id, title: item.title, date: dateLabel(item.published_at), category: item.category, image: media ? `${directusAssetsUrl}/assets/${media.file}` : "" };
+  });
 }
 
 export async function getBulletin(id: string) {
@@ -122,8 +119,8 @@ export async function getNewsEntries(): Promise<NewsEntry[]> {
     readCollection<any>("news_items?sort=-published_at&limit=-1"),
   ]);
   return [
-    ...bulletins.map((item) => ({ kind: "bulletin" as const, id: item.id, href: `b-${item.id}`, title: item.title, date: item.date, dateTime: item.date.replaceAll(". ", "-"), category: item.category, summary: item.summary, image: item.image, imageWidth: item.imageWidth, imageHeight: item.imageHeight, body: [] })),
-    ...notices.map((item) => ({ kind: "notice" as const, id: item.id, href: `n-${item.id}`, title: item.title, date: dateLabel(item.published_at), dateTime: item.published_at.slice(0, 10), category: "공지", summary: item.summary, body: bodyLines(item.body) })),
+    ...bulletins.map((item) => ({ kind: "bulletin" as const, id: item.id, href: `b-${item.id}`, title: item.title, date: item.date, dateTime: item.date.replaceAll(". ", "-"), category: item.category, image: item.image || undefined, body: [] })),
+    ...notices.map((item) => ({ kind: "notice" as const, id: item.id, href: `n-${item.id}`, title: item.title, date: dateLabel(item.published_at), dateTime: item.published_at.slice(0, 10), category: "공지", body: bodyLines(item.body) })),
   ].sort((a, b) => b.dateTime.localeCompare(a.dateTime));
 }
 
