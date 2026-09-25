@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { getNewsEntries } from "@/lib/directus-content";
 
@@ -45,11 +46,17 @@ export default async function NewsPage() {
               </nav>
               <span>2026</span>
             </div>
-            {latestEntry && <article className="bulletin-feature reveal">
-              <div className="bulletin-feature__date"><span>{latestEntry.category}</span><strong>{latestEntry.date}</strong></div>
-              <div className="bulletin-feature__copy"><p><span>NEW</span> 가장 최근 소식</p><h2>{latestEntry.title}</h2><div><Link className="button button--dark" href={`/news/${latestEntry.href}`}>내용 보기</Link></div></div>
-              <div className="bulletin-feature__paper" aria-hidden="true"><span>{latestEntry.category}</span><strong>{latestEntry.date}</strong></div>
-            </article>}
+            {latestEntry && <Link className="bulletin-feature reveal" href={`/news/${latestEntry.href}`} aria-label={`${latestEntry.title} 상세 보기`}>
+              <div className="bulletin-feature__copy">
+                <p><span>NEW</span> 가장 최근 소식</p>
+                <time dateTime={latestEntry.dateTime}>{latestEntry.date}</time>
+                <h2>{latestEntry.title}</h2>
+                <span className="bulletin-feature__action">내용 보기 <i aria-hidden="true">→</i></span>
+              </div>
+              <div className={`bulletin-feature__visual${latestEntry.image ? " bulletin-feature__visual--image" : ""}`}>
+                {latestEntry.image ? <Image src={latestEntry.image} alt="" fill unoptimized sizes="(max-width: 780px) 100vw, 38vw" /> : <div className="bulletin-feature__paper" aria-hidden="true"><span>{latestEntry.category}</span><strong>{latestEntry.date.replaceAll(". ", ".\n")}</strong></div>}
+              </div>
+            </Link>}
             <div className="notice-list reveal" id="bulletin-list">
               <div className="notice-list__head" aria-hidden="true">
                 <span>날짜</span>
