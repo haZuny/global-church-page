@@ -9,6 +9,10 @@ export type ChurchInfo = { churchName: string; englishName: string; heroTitle: s
 export type Minister = { id: number; name: string; role: string; description: string; photo?: string };
 export type WorshipService = { id: number; name: string; weekdays: string[]; time: string };
 
+export const fallbackChurchInfo: ChurchInfo = {
+  churchName: "글로벌교회", englishName: "Global Community Church", heroTitle: "시흥에서 함께 예배하고 함께 자라는 공동체", heroCopy: "예배와 일상에서 함께 질문하고 자라갑니다.", introduction: "시흥에서 함께 예배하고 자라는 공동체입니다.", greetingTitle: "글로벌교회를 찾아주신 여러분을 환영합니다.", greetingLead: "처음 오신 분도 편안히 머물 수 있도록 돕겠습니다.", greetingBody: "", pastorName: "", aboutTitle: "시흥에서 함께 예배하고 함께 자라는 공동체", visionTitle: "", visionIntro: "", visions: [], denominationName: "", denominationIntro: "", denominationDetail: "", address: "주소를 준비하고 있습니다.",
+};
+
 const directusUrl = process.env.DIRECTUS_URL ?? "http://127.0.0.1:8055";
 const directusAssetsUrl = process.env.DIRECTUS_ASSETS_URL ?? directusUrl;
 const dateLabel = (value: string) => value.slice(0, 10).replaceAll("-", ". ");
