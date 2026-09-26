@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { getChurchInfo, getNewsEntries, getStories, getWorshipServices } from "@/lib/directus-content";
+import { ContentImagePlaceholder, ContentState } from "@/components/content-state/content-state";
+import { fallbackChurchInfo, getChurchInfo, getNewsEntries, getStories, getWorshipServices } from "@/lib/directus-content";
 export const metadata: Metadata = { title: "함께 비전을 세우는 공동체" };
 export const dynamic = "force-dynamic";
 const Arrow = () => (
@@ -10,7 +11,11 @@ const Arrow = () => (
   </svg>
 );
 export default async function HomePage() {
-  const [church, services, stories, newsEntries] = await Promise.all([getChurchInfo(), getWorshipServices(), getStories(), getNewsEntries()]);
+  const [churchResult, servicesResult, storiesResult, newsResult] = await Promise.allSettled([getChurchInfo(), getWorshipServices(), getStories(), getNewsEntries()]);
+  const church = churchResult.status === "fulfilled" ? churchResult.value : fallbackChurchInfo;
+  const services = servicesResult.status === "fulfilled" ? servicesResult.value : [];
+  const stories = storiesResult.status === "fulfilled" ? storiesResult.value : [];
+  const newsEntries = newsResult.status === "fulfilled" ? newsResult.value : [];
   const latestStories = stories.slice(0, 3);
   const latestStory = latestStories[0];
   const latestNews = newsEntries[0];
@@ -50,7 +55,7 @@ export default async function HomePage() {
         </div>
         <span className="demo-label">CONCEPT DEMO</span>
       </section>
-      {latestStory && <section className="home-updates home-updates--stories section" aria-labelledby="home-stories-title">
+      <section className="home-updates home-updates--stories section" aria-labelledby="home-stories-title">
         <div className="page-shell">
           <div className="home-updates__heading">
             <div className="section-heading">
@@ -59,20 +64,20 @@ export default async function HomePage() {
             </div>
             <p>최근의 사진과 기록으로 글로벌교회의 오늘을 전합니다.</p>
           </div>
-          <div className="home-updates__grid">
+          {latestStory ? <div className="home-updates__grid">
             <article className="latest-story">
               <Link href={`/stories/${latestStory.id}`} aria-label={`${latestStory.title} 이야기 보기`}>
-                <div className="latest-story__image"><Image src={latestStory.image} alt={latestStory.alt} fill unoptimized sizes="(max-width: 780px) 100vw, 52vw"/></div>
+                <div className="latest-story__image">{latestStory.image ? <Image src={latestStory.image} alt={latestStory.alt} fill unoptimized sizes="(max-width: 780px) 100vw, 52vw"/> : <ContentImagePlaceholder label={`${latestStory.title} 이미지 준비 중`}/>}</div>
                 <div className="latest-story__copy"><p><time dateTime={latestStory.dateTime}>{latestStory.date}</time></p><h3>{latestStory.title}</h3></div>
               </Link>
             </article>
             {latestStories.length > 1 && <div className="update-list" aria-label="최근 교회 이야기 목록">
               {latestStories.slice(1).map((story) => <Link href={`/stories/${story.id}`} key={story.id}><time dateTime={story.dateTime}>{story.date}</time><div><strong>{story.title}</strong></div></Link>)}
             </div>}
-          </div>
-          <Link className="update-list__more" href="/stories">교회 이야기 전체 보기</Link>
+          </div> : <ContentState title="아직 공개된 교회 이야기가 없습니다." description="새로운 공동체 기록을 준비하고 있습니다. 예배 시간과 방문 정보는 아래에서 확인하실 수 있습니다."/>}
+          {latestStory && <Link className="update-list__more" href="/stories">교회 이야기 전체 보기</Link>}
         </div>
-      </section>}
+      </section>
       <section
         className="worship section"
         id="worship"
@@ -91,7 +96,7 @@ export default async function HomePage() {
             <p>처음 오신 분도 별도 등록 없이 예배에 참여하실 수 있습니다.</p>
           </div>
           <div className="schedule">
-            {services.map((service) => (
+            {services.length ? services.map((service) => (
               <article key={service.id}>
                 <div>
                   <p>{service.name}</p>
@@ -99,25 +104,25 @@ export default async function HomePage() {
                 </div>
                 <strong>{service.time}</strong>
               </article>
-            ))}
+            )) : <ContentState title="예배 시간을 준비하고 있습니다." description="정확한 예배 시간은 교회로 문의해 주세요."/>}
           </div>
         </div>
       </section>
-      {latestNews && <section className="home-updates home-updates--news section" aria-labelledby="home-news-title">
+      <section className="home-updates home-updates--news section" aria-labelledby="home-news-title">
         <div className="page-shell">
           <div className="home-updates__heading">
             <div className="section-heading"><p className="eyebrow">BULLETIN &amp; NEWS</p><h2 id="home-news-title">이번 주<br/>주보·소식</h2></div>
             <p>가장 최근에 발행된 주보 또는 공지입니다.</p>
           </div>
-          <article className="latest-story latest-news-card">
+          {latestNews ? <article className="latest-story latest-news-card">
             <Link href={`/news/${latestNews.href}`} aria-label={`${latestNews.title} 보기`}>
-              {latestNews.image && <div className="latest-story__image"><Image src={latestNews.image} alt={latestNews.title} fill unoptimized sizes="(max-width: 780px) 100vw, 52vw"/></div>}
+              <div className="latest-story__image">{latestNews.image ? <Image src={latestNews.image} alt={latestNews.title} fill unoptimized sizes="(max-width: 780px) 100vw, 52vw"/> : <ContentImagePlaceholder label={`${latestNews.title} 이미지 준비 중`}/>}</div>
               <div className="latest-story__copy"><p><time dateTime={latestNews.dateTime}>{latestNews.date}</time><span>{latestNews.category}</span></p><h3>{latestNews.title}</h3></div>
             </Link>
-          </article>
-          <Link className="update-list__more" href="/news">주보·소식 전체 보기</Link>
+          </article> : <ContentState title="아직 공개된 주보·소식이 없습니다." description="새 소식이 게시되면 이곳에서 바로 확인하실 수 있습니다."/>}
+          {latestNews && <Link className="update-list__more" href="/news">주보·소식 전체 보기</Link>}
         </div>
-      </section>}
+      </section>
       <section
         className="location section"
         id="location"
