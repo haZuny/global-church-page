@@ -24,7 +24,10 @@
     "cms:values:normalize": "node scripts/directus/normalize-editor-values.mjs",
     "cms:legacy:relax": "node scripts/directus/relax-legacy-field-requirements.mjs",
     "cms:legacy:media:migrate": "node scripts/directus/migrate-legacy-media-relations.mjs",
-    "cms:rich-text:migrate": "node scripts/directus/migrate-rich-text-content.mjs"
+    "cms:rich-text:migrate": "node scripts/directus/migrate-rich-text-content.mjs",
+    "cms:lists:configure": "node scripts/directus/apply-content-list-presets.mjs",
+    "cms:sample-content:seed": "node scripts/directus/seed-list-sample-content.mjs",
+    "cms:sample-content:remove": "node scripts/directus/remove-list-sample-content.mjs"
   },
   "dependencies": {
     "directus": "^11.3.5",
