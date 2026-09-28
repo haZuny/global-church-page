@@ -23,7 +23,7 @@ const models = {
   story_media: ["이야기 이미지", "교회 이야기 안에 추가로 넣는 이미지입니다.", { story: "교회 이야기", file: "이미지 파일", alt: "이미지 설명", caption: "캡션", sort: "노출 순서" }],
   sermons: ["설교", "설교 제목, 본문, 영상 정보를 관리합니다.", { slug: "주소 이름", title: "제목", summary: "설교 요약", scripture: "성경 본문", preacher: "설교자", sermon_date: "설교일", video_url: "이전 영상 링크", video_file: "설교 영상", status: "게시 상태" }],
   bulletins: ["주보", "주보와 예배 자료를 관리합니다.", { slug: "주소 이름", title: "제목", category: "분류", summary: "주보 요약", body: "본문", document_image_url: "이전 주보 이미지 경로", document_file: "주보 파일", document_image_width: "이미지 너비", document_image_height: "이미지 높이", document_alt: "이미지 설명", published_at: "공개일", status: "게시 상태" }],
-  bulletin_media: ["주보 첨부 파일", "주보에 연결하는 이미지와 자료입니다.", { bulletin: "주보", file: "첨부 파일", alt: "이미지 설명", caption: "설명", sort: "노출 순서" }],
+  bulletin_media: ["주보 첨부 파일", "주보에는 이미지와 내려받을 자료를 함께 연결할 수 있습니다.", { bulletin: "주보", file: "첨부 파일", alt: "이미지 설명", caption: "설명", sort: "노출 순서" }],
   news_items: ["공지", "공지 내용을 자유롭게 작성합니다.", { slug: "주소 이름", type: "유형", title: "제목", summary: "공지 요약", body: "본문", event_starts_at: "행사 시작", event_ends_at: "행사 종료", location: "장소", published_at: "공개일", status: "게시 상태" }],
 };
 const richTextFields = new Set(["stories.body", "bulletins.body", "news_items.body", "site_settings.greeting_body", "site_settings.vision_intro", "site_settings.vision_one_body", "site_settings.vision_two_body", "site_settings.vision_three_body", "site_settings.denomination_detail"]);

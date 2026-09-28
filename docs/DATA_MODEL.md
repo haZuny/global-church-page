@@ -126,13 +126,13 @@
 | `title` | string | 예 | 제목 |
 | `category` | select | 예 | `주보` / `자료` |
 | `body` | text (rich text HTML) | 아니오 | 웹에서 함께 보여 줄 서식 있는 본문 안내 |
-| `media` | O2M `bulletin_media` | 아니오 | 주보에 연결하는 여러 이미지·자료 |
+| `media` | O2M `bulletin_media` | 아니오 | 주보 또는 자료에 연결하는 여러 이미지·첨부 파일 |
 | `published_at` | datetime | 조건부 | 발행일 |
 | `status` | select | 예 | `draft` / `published` / `archived` |
 
 ### `bulletin_media`
 
-주보 하나에 여러 이미지와 자료를 연결합니다. 각 첨부 항목은 주보 편집 화면의 `첨부 파일`에서 추가합니다.
+주보 하나에 여러 이미지와 자료를 연결합니다. 각 첨부 항목은 주보 편집 화면의 `첨부 파일`에서 추가합니다. `자료` 분류 게시물에서는 MIME 형식에 따라 문서·압축 파일은 다운로드 목록으로, 이미지는 미리보기와 개별 원본 다운로드로 공개합니다.
 
 | 필드 | 형식 | 필수 | 설명 |
 | --- | --- | --- | --- |

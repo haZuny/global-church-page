@@ -51,7 +51,7 @@ const publishedFileFilter = {
 };
 const permissions = await request("/permissions");
 const existing = permissions.find((permission) => permission.policy === publicPolicy.id && permission.collection === "directus_files" && permission.action === "read");
-const body = { fields: ["id", "type", "filename_download", "title", "width", "height"], permissions: publishedFileFilter };
+const body = { fields: ["id", "type", "filename_download", "title", "filesize", "width", "height"], permissions: publishedFileFilter };
 if (existing) await request(`/permissions/${existing.id}`, "PATCH", body);
 else await request("/permissions", "POST", { collection: "directus_files", action: "read", policy: publicPolicy.id, ...body });
 

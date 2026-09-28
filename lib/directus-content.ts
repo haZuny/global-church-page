@@ -2,8 +2,9 @@ import { plainTextToRichText } from "@/lib/rich-text";
 
 export type StoryImage = { image: string; alt: string };
 export type StoryEntry = { id: number; category: "장년부" | "교육부서"; date: string; dateTime: string; title: string; image: string; alt: string; body: string; media: StoryImage[] };
-export type BulletinEntry = { id: number; title: string; date: string; category: string; image: string; body: string };
-export type NewsEntry = { kind: "bulletin" | "notice"; id: number; href: string; title: string; date: string; dateTime: string; category: string; image?: string; body: string };
+export type BulletinAttachment = { id: string; name: string; title?: string; type: string; size?: number; width?: number; height?: number; url: string };
+export type BulletinEntry = { id: number; title: string; date: string; category: string; image: string; body: string; attachments: BulletinAttachment[] };
+export type NewsEntry = { kind: "bulletin" | "notice"; id: number; href: string; title: string; date: string; dateTime: string; category: string; image?: string; body: string; attachments?: BulletinAttachment[] };
 export type SermonEntry = { id: number; title: string; summary: string; scripture: string; preacher: string; date: string; dateTime: string; video?: string };
 export type ChurchInfo = { churchName: string; englishName: string; heroTitle: string; heroCopy: string; introduction: string; greetingTitle: string; greetingLead: string; greetingBody: string; pastorName: string; aboutTitle: string; visionTitle: string; visionIntro: string; visions: { title: string; body: string }[]; denominationName: string; denominationIntro: string; denominationDetail: string; address: string; mapUrl?: string; phone?: string; transitInfo?: string; parkingInfo?: string };
 export type Minister = { id: number; name: string; role: string; description: string; photo?: string };
@@ -16,6 +17,7 @@ export const fallbackChurchInfo: ChurchInfo = {
 const directusUrl = process.env.DIRECTUS_URL ?? "http://127.0.0.1:8055";
 const directusAssetsUrl = process.env.DIRECTUS_ASSETS_URL ?? directusUrl;
 const dateLabel = (value: string) => value.slice(0, 10).replaceAll("-", ". ");
+export const isImageAttachment = (attachment: BulletinAttachment) => attachment.type.startsWith("image/") || /\.(avif|gif|jpe?g|png|svg|webp)$/i.test(attachment.name);
 
 async function readCollection<T>(path: string): Promise<T[]> {
   const response = await fetch(`${directusUrl}/items/${path}`, { cache: "no-store" });
@@ -82,10 +84,15 @@ export async function getStory(id: string) {
 }
 
 export async function getBulletins() {
-  const [items, mediaItems] = await Promise.all([readCollection<any>("bulletins?sort=-published_at&limit=-1"), readCollection<any>("bulletin_media?sort=sort&limit=-1")]);
+  const [items, mediaItems] = await Promise.all([readCollection<any>("bulletins?sort=-published_at&limit=-1"), readCollection<any>("bulletin_media?sort=sort&limit=-1&fields=bulletin,file.id,file.type,file.filename_download,file.filesize,file.title,file.width,file.height")]);
   return items.map((item): BulletinEntry => {
-    const media = mediaItems.find((media) => media.bulletin === item.id);
-    return { id: item.id, title: item.title, date: dateLabel(item.published_at), category: item.category, image: media ? `${directusAssetsUrl}/assets/${media.file}` : "", body: plainTextToRichText(item.body) };
+    const attachments = mediaItems.filter((media) => media.bulletin === item.id).flatMap((media): BulletinAttachment[] => {
+      const file = typeof media.file === "string" ? { id: media.file, filename_download: "첨부 파일", type: "" } : media.file;
+      if (!file?.id) return [];
+      return [{ id: file.id, name: file.filename_download || "첨부 파일", title: file.title || undefined, type: file.type || "", size: file.filesize || undefined, width: file.width || undefined, height: file.height || undefined, url: `${directusAssetsUrl}/assets/${file.id}` }];
+    });
+    const image = attachments.find(isImageAttachment);
+    return { id: item.id, title: item.title, date: dateLabel(item.published_at), category: item.category, image: image?.url ?? "", body: plainTextToRichText(item.body), attachments };
   });
 }
 
@@ -99,7 +106,7 @@ export async function getNewsEntries(): Promise<NewsEntry[]> {
     readCollection<any>("news_items?sort=-published_at&limit=-1"),
   ]);
   return [
-    ...bulletins.map((item) => ({ kind: "bulletin" as const, id: item.id, href: `b-${item.id}`, title: item.title, date: item.date, dateTime: item.date.replaceAll(". ", "-"), category: item.category, image: item.image || undefined, body: item.body })),
+    ...bulletins.map((item) => ({ kind: "bulletin" as const, id: item.id, href: `b-${item.id}`, title: item.title, date: item.date, dateTime: item.date.replaceAll(". ", "-"), category: item.category, image: item.image || undefined, body: item.body, attachments: item.attachments })),
     ...notices.map((item) => ({ kind: "notice" as const, id: item.id, href: `n-${item.id}`, title: item.title, date: dateLabel(item.published_at), dateTime: item.published_at.slice(0, 10), category: "공지", body: plainTextToRichText(item.body) })),
   ].sort((a, b) => b.dateTime.localeCompare(a.dateTime));
 }
