@@ -22,15 +22,15 @@ const bulletinFields = await request("/fields/bulletins");
 const bulletinMediaCollection = (await request("/collections")).find((collection) => collection.collection === "bulletin_media");
 await request("/collections/bulletin_media", "PATCH", { meta: { ...bulletinMediaCollection.meta, display_template: "{{file.filename_download}}" } });
 if (!bulletinFields.some((field) => field.field === "media")) {
-  await request("/fields/bulletins", "POST", { field: "media", type: "alias", meta: { special: ["o2m"], interface: "list-o2m", display: "related-values", options: { layout: "list", template: "{{file.filename_download}}", enableCreate: true, enableSelect: false, enableLink: false }, sort: 7, translations: [{ language: "ko-KR", translation: "이미지 파일" }] } });
+  await request("/fields/bulletins", "POST", { field: "media", type: "alias", meta: { special: ["o2m"], interface: "list-o2m", display: "related-values", options: { layout: "list", template: "{{file.filename_download}}", enableCreate: true, enableSelect: false, enableLink: false }, sort: 7, translations: [{ language: "ko-KR", translation: "첨부 파일" }] } });
 } else {
   const mediaField = bulletinFields.find((field) => field.field === "media");
-  await request("/fields/bulletins/media", "PATCH", { meta: { ...mediaField.meta, special: ["o2m"], interface: "list-o2m", display: "related-values", options: { layout: "list", template: "{{file.filename_download}}", enableCreate: true, enableSelect: false, enableLink: false }, translations: [{ language: "ko-KR", translation: "이미지 파일" }] } });
+  await request("/fields/bulletins/media", "PATCH", { meta: { ...mediaField.meta, special: ["o2m"], interface: "list-o2m", display: "related-values", options: { layout: "list", template: "{{file.filename_download}}", enableCreate: true, enableSelect: false, enableLink: false }, translations: [{ language: "ko-KR", translation: "첨부 파일" }] } });
 }
 
 const mediaFields = await request("/fields/bulletin_media");
 const fileField = mediaFields.find((field) => field.field === "file");
-if (fileField) await request("/fields/bulletin_media/file", "PATCH", { meta: { ...fileField.meta, interface: "file", special: ["file"], required: true, translations: [{ language: "ko-KR", translation: "이미지 파일" }] } });
+if (fileField) await request("/fields/bulletin_media/file", "PATCH", { meta: { ...fileField.meta, interface: "file", special: ["file"], required: true, translations: [{ language: "ko-KR", translation: "첨부 파일" }] } });
 for (const field of mediaFields.filter((item) => ["bulletin", "alt", "caption", "sort"].includes(item.field))) {
   await request(`/fields/bulletin_media/${field.field}`, "PATCH", { meta: { ...field.meta, hidden: true, required: false }, schema: { ...field.schema, is_nullable: true } });
 }
