@@ -1,7 +1,7 @@
 import { plainTextToRichText } from "@/lib/rich-text";
 
 export type StoryImage = { image: string; alt: string };
-export type StoryEntry = { id: number; date: string; dateTime: string; title: string; image: string; alt: string; body: string; media: StoryImage[] };
+export type StoryEntry = { id: number; category: "장년부" | "교육부서"; date: string; dateTime: string; title: string; image: string; alt: string; body: string; media: StoryImage[] };
 export type BulletinEntry = { id: number; title: string; date: string; category: string; image: string; body: string };
 export type NewsEntry = { kind: "bulletin" | "notice"; id: number; href: string; title: string; date: string; dateTime: string; category: string; image?: string; body: string };
 export type SermonEntry = { id: number; title: string; summary: string; scripture: string; preacher: string; date: string; dateTime: string; video?: string };
@@ -73,7 +73,7 @@ export async function getStories() {
   return items.map((item): StoryEntry => {
     const media = mediaItems.filter((media) => media.story === item.id).map((media) => ({ image: `${directusAssetsUrl}/assets/${media.file}`, alt: media.alt || item.title }));
     const latestMedia = media.at(-1);
-    return { id: item.id, date: dateLabel(item.published_at), dateTime: item.published_at.slice(0, 10), title: item.title, image: latestMedia?.image ?? "", alt: latestMedia?.alt ?? item.title, body: plainTextToRichText(item.body), media };
+    return { id: item.id, category: item.category === "교육부서" ? "교육부서" : "장년부", date: dateLabel(item.published_at), dateTime: item.published_at.slice(0, 10), title: item.title, image: latestMedia?.image ?? "", alt: latestMedia?.alt ?? item.title, body: plainTextToRichText(item.body), media };
   });
 }
 

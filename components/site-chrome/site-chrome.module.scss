@@ -50,6 +50,8 @@
 .stories :global(.archive-toolbar nav > *), .news :global(.archive-toolbar nav > *), .sermons :global(.archive-toolbar nav > *) { display:inline-block; color:var(--muted); font-size:13px; font-weight:700; }
 .stories :global(.archive-toolbar nav > .is-active), .news :global(.archive-toolbar nav > .is-active), .sermons :global(.archive-toolbar nav > .is-active) { color:var(--ink); }
 .stories :global(.archive-toolbar > span), .news :global(.archive-toolbar > span), .sermons :global(.archive-toolbar > span) { color:var(--muted); font-size:10px; font-weight:700; letter-spacing:.14em; }
+.stories :global(.archive-filter-empty), .news :global(.archive-filter-empty) { text-align:center; }
+.stories :global(.archive-filter-reset), .news :global(.archive-filter-reset) { display:inline-flex; gap:10px; margin-top:22px; padding-bottom:4px; border-bottom:1px solid var(--ink); color:var(--ink); font-size:14px; font-weight:700; }
 
 .about :global(.archive-bridge), .stories :global(.archive-bridge), .news :global(.archive-bridge) { padding-block:68px; background:#e7dfd1; }
 .about :global(.archive-bridge .page-shell), .stories :global(.archive-bridge .page-shell), .news :global(.archive-bridge .page-shell) { display:flex; align-items:center; justify-content:space-between; }

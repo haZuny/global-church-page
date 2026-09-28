@@ -7,11 +7,17 @@ import { getNewsEntries } from "@/lib/directus-content";
 export const metadata: Metadata = { title: "주보·소식" };
 
 export const dynamic = "force-dynamic";
-export default async function NewsPage() {
+const newsFilters = ["전체", "주보", "공지", "자료"] as const;
+type NewsFilter = typeof newsFilters[number];
+
+export default async function NewsPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
   let entries: Awaited<ReturnType<typeof getNewsEntries>> = [];
   let failed = false;
   try { entries = await getNewsEntries(); } catch { failed = true; }
-  const latestEntry = entries[0];
+  const params = await searchParams;
+  const selectedFilter: NewsFilter = newsFilters.includes(params.category as NewsFilter) ? params.category as NewsFilter : "전체";
+  const filteredEntries = selectedFilter === "전체" ? entries : entries.filter((entry) => entry.category === selectedFilter);
+  const latestEntry = filteredEntries[0];
   return (
     <div className="subpage">
       <main id="main-content" tabIndex={-1}>
@@ -42,10 +48,7 @@ export default async function NewsPage() {
           <div className="page-shell">
             <div className="archive-toolbar reveal">
               <nav aria-label="소식 분류">
-                <span className="is-active">전체</span>
-                <span>주보</span>
-                <span>공지</span>
-                <span>자료</span>
+                {newsFilters.map((filter) => <Link key={filter} href={filter === "전체" ? "/news" : `/news?category=${encodeURIComponent(filter)}`} className={selectedFilter === filter ? "is-active" : undefined} aria-current={selectedFilter === filter ? "page" : undefined}>{filter}</Link>)}
               </nav>
               <span>2026</span>
             </div>
@@ -67,7 +70,7 @@ export default async function NewsPage() {
                 <span>제목</span>
                 <span />
               </div>
-              {entries.map((entry) => (
+              {filteredEntries.map((entry) => (
                 <Link href={`/news/${entry.href}`} key={`${entry.kind}-${entry.id}`}>
                   <time dateTime={entry.dateTime}>
                     {entry.date}
@@ -83,7 +86,7 @@ export default async function NewsPage() {
             <p className="archive-source reveal">
               주보와 예배 자료를 날짜순으로 모았습니다. 각 항목을 누르면 이
               사이트 안에서 내용을 바로 확인할 수 있습니다.
-            </p></> : <ContentState title="아직 공개된 주보·소식이 없습니다." description="새 소식이 게시되면 이곳에서 바로 확인하실 수 있습니다."/>}
+            </p></> : <div className="archive-filter-empty"><ContentState title={selectedFilter === "전체" ? "아직 공개된 주보·소식이 없습니다." : `${selectedFilter} 항목이 없습니다.`} description={selectedFilter === "전체" ? "새 소식이 게시되면 이곳에서 바로 확인하실 수 있습니다." : "다른 분류를 선택하거나 전체 소식을 확인해 주세요."}/>{selectedFilter !== "전체" && <Link href="/news" className="archive-filter-reset">전체 소식 보기 <span aria-hidden="true">→</span></Link>}</div>}
           </div>
         </section>
       </main>
