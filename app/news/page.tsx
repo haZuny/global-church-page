@@ -14,7 +14,7 @@ export default async function NewsPage() {
   const latestEntry = entries[0];
   return (
     <div className="subpage">
-      <main id="main-content">
+      <main id="main-content" tabIndex={-1}>
         <section
           className="archive-hero archive-hero--news"
           aria-labelledby="page-title"

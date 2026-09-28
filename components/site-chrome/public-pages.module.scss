@@ -2472,7 +2472,9 @@
 
   .about-hero h1 {
     font-size: clamp(43px, 12vw, 61px);
-    word-break: normal;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-all;
   }
 
   .about-local-nav .page-shell {

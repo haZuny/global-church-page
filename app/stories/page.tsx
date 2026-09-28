@@ -13,7 +13,7 @@ export default async function StoriesPage() {
   let failed = false;
   try { stories = await getStories(); } catch { failed = true; }
   const [featuredStory, ...storyRows] = stories;
-  return <div className="subpage"><main id="main-content">
+  return <div className="subpage"><main id="main-content" tabIndex={-1}>
     <section className="archive-hero archive-hero--stories" aria-labelledby="page-title"><div className="page-shell archive-hero__inner"><div><p className="eyebrow">CHURCH STORIES</p><h1 id="page-title">함께한 날들의<br/>작은 기록</h1></div><p>함께 예배하고 배우며 자라가는<br/>글로벌교회의 오늘을 전합니다.</p></div></section>
     <section className="archive-content section" aria-label="교회 이야기 목록"><div className="page-shell"><div className="archive-toolbar reveal"><span>PUBLIC RECORDS</span></div>
       {failed ? <ContentState title="교회 이야기를 불러오지 못했습니다." description="잠시 후 다시 시도해 주세요."/> : featuredStory ? <><article className="archive-feature reveal"><Link href={`/stories/${featuredStory.id}`} aria-label={`${featuredStory.title} 이야기 보기`}><div className="archive-feature__image">{featuredStory.image ? <Image src={featuredStory.image} alt={featuredStory.alt} fill unoptimized sizes="(max-width: 780px) 100vw, 54vw"/> : <ContentImagePlaceholder label={`${featuredStory.title} 이미지 준비 중`}/>}</div><div className="archive-feature__copy"><p><time dateTime={featuredStory.dateTime}>{featuredStory.date}</time></p><h2>{featuredStory.title}</h2><span aria-hidden="true">→</span></div></Link></article>
