@@ -22,6 +22,15 @@
 @keyframes hero-arrive { from { transform:scale(1.04); opacity:.35; } to { transform:scale(1); opacity:1; } }
 @keyframes copy-arrive { from { transform:translateY(18px); opacity:0; } to { transform:translateY(0); opacity:1; } }
 
+/* The source photo is wide and the church sits to the right of centre. Keep it in view as the viewport becomes taller. */
+@media (max-width: 1040px) {
+  .home :global(.hero__image) { object-position:68% 38%; }
+}
+
+@media (max-width: 780px) {
+  .home :global(.hero__image) { object-position:78% 38%; }
+}
+
 .about :global(main) { display:flex; flex-direction:column; }
 .about :global(main > .about-hero) { order:1; }
 .about :global(main > .about-local-nav) { order:2; }

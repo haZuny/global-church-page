@@ -1898,6 +1898,11 @@
     padding-inline: 28px;
   }
 
+  /* Keep the church building, which sits right of centre in the wide source image, inside narrower viewports. */
+  .hero__image {
+    object-position: 68% 38%;
+  }
+
   .desktop-nav {
     gap: 22px;
   }
@@ -2118,7 +2123,7 @@
   }
 
   .hero__image {
-    object-position: center 38%;
+    object-position: 78% 38%;
   }
 
   .hero__veil {
