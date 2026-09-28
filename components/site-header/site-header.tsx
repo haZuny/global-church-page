@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./site-header.module.scss";
 
 const links = [["교회 소개", "/about"], ["교회 이야기", "/stories"], ["주보·소식", "/news"], ["설교", "/sermons"]] as const;
@@ -12,6 +12,8 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const menuRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
   const close = () => setOpen(false);
 
   useEffect(() => {
@@ -47,5 +49,31 @@ export function SiteHeader() {
     };
   }, [pathname]);
 
-  return <header className={`${styles.header} ${pathname !== "/" ? styles.solid : ""} ${scrolled ? styles.scrolled : ""} ${open ? styles.menuOpen : ""}`}><Link className={styles.brand} href="/#home" aria-label="글로벌교회 홈으로 이동" onClick={close}><svg className={styles.mark} viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3.5v25M7 12.5h18"/><circle cx="16" cy="16" r="13.5"/></svg><span>글로벌교회</span></Link><nav className={styles.desktopNav} aria-label="주요 메뉴">{links.map(([name, href]) => { const current = pathname === href || pathname.startsWith(`${href}/`); return <Link key={href} href={href} className={current ? styles.current : undefined} aria-current={current ? "page" : undefined}>{name}</Link>; })}</nav><Link className={styles.cta} href="/#worship">처음 오셨나요?</Link><button className={styles.menuToggle} type="button" aria-expanded={open} aria-controls="mobile-menu" aria-label={open ? "메뉴 닫기" : "메뉴 열기"} onClick={() => setOpen(!open)}><span/><span/></button><div className={styles.mobileMenu} id="mobile-menu" hidden={!open}><nav aria-label="모바일 주요 메뉴">{links.map(([name, href]) => { const current = pathname === href || pathname.startsWith(`${href}/`); return <Link key={href} href={href} onClick={close} aria-current={current ? "page" : undefined}>{name}</Link>; })}</nav><p>시흥 글로벌교회<br/>예배 시간과 연락처는 운영 전 확인이 필요합니다.</p></div></header>;
+  useEffect(() => {
+    if (!open) return;
+    const focusable = () => [toggleRef.current, ...Array.from(menuRef.current?.querySelectorAll<HTMLAnchorElement>("a") ?? [])].filter((element): element is HTMLButtonElement | HTMLAnchorElement => element !== null);
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setOpen(false);
+        toggleRef.current?.focus();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const items = focusable();
+      const currentIndex = items.findIndex((item) => item === document.activeElement);
+      if (event.shiftKey && currentIndex <= 0) {
+        event.preventDefault();
+        items.at(-1)?.focus();
+      } else if (!event.shiftKey && currentIndex === items.length - 1) {
+        event.preventDefault();
+        items[0]?.focus();
+      }
+    };
+    menuRef.current?.querySelector<HTMLAnchorElement>("a")?.focus();
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open]);
+
+  return <header className={`${styles.header} ${pathname !== "/" ? styles.solid : ""} ${scrolled ? styles.scrolled : ""} ${open ? styles.menuOpen : ""}`}><Link className={styles.brand} href="/#home" aria-label="글로벌교회 홈으로 이동" onClick={close}><svg className={styles.mark} viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3.5v25M7 12.5h18"/><circle cx="16" cy="16" r="13.5"/></svg><span>글로벌교회</span></Link><nav className={styles.desktopNav} aria-label="주요 메뉴">{links.map(([name, href]) => { const current = pathname === href || pathname.startsWith(`${href}/`); return <Link key={href} href={href} className={current ? styles.current : undefined} aria-current={current ? "page" : undefined}>{name}</Link>; })}</nav><Link className={styles.cta} href="/#worship">처음 오셨나요?</Link><button ref={toggleRef} className={styles.menuToggle} type="button" aria-expanded={open} aria-controls="mobile-menu" aria-label={open ? "메뉴 닫기" : "메뉴 열기"} onClick={() => setOpen(!open)}><span/><span/></button><div ref={menuRef} className={styles.mobileMenu} id="mobile-menu" hidden={!open}><nav aria-label="모바일 주요 메뉴">{links.map(([name, href]) => { const current = pathname === href || pathname.startsWith(`${href}/`); return <Link key={href} href={href} onClick={close} aria-current={current ? "page" : undefined}>{name}</Link>; })}</nav><p>시흥 글로벌교회<br/>예배 시간과 연락처는 운영 전 확인이 필요합니다.</p></div></header>;
 }

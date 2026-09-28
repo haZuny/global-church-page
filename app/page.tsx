@@ -20,7 +20,7 @@ export default async function HomePage() {
   const latestStory = latestStories[0];
   const latestNews = newsEntries[0];
   return (
-    <main id="main-content" className="home-page">
+    <main id="main-content" tabIndex={-1} className="home-page">
       <section className="hero" id="home" aria-labelledby="hero-title">
         <Image
           className="hero__image"
