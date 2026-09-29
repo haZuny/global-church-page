@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ContentState } from "@/components/content-state/content-state";
-import { getNewsEntries } from "@/lib/directus-content";
+import { contentImageUrl, getNewsEntries } from "@/lib/directus-content";
 
 export const metadata: Metadata = { title: "주보·소식" };
 
@@ -60,7 +60,7 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
                 <span className="bulletin-feature__action">내용 보기 <i aria-hidden="true">→</i></span>
               </div>
               <div className={`bulletin-feature__visual${latestEntry.image ? " bulletin-feature__visual--image" : ""}`}>
-                {latestEntry.image ? <Image src={latestEntry.image} alt="" fill unoptimized sizes="(max-width: 780px) 100vw, 38vw" /> : <div className="bulletin-feature__paper" aria-hidden="true"><span>{latestEntry.category}</span><strong>{latestEntry.date.replaceAll(". ", ".\n")}</strong></div>}
+                {latestEntry.image ? <Image src={contentImageUrl(latestEntry.image, "news-feature")!} alt="" fill unoptimized sizes="(max-width: 780px) 100vw, 38vw" /> : <div className="bulletin-feature__paper" aria-hidden="true"><span>{latestEntry.category}</span><strong>{latestEntry.date.replaceAll(". ", ".\n")}</strong></div>}
               </div>
             </Link>
             <div className="notice-list reveal" id="bulletin-list">
