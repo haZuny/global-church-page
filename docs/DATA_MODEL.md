@@ -44,6 +44,7 @@
 | `phone` | string | 아니오 | 대표 연락처 |
 | `transit_info` | text | 아니오 | 대중교통 안내 |
 | `parking_info` | text | 아니오 | 주차 안내 |
+| `show_sermons` | boolean | 아니오 | 공개 사이트의 설교 메뉴 노출 여부. 기본값은 숨김이며, 설교 콘텐츠를 운영할 때만 켭니다. |
 
 숨김 이력 필드: `about_body`, `about_body_secondary`, `region`, `vision_statement`, `ministers_intro`, `visit_notice`. 현재 화면과 관리 양식에서는 사용하지 않습니다.
 
