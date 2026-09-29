@@ -8,7 +8,7 @@ import { SiteHeader } from "@/components/site-header/site-header";
 import styles from "./site-chrome.module.scss";
 import publicPageStyles from "./public-pages.module.scss";
 
-export function SiteChrome({ children, footerInfo }: { children: ReactNode; footerInfo: FooterInfo }) {
+export function SiteChrome({ children, footerInfo, showSermons }: { children: ReactNode; footerInfo: FooterInfo; showSermons: boolean }) {
   const pathname = usePathname();
   const isReactPage = pathname === "/" || ["/about", "/worship", "/stories", "/news", "/sermons"].some((path) => pathname === path || pathname.startsWith(`${path}/`));
   const pageScope = pathname === "/" ? styles.home : pathname.startsWith("/about") ? styles.about : pathname.startsWith("/worship") ? styles.worship : pathname.startsWith("/stories") ? styles.stories : pathname.startsWith("/news") ? styles.news : pathname.startsWith("/sermons") ? styles.sermons : undefined;
@@ -18,7 +18,7 @@ export function SiteChrome({ children, footerInfo }: { children: ReactNode; foot
       {isReactPage && (
         <>
           <a className="skip-link" href="#main-content">본문으로 바로가기</a>
-          <SiteHeader />
+          <SiteHeader showSermons={showSermons} />
         </>
       )}
       <div className={pageScope}>{children}</div>

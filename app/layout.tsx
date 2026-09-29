@@ -10,5 +10,5 @@ export const metadata: Metadata = { title: { default: "글로벌교회 | 함께 
 export default async function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   let church = fallbackChurchInfo;
   try { church = await getChurchInfo(); } catch { /* Keep the public shell usable while Directus recovers. */ }
-  return <html lang="ko"><body><SiteChrome footerInfo={{ churchName: church.churchName, tagline: church.heroTitle, address: church.address, phone: church.phone }}>{children}</SiteChrome></body></html>;
+  return <html lang="ko"><body><SiteChrome showSermons={church.showSermons} footerInfo={{ churchName: church.churchName, tagline: church.heroTitle, address: church.address, phone: church.phone }}>{children}</SiteChrome></body></html>;
 }

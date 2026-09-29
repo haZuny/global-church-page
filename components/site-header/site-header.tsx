@@ -5,16 +5,17 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import styles from "./site-header.module.scss";
 
-const links = [["교회 소개", "/about"], ["교회 이야기", "/stories"], ["주보·소식", "/news"], ["설교", "/sermons"]] as const;
+const baseLinks = [["교회 소개", "/about"], ["교회 이야기", "/stories"], ["주보·소식", "/news"]] as const;
 const revealSelector = ".home-page .intro .section-heading, .home-page .intro__body, .home-page .values, .home-page .worship .section-heading, .home-page .schedule, .home-page .location__card, .reveal, .about-page .pastor-message__label, .about-page .pastor-message__copy, .about-page .church-introduction .section-heading, .about-page .church-introduction__copy, .about-page .vision-section__heading, .about-page .vision-list, .about-page .vision-statement, .about-page .denomination-section .section-heading, .about-page .denomination-section__copy, .about-page .ministers-section__heading, .about-page .minister-card, .worship-page-section .section-heading, .worship-page-section .schedule, .worship-visit .section-heading, .worship-visit__copy, .story-detail__visual, .story-detail__body, .bulletin-document, .detail-nav";
 
-export function SiteHeader() {
+export function SiteHeader({ showSermons }: { showSermons: boolean }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const close = () => setOpen(false);
+  const links = showSermons ? [...baseLinks, ["설교", "/sermons"] as const] : baseLinks;
 
   useEffect(() => {
     const syncHeader = () => setScrolled(window.scrollY > 24);
