@@ -8,6 +8,7 @@ export type NewsEntry = { kind: "bulletin" | "notice"; id: number; href: string;
 export type SermonEntry = { id: number; title: string; summary: string; scripture: string; preacher: string; date: string; dateTime: string; video?: string };
 export type ChurchInfo = { churchName: string; englishName: string; heroTitle: string; heroCopy: string; introduction: string; pastorTitle: string; pastorLead: string; pastorBody: string; pastorName: string; pastorRole: string; pastorPhoto?: string; aboutTitle: string; denominationHistory: string; address: string; showSermons: boolean; mapUrl?: string; phone?: string; transitInfo?: string; parkingInfo?: string };
 export type Minister = { id: number; name: string; role: string; description: string; photo?: string };
+export type ContentImagePreset = "home-preview" | "story-feature" | "story-card" | "story-detail" | "news-feature" | "resource-preview" | "document" | "profile";
 
 export const fallbackChurchInfo: ChurchInfo = {
   churchName: "글로벌교회", englishName: "Global Community Church", heroTitle: "시흥에서 함께 예배하고 함께 자라는 공동체", heroCopy: "예배와 일상에서 함께 질문하고 자라갑니다.", introduction: "시흥에서 함께 예배하고 자라는 공동체입니다.", pastorTitle: "글로벌교회를 찾아주신 여러분을 환영합니다.", pastorLead: "처음 오신 분도 편안히 머물 수 있도록 돕겠습니다.", pastorBody: "", pastorName: "", pastorRole: "담임목사", aboutTitle: "시흥에서 함께 예배하고 함께 자라는 공동체", denominationHistory: "", address: "주소를 준비하고 있습니다.", showSermons: false,
@@ -20,6 +21,35 @@ const assetUrl = (file: unknown) => {
   const id = typeof file === "string" ? file : typeof file === "object" && file !== null && "id" in file && typeof file.id === "string" ? file.id : undefined;
   return id ? `${directusAssetsUrl}/assets/${id}` : undefined;
 };
+const imageTransforms: Record<ContentImagePreset, { width: number; height?: number; fit?: "cover" | "contain"; quality: number }> = {
+  "home-preview": { width: 1280, height: 800, fit: "cover", quality: 82 },
+  "story-feature": { width: 1200, height: 900, fit: "cover", quality: 84 },
+  "story-card": { width: 960, height: 720, fit: "cover", quality: 80 },
+  "story-detail": { width: 1600, height: 1200, fit: "cover", quality: 86 },
+  "news-feature": { width: 960, height: 1200, fit: "cover", quality: 84 },
+  "resource-preview": { width: 960, height: 720, fit: "cover", quality: 80 },
+  document: { width: 1400, fit: "contain", quality: 88 },
+  profile: { width: 960, height: 1200, fit: "cover", quality: 84 },
+};
+
+/** Keeps the uploaded original intact while requesting a size appropriate to each public frame. */
+export function contentImageUrl(source: string | undefined, preset: ContentImagePreset) {
+  if (!source) return undefined;
+  try {
+    const url = new URL(source);
+    if (!url.pathname.includes("/assets/")) return source;
+    const transform = imageTransforms[preset];
+    url.searchParams.set("width", String(transform.width));
+    if (transform.height) url.searchParams.set("height", String(transform.height));
+    if (transform.fit) url.searchParams.set("fit", transform.fit);
+    url.searchParams.set("quality", String(transform.quality));
+    url.searchParams.set("format", "webp");
+    url.searchParams.set("withoutEnlargement", "true");
+    return url.toString();
+  } catch {
+    return source;
+  }
+}
 export const isImageAttachment = (attachment: BulletinAttachment) => attachment.type.startsWith("image/") || /\.(avif|gif|jpe?g|png|svg|webp)$/i.test(attachment.name);
 
 async function readCollection<T>(path: string): Promise<T[]> {

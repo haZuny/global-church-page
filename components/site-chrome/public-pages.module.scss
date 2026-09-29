@@ -508,7 +508,7 @@
   align-items: end;
   justify-content: space-between;
   gap: 48px;
-  margin-bottom: 72px;
+  margin-bottom: 40px;
 }
 
 .home-updates__heading > p {
@@ -527,7 +527,7 @@
 
 .latest-story__image {
   position: relative;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: var(--media-preview-ratio);
   overflow: hidden;
   background: var(--sand);
 }
@@ -1007,15 +1007,15 @@
 
 .location {
   position: relative;
-  min-height: 800px;
+  min-height: var(--home-panel-height, 800px);
   padding: 0;
   overflow: hidden;
-  background: #d8ddd2;
+  background: var(--cream);
 }
 
 .location__map {
   position: absolute;
-  inset: 0;
+  inset: 48px calc(50% + 24px) 48px 48px;
   overflow: hidden;
   background:
     radial-gradient(circle at 28% 24%, rgba(255, 255, 255, 0.46), transparent 22%),
@@ -1132,10 +1132,10 @@
 .location__card {
   position: relative;
   z-index: 2;
-  width: min(570px, calc(100% - 48px));
-  min-height: 800px;
-  margin-left: auto;
-  padding: 100px 7vw 80px 72px;
+  width: calc((100% - 144px) / 2);
+  min-height: calc(var(--home-panel-height, 800px) - 96px);
+  margin: 48px 48px 48px auto;
+  padding: clamp(48px, 5vw, 88px);
   background: var(--cream);
 }
 
@@ -1199,14 +1199,18 @@
 
 .archive-feature > a {
   display: grid;
-  grid-template-columns: 1.08fr 0.92fr;
-  min-height: 580px;
+  grid-template-columns: minmax(0, 520px) minmax(0, 1fr);
+  min-height: 480px;
   background: var(--cream);
 }
 
 .archive-feature__image {
   position: relative;
-  min-height: 580px;
+  width: 100%;
+  max-width: 520px;
+  min-height: 0;
+  aspect-ratio: var(--media-card-ratio);
+  align-self: center;
   overflow: hidden;
   background: var(--sand);
 }
@@ -1277,7 +1281,7 @@
 
 .archive-card__image {
   position: relative;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: var(--media-card-ratio);
   margin-bottom: 22px;
   overflow: hidden;
   background: var(--sand);
@@ -1325,7 +1329,7 @@
 
 .bulletin-feature {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 34%);
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
   gap: clamp(32px, 7vw, 96px);
   align-items: center;
   min-height: 400px;
@@ -1386,7 +1390,9 @@
 .bulletin-feature__visual {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 5;
+  max-width: 300px;
+  aspect-ratio: var(--media-portrait-ratio);
+  justify-self: end;
   overflow: hidden;
   transform: rotate(3deg);
   box-shadow: 0 24px 50px rgba(26, 36, 31, 0.17);
@@ -1551,7 +1557,12 @@
   font-weight: 700;
 }
 
-.pastor-message__grid,
+.pastor-message__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10%;
+}
+
 .church-introduction__grid,
 .denomination-section__grid {
   display: grid;
@@ -1561,6 +1572,8 @@
 
 .pastor-message__portrait {
   align-self: start;
+  width: 100%;
+  max-width: 560px;
   aspect-ratio: 4 / 5;
   overflow: hidden;
   background: #a8b3a4;
@@ -1782,7 +1795,7 @@
 
 .minister-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 400px));
   gap: 44px;
   margin-top: 80px;
 }
@@ -1791,6 +1804,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 100%;
+  max-width: 400px;
   aspect-ratio: 4 / 5;
   padding: 26px;
   background:
@@ -2018,13 +2033,17 @@
     gap: 5%;
   }
 
-  .archive-feature > a,
+  .archive-feature > a {
+    min-height: 460px;
+  }
+
   .archive-feature__image {
-    min-height: 520px;
+    max-width: 480px;
+    min-height: 0;
   }
 
   .bulletin-feature {
-    grid-template-columns: minmax(0, 1fr) minmax(210px, 32%);
+    grid-template-columns: minmax(0, 1fr) minmax(210px, 280px);
     gap: 38px;
     padding: 46px;
   }
@@ -2034,8 +2053,11 @@
   }
 
   .location__card {
-    width: 510px;
-    padding-left: 58px;
+    padding: 48px;
+  }
+
+  .minister-grid {
+    grid-template-columns: repeat(2, minmax(0, 320px));
   }
 }
 
@@ -2060,17 +2082,30 @@
   }
 
   .home-page #main-content > section:not(.hero) {
-    min-height: 0;
+    min-height: var(--home-panel-height);
   }
 
   .home-page .hero {
-    height: 100dvh;
-    min-height: 100dvh;
+    height: var(--home-panel-height);
+    min-height: var(--home-panel-height);
     max-height: none;
   }
 
   .section {
     padding-block: 56px;
+  }
+
+  /* 홈은 한 섹션씩 읽는 흐름을 유지합니다. 작은 화면에서는 최신 이야기 하나에 집중합니다. */
+  .home-page .home-updates--stories .update-list {
+    display: none;
+  }
+
+  .home-page .worship.section {
+    padding-block: 36px;
+  }
+
+  .home-page .worship .schedule article {
+    min-height: 84px;
   }
 
   .site-header,
@@ -2472,7 +2507,8 @@
 
   .archive-feature__image {
     min-height: 0;
-    aspect-ratio: 4 / 4.6;
+    max-width: none;
+    aspect-ratio: var(--media-card-ratio);
   }
 
   .archive-feature__copy {
@@ -2533,7 +2569,7 @@
   }
 
   .bulletin-feature__visual {
-    width: min(280px, 86%);
+    width: min(220px, 70%);
     justify-self: center;
   }
 
@@ -2603,7 +2639,7 @@
     grid-template-columns: 1fr;
   }
 
-  .pastor-message__portrait { max-width: 300px; }
+  .pastor-message__portrait { max-width: 350px; }
 
   .pastor-message__copy {
     margin-top: 22px;
@@ -2662,6 +2698,10 @@
     margin-top: 56px;
   }
 
+  .minister-card__photo {
+    max-width: 300px;
+  }
+
   .worship-page-section {
     min-height: 0;
   }
@@ -2680,20 +2720,26 @@
   }
 
   .location {
-    display: flex;
-    flex-direction: column;
-    min-height: auto;
+    display: grid;
+    grid-template-rows: minmax(190px, 28dvh) minmax(0, 1fr);
+    min-height: var(--home-panel-height);
+    gap: 20px;
+    padding: 20px;
     background: var(--cream);
   }
 
   .location__map {
-    display: none;
+    position: relative;
+    inset: auto;
+    display: block;
+    min-height: 0;
   }
 
   .location__card {
     width: 100%;
-    min-height: auto;
-    padding: 48px 20px 56px;
+    min-height: 0;
+    margin: 0;
+    padding: 32px 24px;
   }
 
   .location__card h2 {

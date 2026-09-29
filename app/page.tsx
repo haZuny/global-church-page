@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ContentImagePlaceholder, ContentState } from "@/components/content-state/content-state";
-import { fallbackChurchInfo, getChurchInfo, getNewsEntries, getStories } from "@/lib/directus-content";
+import { contentImageUrl, fallbackChurchInfo, getChurchInfo, getNewsEntries, getStories } from "@/lib/directus-content";
 export const metadata: Metadata = { title: "함께 비전을 세우는 공동체" };
 export const dynamic = "force-dynamic";
 const Arrow = () => (
@@ -76,7 +76,7 @@ export default async function HomePage() {
           {latestStory ? <div className="home-updates__grid">
             <article className="latest-story">
               <Link href={`/stories/${latestStory.id}`} aria-label={`${latestStory.title} 이야기 보기`}>
-                <div className="latest-story__image">{latestStory.image ? <Image src={latestStory.image} alt={latestStory.alt} fill unoptimized sizes="(max-width: 780px) 100vw, 52vw"/> : <ContentImagePlaceholder label={`${latestStory.title} 이미지 준비 중`}/>}</div>
+                <div className="latest-story__image">{latestStory.image ? <Image src={contentImageUrl(latestStory.image, "home-preview")!} alt={latestStory.alt} fill unoptimized sizes="(max-width: 780px) 100vw, 52vw"/> : <ContentImagePlaceholder label={`${latestStory.title} 이미지 준비 중`}/>}</div>
                 <div className="latest-story__copy"><p><time dateTime={latestStory.dateTime}>{latestStory.date}</time></p><h3>{latestStory.title}</h3></div>
               </Link>
             </article>
@@ -131,7 +131,7 @@ export default async function HomePage() {
           </div>
           {latestNews ? <article className="latest-story latest-news-card">
             <Link href={`/news/${latestNews.href}`} aria-label={`${latestNews.title} 보기`}>
-              <div className="latest-story__image">{latestNews.image ? <Image src={latestNews.image} alt={latestNews.title} fill unoptimized sizes="(max-width: 780px) 100vw, 52vw"/> : <ContentImagePlaceholder label={`${latestNews.title} 이미지 준비 중`}/>}</div>
+              <div className="latest-story__image">{latestNews.image ? <Image src={contentImageUrl(latestNews.image, "home-preview")!} alt={latestNews.title} fill unoptimized sizes="(max-width: 780px) 100vw, 52vw"/> : <ContentImagePlaceholder label={`${latestNews.title} 이미지 준비 중`}/>}</div>
               <div className="latest-story__copy"><p><time dateTime={latestNews.dateTime}>{latestNews.date}</time><span>{latestNews.category}</span></p><h3>{latestNews.title}</h3></div>
             </Link>
           </article> : <ContentState title="아직 공개된 주보·소식이 없습니다." description="새 소식이 게시되면 이곳에서 바로 확인하실 수 있습니다."/>}
