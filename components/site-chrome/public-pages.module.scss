@@ -1274,9 +1274,9 @@
 
 .archive-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 80px 44px;
-  margin-top: 110px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 64px 28px;
+  margin-top: 82px;
 }
 
 .archive-card__image {
@@ -1305,10 +1305,17 @@
 .archive-card h2 {
   margin-top: 14px;
   font-family: var(--serif);
-  font-size: clamp(27px, 2.7vw, 38px);
+  font-size: clamp(24px, 2vw, 32px);
   font-weight: 600;
   letter-spacing: -0.055em;
   line-height: 1.3;
+}
+
+@media (max-width: 1060px) and (min-width: 761px) {
+  .archive-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 68px 36px;
+  }
 }
 
 .archive-card > a > div:last-child {

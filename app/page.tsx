@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ContentImagePlaceholder, ContentState } from "@/components/content-state/content-state";
-import { contentImageUrl, fallbackChurchInfo, getChurchInfo, getNewsEntries, getStories } from "@/lib/directus-content";
+import { contentImageUrl, fallbackChurchInfo, getChurchInfo, getNewsEntriesPage, getStoriesPage } from "@/lib/directus-content";
 export const metadata: Metadata = { title: "함께 비전을 세우는 공동체" };
 export const dynamic = "force-dynamic";
 const Arrow = () => (
@@ -21,10 +21,14 @@ const sundayServices = [
   { name: "3부 예배", detail: "청년·젊은 부부·청소년", time: "14:00" },
 ] as const;
 export default async function HomePage() {
-  const [churchResult, storiesResult, newsResult] = await Promise.allSettled([getChurchInfo(), getStories(), getNewsEntries()]);
+  const [churchResult, storiesResult, newsResult] = await Promise.allSettled([
+    getChurchInfo(),
+    getStoriesPage({ page: 1, pageSize: 3 }),
+    getNewsEntriesPage({ page: 1, pageSize: 1 }),
+  ]);
   const church = churchResult.status === "fulfilled" ? churchResult.value : fallbackChurchInfo;
-  const stories = storiesResult.status === "fulfilled" ? storiesResult.value : [];
-  const newsEntries = newsResult.status === "fulfilled" ? newsResult.value : [];
+  const stories = storiesResult.status === "fulfilled" ? storiesResult.value.items : [];
+  const newsEntries = newsResult.status === "fulfilled" ? newsResult.value.items : [];
   const latestStories = stories.slice(0, 3);
   const latestStory = latestStories[0];
   const latestNews = newsEntries[0];
