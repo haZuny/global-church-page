@@ -35,11 +35,9 @@
 .about :global(main > .about-hero) { order:1; }
 .about :global(main > .about-local-nav) { order:2; }
 .about :global(main > .pastor-message) { order:3; }
-.about :global(main > .church-introduction) { order:4; }
-.about :global(main > .vision-section) { order:5; }
-.about :global(main > .ministers-section) { order:6; }
-.about :global(main > .denomination-section) { order:7; }
-.about :global(main > .archive-bridge) { order:8; }
+.about :global(main > .ministers-section) { order:4; }
+.about :global(main > .denomination-section) { order:5; }
+.about :global(main > .archive-bridge) { order:6; }
 .about :global(.subpage main), .worship :global(.subpage main), .stories :global(.subpage main), .news :global(.subpage main), .sermons :global(.subpage main) { padding-top:86px; }
 
 .home :global(.reveal), .about :global(.reveal), .worship :global(.reveal), .stories :global(.reveal), .news :global(.reveal), .sermons :global(.reveal) { opacity:0; transform:translateY(34px); transition:opacity 820ms ease,transform 820ms cubic-bezier(.22,1,.36,1); }

@@ -19,6 +19,7 @@
     "cms:bulletin:relations": "node scripts/directus/apply-bulletin-media-relations.mjs",
     "cms:church:relations": "node scripts/directus/apply-church-info-relations.mjs",
     "cms:church:seed": "node scripts/directus/seed-church-information.mjs",
+    "cms:church:history:migrate": "node scripts/directus/migrate-denomination-history.mjs",
     "cms:worship:weekdays:migrate": "node scripts/directus/migrate-worship-weekdays.mjs",
     "cms:story:relations": "node scripts/directus/apply-story-media-relations.mjs",
     "cms:roles": "node scripts/directus/apply-operator-roles.mjs",

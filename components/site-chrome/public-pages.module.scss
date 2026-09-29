@@ -1559,11 +1559,34 @@
   gap: 10%;
 }
 
-.pastor-message__label > span {
-  color: var(--sage);
-  font-family: var(--serif);
-  font-size: 100px;
-  line-height: 1;
+.pastor-message__portrait {
+  align-self: start;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #a8b3a4;
+}
+
+.pastor-message__portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pastor-message__portrait > div {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 26px;
+  background: linear-gradient(145deg, transparent 54%, rgba(255, 255, 255, .16) 54% 55%, transparent 55%);
+  color: rgba(25, 33, 29, .56);
+}
+
+.pastor-message__portrait span,
+.pastor-message__portrait small {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .13em;
 }
 
 .pastor-message__copy {
@@ -1736,6 +1759,17 @@
   font-weight: 600;
   letter-spacing: -0.055em;
   line-height: 1.3;
+}
+
+.history-block + .history-block {
+  margin-top: 56px;
+  padding-top: 48px;
+  border-top: 1px solid var(--line);
+}
+
+.history-block > .eyebrow {
+  margin-bottom: 16px;
+  color: var(--forest-light);
 }
 
 .ministers-section {
@@ -2569,9 +2603,7 @@
     grid-template-columns: 1fr;
   }
 
-  .pastor-message__label > span {
-    display: none;
-  }
+  .pastor-message__portrait { max-width: 300px; }
 
   .pastor-message__copy {
     margin-top: 22px;
