@@ -1552,7 +1552,12 @@
   font-weight: 700;
 }
 
-.pastor-message__grid,
+.pastor-message__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10%;
+}
+
 .church-introduction__grid,
 .denomination-section__grid {
   display: grid;
@@ -1562,6 +1567,8 @@
 
 .pastor-message__portrait {
   align-self: start;
+  width: 100%;
+  max-width: 560px;
   aspect-ratio: 4 / 5;
   overflow: hidden;
   background: #a8b3a4;
@@ -1783,7 +1790,7 @@
 
 .minister-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 400px));
   gap: 44px;
   margin-top: 80px;
 }
@@ -1792,6 +1799,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 100%;
+  max-width: 400px;
   aspect-ratio: 4 / 5;
   padding: 26px;
   background:
@@ -2036,6 +2045,10 @@
 
   .location__card {
     padding: 48px;
+  }
+
+  .minister-grid {
+    grid-template-columns: repeat(2, minmax(0, 320px));
   }
 }
 
@@ -2616,7 +2629,7 @@
     grid-template-columns: 1fr;
   }
 
-  .pastor-message__portrait { max-width: 300px; }
+  .pastor-message__portrait { max-width: 350px; }
 
   .pastor-message__copy {
     margin-top: 22px;
@@ -2673,6 +2686,10 @@
     grid-template-columns: 1fr;
     gap: 68px;
     margin-top: 56px;
+  }
+
+  .minister-card__photo {
+    max-width: 300px;
   }
 
   .worship-page-section {
