@@ -8,7 +8,6 @@ export type NewsEntry = { kind: "bulletin" | "notice"; id: number; href: string;
 export type SermonEntry = { id: number; title: string; summary: string; scripture: string; preacher: string; date: string; dateTime: string; video?: string };
 export type ChurchInfo = { churchName: string; englishName: string; heroTitle: string; heroCopy: string; introduction: string; greetingTitle: string; greetingLead: string; greetingBody: string; pastorName: string; aboutTitle: string; visionTitle: string; visionIntro: string; visions: { title: string; body: string }[]; denominationName: string; denominationIntro: string; denominationDetail: string; address: string; showSermons: boolean; mapUrl?: string; phone?: string; transitInfo?: string; parkingInfo?: string };
 export type Minister = { id: number; name: string; role: string; description: string; photo?: string };
-export type WorshipService = { id: number; name: string; weekdays: string[]; time: string };
 
 export const fallbackChurchInfo: ChurchInfo = {
   churchName: "글로벌교회", englishName: "Global Community Church", heroTitle: "시흥에서 함께 예배하고 함께 자라는 공동체", heroCopy: "예배와 일상에서 함께 질문하고 자라갑니다.", introduction: "시흥에서 함께 예배하고 자라는 공동체입니다.", greetingTitle: "글로벌교회를 찾아주신 여러분을 환영합니다.", greetingLead: "처음 오신 분도 편안히 머물 수 있도록 돕겠습니다.", greetingBody: "", pastorName: "", aboutTitle: "시흥에서 함께 예배하고 함께 자라는 공동체", visionTitle: "", visionIntro: "", visions: [], denominationName: "", denominationIntro: "", denominationDetail: "", address: "주소를 준비하고 있습니다.", showSermons: false,
@@ -30,8 +29,6 @@ async function readSingleton<T>(collection: string): Promise<T> {
   if (!response.ok) throw new Error(`Directus ${collection} request failed: ${response.status}`);
   return (await response.json()).data;
 }
-
-const clockLabel = (value: string) => value.slice(0, 5);
 
 export async function getChurchInfo(): Promise<ChurchInfo> {
   const item = await readSingleton<any>("site_settings");
@@ -64,11 +61,6 @@ export async function getChurchInfo(): Promise<ChurchInfo> {
 export async function getMinisters(): Promise<Minister[]> {
   const items = await readCollection<any>("church_ministers?sort=sort&limit=-1");
   return items.map((item) => ({ id: item.id, name: item.name, role: item.role, description: item.description || "", photo: item.photo ? `${directusAssetsUrl}/assets/${item.photo}` : undefined }));
-}
-
-export async function getWorshipServices(): Promise<WorshipService[]> {
-  const items = await readCollection<any>("worship_services?sort=sort&limit=-1");
-  return items.map((item) => ({ id: item.id, name: item.name, weekdays: Array.isArray(item.weekdays) ? item.weekdays : [], time: clockLabel(item.start_time) }));
 }
 
 export async function getStories() {

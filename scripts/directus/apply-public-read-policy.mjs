@@ -10,6 +10,7 @@ if (!login.ok) throw new Error(loginBody.errors?.[0]?.message ?? "Directus login
 
 const request = async (path, method = "GET", body) => {
   const response = await fetch(`${baseUrl}${path}`, { method, headers: { authorization: `Bearer ${loginBody.data.access_token}`, "content-type": "application/json" }, body: body ? JSON.stringify(body) : undefined });
+  if (response.status === 204) return undefined;
   const responseBody = await response.json();
   if (!response.ok) throw new Error(responseBody.errors?.[0]?.message ?? `${method} ${path} failed.`);
   return responseBody.data;
@@ -19,12 +20,15 @@ const policies = await request("/policies");
 const publicPolicy = policies.find((policy) => policy.name === "$t:public_label");
 if (!publicPolicy) throw new Error("Directus public policy was not found.");
 
-const collections = ["worship_services", "stories", "sermons", "bulletins", "news_items", "church_ministers"];
+const collections = ["stories", "sermons", "bulletins", "news_items", "church_ministers"];
 const permissions = await request("/permissions");
 for (const collection of collections) {
   const existing = permissions.find((permission) => permission.policy === publicPolicy.id && permission.collection === collection && permission.action === "read");
   if (!existing) await request("/permissions", "POST", { collection, action: "read", fields: ["*"], permissions: { status: { _eq: "published" } }, policy: publicPolicy.id });
 }
+
+const legacyWorshipPermission = permissions.find((permission) => permission.policy === publicPolicy.id && permission.collection === "worship_services" && permission.action === "read");
+if (legacyWorshipPermission) await request(`/permissions/${legacyWorshipPermission.id}`, "DELETE");
 
 const siteSettingsPermission = permissions.find((permission) => permission.policy === publicPolicy.id && permission.collection === "site_settings" && permission.action === "read");
 if (!siteSettingsPermission) await request("/permissions", "POST", { collection: "site_settings", action: "read", fields: ["*"], permissions: {}, policy: publicPolicy.id });

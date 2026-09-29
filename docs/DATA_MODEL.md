@@ -62,20 +62,18 @@
 | `sort` | integer | 예 | 노출 순서 |
 | `status` | select | 예 | `draft` / `published` / `archived` |
 
-### `worship_services`
+### 이전 `worship_services`
 
-방문자가 확인할 예배 이름·요일·시간을 관리합니다.
+예배 시간은 실제 안내문과 일치해야 하므로 공개 웹 코드에 고정합니다. 기존 `worship_services` 컬렉션과 데이터는 이력 보존을 위해 남기되 Directus 관리자 메뉴에서 숨기며, 새 데이터도 만들지 않습니다.
 
-| 필드 | 형식 | 필수 | 설명 |
-| --- | --- | --- | --- |
-| `id` | uuid | 예 | 기본 키 |
-| `name` | string | 예 | 예배명 |
-| `weekdays` | multiple select | 예 | 월요일~주일, 복수 선택 가능한 예배 요일 |
-| `start_time` | select | 예 | 24시간제 `HH:mm`, 00:00~23:50 10분 단위 시작 시간 |
-| `sort` | select | 예 | 첫 번째~스무 번째 화면 노출 순서. 같은 순위를 선택하면 저장한 항목을 우선 배치하고 나머지는 뒤로 밀립니다. |
-| `status` | select | 예 | `draft` / `published` / `archived` |
+현재 공개 일정은 `app/page.tsx`에서 관리합니다.
 
-숨김 이력 필드: `audience`, `weekday`, `location`, `description`.
+- 주일예배 1부: 주일 09:00
+- 주일예배 2부: 주일 10:50
+- 주일예배 3부: 주일 14:00 (청년·젊은 부부·청소년)
+- 수요일 밤 예배: 수요일 20:00
+- 금요일 밤 기도회: 금요일 20:00
+- 매일 밤 기도회: 월요일·화요일·목요일 20:00
 
 ### `stories`
 
@@ -158,7 +156,7 @@
 
 ## 공개 역할·정책
 
-Directus 공개 역할에는 `site_settings`, `church_ministers`, `stories`, `story_media`, `sermons`, `bulletins`, `bulletin_media`, `news_items`, `worship_services`의 읽기만 허용합니다.
+Directus 공개 역할에는 `site_settings`, `church_ministers`, `stories`, `story_media`, `sermons`, `bulletins`, `bulletin_media`, `news_items`의 읽기만 허용합니다.
 
 - 콘텐츠 컬렉션의 공개 읽기 필터: `status = "published"`
 - `story_media`는 연결된 `story.status = "published"`일 때만 읽을 수 있게 설정합니다.

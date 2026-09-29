@@ -48,15 +48,6 @@ const church = {
 const existingChurch = await request("/items/site_settings");
 const missingChurchValues = Object.fromEntries(Object.entries(church).filter(([field]) => existingChurch[field] === null || existingChurch[field] === undefined || existingChurch[field] === ""));
 if (Object.keys(missingChurchValues).length > 0) await request("/items/site_settings", "PATCH", missingChurchValues);
-const currentServices = await request("/items/worship_services?limit=1");
-if (currentServices.length === 0) {
-  await request("/items/worship_services", "POST", [
-    { name: "주일예배", audience: "누구나", weekday: "주일", weekdays: ["주일"], start_time: "10:30:00", location: "예배당", description: "처음 오시는 분도 편안하게 참여할 수 있습니다.", sort: 1, status: "published" },
-    { name: "어린이예배", audience: "4세–초등학생", weekday: "주일", weekdays: ["주일"], start_time: "10:30:00", location: "꿈마루 1층", description: "어린이를 위한 예배입니다.", sort: 2, status: "published" },
-    { name: "청년예배", audience: "대학생·청년", weekday: "주일", weekdays: ["주일"], start_time: "14:00:00", location: "지유쓰", description: "대학생과 청년이 함께 드리는 예배입니다.", sort: 3, status: "published" },
-    { name: "수요기도회", audience: "누구나", weekday: "수요일", weekdays: ["수요일"], start_time: "19:30:00", location: "작은예배실 3층", description: "한 주 가운데 함께 기도하는 시간입니다.", sort: 4, status: "published" },
-  ]);
-}
 const settings = await request("/items/site_settings");
 const ministers = await request("/items/church_ministers?limit=1");
 if (ministers.length === 0) await request("/items/church_ministers", "POST", [

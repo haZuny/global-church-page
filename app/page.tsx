@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ContentImagePlaceholder, ContentState } from "@/components/content-state/content-state";
-import { fallbackChurchInfo, getChurchInfo, getNewsEntries, getStories, getWorshipServices } from "@/lib/directus-content";
+import { fallbackChurchInfo, getChurchInfo, getNewsEntries, getStories } from "@/lib/directus-content";
 export const metadata: Metadata = { title: "함께 비전을 세우는 공동체" };
 export const dynamic = "force-dynamic";
 const Arrow = () => (
@@ -10,10 +10,19 @@ const Arrow = () => (
     <path d="M4 10h11M11 6l4 4-4 4" />
   </svg>
 );
+const worshipSchedule = [
+  { name: "수요일 밤 예배", detail: "매주 수요일", time: "20:00" },
+  { name: "금요일 밤 기도회", detail: "매주 금요일", time: "20:00" },
+  { name: "매일 밤 기도회", detail: "매주 월요일 · 화요일 · 목요일", time: "20:00" },
+] as const;
+const sundayServices = [
+  { name: "1부 예배", detail: "", time: "09:00" },
+  { name: "2부 예배", detail: "", time: "10:50" },
+  { name: "3부 예배", detail: "청년·젊은 부부·청소년", time: "14:00" },
+] as const;
 export default async function HomePage() {
-  const [churchResult, servicesResult, storiesResult, newsResult] = await Promise.allSettled([getChurchInfo(), getWorshipServices(), getStories(), getNewsEntries()]);
+  const [churchResult, storiesResult, newsResult] = await Promise.allSettled([getChurchInfo(), getStories(), getNewsEntries()]);
   const church = churchResult.status === "fulfilled" ? churchResult.value : fallbackChurchInfo;
-  const services = servicesResult.status === "fulfilled" ? servicesResult.value : [];
   const stories = storiesResult.status === "fulfilled" ? storiesResult.value : [];
   const newsEntries = newsResult.status === "fulfilled" ? newsResult.value : [];
   const latestStories = stories.slice(0, 3);
@@ -96,15 +105,21 @@ export default async function HomePage() {
             <p>처음 오신 분도 별도 등록 없이 예배에 참여하실 수 있습니다.</p>
           </div>
           <div className="schedule">
-            {services.length ? services.map((service) => (
-              <article key={service.id}>
+            <article className="schedule__sunday">
+              <div className="schedule__sunday-heading"><p>주일예배</p><span>매주 주일</span></div>
+              <ul aria-label="주일예배 시간">
+                {sundayServices.map((service) => <li key={service.name}><div><strong>{service.name}</strong>{service.detail && <span>{service.detail}</span>}</div><time>{service.time}</time></li>)}
+              </ul>
+            </article>
+            {worshipSchedule.map((service) => (
+              <article key={service.name}>
                 <div>
                   <p>{service.name}</p>
-                  <span>매주 {service.weekdays.join(" · ")}</span>
+                  <span>{service.detail}</span>
                 </div>
                 <strong>{service.time}</strong>
               </article>
-            )) : <ContentState title="예배 시간을 준비하고 있습니다." description="정확한 예배 시간은 교회로 문의해 주세요."/>}
+            ))}
           </div>
         </div>
       </section>
