@@ -44,11 +44,13 @@
   color: var(--white);
 }
 
-.direction {
+.direction,
+.edge {
   min-width: 48px;
 }
 
-.pagination span.direction {
+.pagination span.direction,
+.pagination span.edge {
   opacity: 0.32;
 }
 
@@ -62,7 +64,8 @@
     gap: 2px;
   }
 
-  .direction {
+  .direction,
+  .edge {
     min-width: 42px;
   }
 }

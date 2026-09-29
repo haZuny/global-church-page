@@ -19,11 +19,13 @@ export function ContentPagination({ currentPage, totalPages, hrefForPage }: Cont
 
   return (
     <nav className={styles.pagination} aria-label="목록 페이지">
+      {currentPage > 1 ? <Link className={styles.edge} href={hrefForPage(1)} aria-label="첫 페이지">처음</Link> : <span className={styles.edge} aria-hidden="true">처음</span>}
       {currentPage > 1 ? <Link className={styles.direction} href={hrefForPage(currentPage - 1)} rel="prev" aria-label="이전 페이지">이전</Link> : <span className={styles.direction} aria-hidden="true">이전</span>}
       <ol>
         {pages.map((page) => <li key={page}><Link href={hrefForPage(page)} aria-label={`${page}페이지`} aria-current={page === currentPage ? "page" : undefined}>{page}</Link></li>)}
       </ol>
       {currentPage < totalPages ? <Link className={styles.direction} href={hrefForPage(currentPage + 1)} rel="next" aria-label="다음 페이지">다음</Link> : <span className={styles.direction} aria-hidden="true">다음</span>}
+      {currentPage < totalPages ? <Link className={styles.edge} href={hrefForPage(totalPages)} aria-label="마지막 페이지">마지막</Link> : <span className={styles.edge} aria-hidden="true">마지막</span>}
     </nav>
   );
 }
