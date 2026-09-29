@@ -162,6 +162,14 @@
 .stories :global(.archive-hero h1), .news :global(.archive-hero h1), .sermons :global(.archive-hero h1), .worship :global(.archive-hero h1) { font-family:var(--serif); font-size:clamp(62px,7vw,96px); font-weight:400; letter-spacing:-.075em; line-height:1.02; }
 .stories :global(.archive-hero__inner > p), .news :global(.archive-hero__inner > p), .sermons :global(.archive-hero__inner > p), .worship :global(.archive-hero__inner > p) { max-width:480px; padding-bottom:8px; color:rgba(255,255,255,.67); font-size:15px; }
 
+/* 소개·이야기·소식은 목록 진입 전용 헤더로 같은 컴팩트 높이를 사용합니다. */
+.about :global(.about-page .about-hero), .stories :global(.archive-hero), .news :global(.archive-hero) { min-height:340px; }
+.about :global(.about-page .about-hero__inner) { min-height:340px; padding-block:64px 46px; }
+.about :global(.about-page .about-hero h1), .stories :global(.archive-hero h1), .news :global(.archive-hero h1) { font-size:clamp(42px,4.3vw,60px); line-height:1.06; }
+.about :global(.about-page .about-hero__inner > p:last-child) { margin-top:18px; font-size:14px; }
+.stories :global(.archive-hero__inner), .news :global(.archive-hero__inner) { gap:8%; padding-block:60px 46px; }
+.stories :global(.archive-hero__inner > p), .news :global(.archive-hero__inner > p) { font-size:14px; }
+
 .sermons :global(.sermon-archive) { background:var(--paper); }
 .sermons :global(.sermon-feature) { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr); gap:8%; align-items:center; }
 .sermons :global(.sermon-feature .sermon__content) { min-width:0; }
@@ -199,6 +207,12 @@
   .stories :global(.archive-hero__inner), .news :global(.archive-hero__inner), .sermons :global(.archive-hero__inner), .worship :global(.archive-hero__inner) { grid-template-columns:1fr; gap:44px; align-content:end; padding-block:76px 64px; }
   .stories :global(.archive-hero h1), .news :global(.archive-hero h1), .sermons :global(.archive-hero h1), .worship :global(.archive-hero h1) { font-size:clamp(44px,12vw,60px); }
   .stories :global(.archive-hero__inner > p), .news :global(.archive-hero__inner > p), .sermons :global(.archive-hero__inner > p), .worship :global(.archive-hero__inner > p) { font-size:14px; }
+  .about :global(.about-page .about-hero), .stories :global(.archive-hero), .news :global(.archive-hero) { min-height:300px; }
+  .about :global(.about-page .about-hero__inner) { min-height:300px; padding-block:54px 34px; }
+  .about :global(.about-page .about-hero h1), .stories :global(.archive-hero h1), .news :global(.archive-hero h1) { font-size:clamp(38px,10vw,48px); line-height:1.08; }
+  .about :global(.about-page .about-hero__inner > p:last-child) { margin-top:14px; font-size:13px; }
+  .stories :global(.archive-hero__inner), .news :global(.archive-hero__inner) { gap:18px; padding-block:54px 34px; }
+  .stories :global(.archive-hero__inner > p), .news :global(.archive-hero__inner > p) { font-size:13px; }
   .sermons :global(.sermon-feature) { grid-template-columns:1fr; gap:56px; }
   .sermons :global(.sermon-feature .sermon-art) { min-height:300px; aspect-ratio:16 / 10; }
 }
