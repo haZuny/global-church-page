@@ -416,6 +416,65 @@
   letter-spacing: -0.03em;
 }
 
+.schedule__sunday {
+  display: grid !important;
+  grid-template-columns: minmax(150px, .45fr) 1fr;
+  align-items: stretch !important;
+  padding-block: 24px;
+}
+
+.schedule__sunday-heading {
+  align-self: center;
+  padding-right: 30px;
+}
+
+.schedule__sunday-heading p {
+  font-family: var(--serif);
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
+.schedule__sunday-heading span,
+.schedule__sunday li span {
+  display: block;
+  margin-top: 7px;
+  color: rgba(255, 255, 255, .58);
+  font-size: 12px;
+}
+
+.schedule__sunday ul {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.schedule__sunday li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 47px;
+}
+
+.schedule__sunday li + li {
+  border-top: 1px solid rgba(255, 255, 255, .12);
+}
+
+.schedule__sunday li strong {
+  display: block;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+}
+
+.schedule__sunday li time {
+  font-family: var(--serif);
+  font-size: 24px;
+  letter-spacing: -.03em;
+}
+
 .schedule__primary {
   min-height: 205px !important;
 }
@@ -2270,6 +2329,27 @@
 
   .schedule article strong {
     font-size: 23px;
+  }
+
+  .schedule__sunday {
+    grid-template-columns: 1fr;
+    padding-block: 0 14px;
+  }
+
+  .schedule__sunday-heading {
+    padding: 20px 0 14px;
+  }
+
+  .schedule__sunday-heading p {
+    font-size: 20px;
+  }
+
+  .schedule__sunday ul {
+    border-top: 1px solid rgba(255, 255, 255, .12);
+  }
+
+  .schedule__sunday li {
+    min-height: 48px;
   }
 
   .schedule__primary > strong {

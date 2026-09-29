@@ -11,12 +11,14 @@ const Arrow = () => (
   </svg>
 );
 const worshipSchedule = [
-  { name: "주일예배 1부", detail: "매주 주일", time: "09:00" },
-  { name: "주일예배 2부", detail: "매주 주일", time: "10:50" },
-  { name: "주일예배 3부", detail: "매주 주일 · 청년·젊은 부부·청소년", time: "14:00" },
   { name: "수요일 밤 예배", detail: "매주 수요일", time: "20:00" },
   { name: "금요일 밤 기도회", detail: "매주 금요일", time: "20:00" },
   { name: "매일 밤 기도회", detail: "매주 월요일 · 화요일 · 목요일", time: "20:00" },
+] as const;
+const sundayServices = [
+  { name: "1부 예배", detail: "", time: "09:00" },
+  { name: "2부 예배", detail: "", time: "10:50" },
+  { name: "3부 예배", detail: "청년·젊은 부부·청소년", time: "14:00" },
 ] as const;
 export default async function HomePage() {
   const [churchResult, storiesResult, newsResult] = await Promise.allSettled([getChurchInfo(), getStories(), getNewsEntries()]);
@@ -103,6 +105,12 @@ export default async function HomePage() {
             <p>처음 오신 분도 별도 등록 없이 예배에 참여하실 수 있습니다.</p>
           </div>
           <div className="schedule">
+            <article className="schedule__sunday">
+              <div className="schedule__sunday-heading"><p>주일예배</p><span>매주 주일</span></div>
+              <ul aria-label="주일예배 시간">
+                {sundayServices.map((service) => <li key={service.name}><div><strong>{service.name}</strong>{service.detail && <span>{service.detail}</span>}</div><time>{service.time}</time></li>)}
+              </ul>
+            </article>
             {worshipSchedule.map((service) => (
               <article key={service.name}>
                 <div>
