@@ -50,7 +50,6 @@ export function SiteFooter({ info }: { info: FooterInfo }) {
         <div className={styles.bottom}>
           <div className={styles.links}>
             {defaultLinks.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
-            <span>개인정보처리방침 준비 중</span>
           </div>
           <div className={styles.meta}>
             <p className={styles.copyright}>© {new Date().getFullYear()} {info.churchName.toUpperCase()}</p>
