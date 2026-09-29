@@ -27,7 +27,7 @@
 
 ### `site_settings` (singleton, 관리자 표기: 교회정보)
 
-공개 사이트의 소개 문구와 방문 정보를 한곳에서 관리합니다. 여러 명의 교역자는 이 항목 안의 `교역자` 목록에서 추가·수정합니다.
+공개 사이트의 소개 문구와 방문 정보를 한곳에서 관리합니다. 담임목사 정보는 이 항목에서, 부교역자는 이 항목 안의 `섬기는 이` 목록에서 관리합니다.
 
 | 필드 | 형식 | 필수 | 설명 |
 | --- | --- | --- | --- |
@@ -35,10 +35,11 @@
 | `english_name` | string | 아니오 | 영문 교회명 |
 | `hero_title`, `hero_copy` | text | 아니오 | 첫 화면의 제목과 소개 |
 | `introduction` | text | 예 | 한 문장 소개 |
-| `greeting_*`, `pastor_name` | text/string | 아니오 | 환영 인사와 담임목사 이름. `greeting_body`는 리치 텍스트 본문 |
+| `greeting_title`, `greeting_lead`, `greeting_body` | text | 아니오 | 담임목사의 목회 철학 및 교회 소개. `greeting_body`는 리치 텍스트 본문 |
+| `pastor_name`, `pastor_role`, `pastor_photo` | string/string/M2O file | 아니오 | 담임목사 이름·직함·프로필 사진 |
 | `about_title` | text | 아니오 | 교회 소개 페이지 제목 |
-| `vision_title`, `vision_intro`, `vision_*_title`, `vision_*_body` | text | 아니오 | 비전 제목·소개·세 가지 가치. 소개와 설명은 리치 텍스트 본문 |
-| `denomination_*` | text/string | 아니오 | 교단·노회와 소개 문구. `denomination_detail`은 리치 텍스트 본문 |
+| `denomination_name`, `denomination_detail` | string/text | 아니오 | 소속 교단·노회와 소개. `denomination_detail`은 리치 텍스트 본문 |
+| `church_history` | text | 아니오 | 개척 배경과 주요 발자취를 담는 리치 텍스트 연혁 |
 | `address` | text | 예 | 도로명 주소 |
 | `map_url` | string | 아니오 | 승인된 외부 지도 링크 |
 | `phone` | string | 아니오 | 대표 연락처 |
@@ -46,11 +47,11 @@
 | `parking_info` | text | 아니오 | 주차 안내 |
 | `show_sermons` | boolean | 아니오 | 공개 사이트의 설교 메뉴 노출 여부. 기본값은 숨김이며, 설교 콘텐츠를 운영할 때만 켭니다. |
 
-숨김 이력 필드: `about_body`, `about_body_secondary`, `region`, `vision_statement`, `ministers_intro`, `visit_notice`. 현재 화면과 관리 양식에서는 사용하지 않습니다.
+숨김 이력 필드: `about_body`, `about_body_secondary`, `region`, `vision_*`, `denomination_intro`, `ministers_intro`, `visit_notice`. 현재 화면과 관리 양식에서는 사용하지 않습니다.
 
 ### `church_ministers`
 
-`교회정보` 안에서 관리하는 교역자 목록입니다. 별도 콘텐츠 메뉴에는 노출하지 않습니다.
+`교회정보` 안에서 관리하는 부교역자 목록입니다. 담임목사는 `site_settings`의 전용 필드에서 관리하며, 별도 콘텐츠 메뉴에는 노출하지 않습니다.
 
 | 필드 | 형식 | 필수 | 설명 |
 | --- | --- | --- | --- |

@@ -23,6 +23,7 @@ const church = {
   greeting_lead: "글로벌교회는 말씀을 배우고 삶을 나누며, 각 사람 안에 주신 비전을 함께 세워가는 교회입니다.",
   greeting_body: "글로벌교회는 경기도 시흥에 자리한 공동체입니다. 예배 가운데 말씀을 배우고, 서로의 삶을 살피며, 어린이부터 다음 세대와 장년에 이르기까지 함께 믿음의 걸음을 이어갑니다.\n\n우리는 예배에서 들은 말씀이 한 주의 관계와 일상으로 이어지기를 소망합니다. 지역 이웃과 기쁨과 어려움을 함께 나누고, 각 사람에게 주신 부르심을 발견하도록 서로를 응원합니다.",
   pastor_name: "권오선",
+  pastor_role: "담임목사",
   about_title: "시흥에서 함께 예배하고 함께 자라는 공동체",
   about_body: "글로벌교회는 경기도 시흥에 자리한 대한예수교장로회(합동) 소속 교회입니다. 말씀과 성령의 능력 안에서 복음을 누리고 전하며, 한 사람의 믿음이 가정과 이웃을 살리는 삶으로 이어지기를 소망합니다.",
   about_body_secondary: "규모나 프로그램보다 사람을 소중히 여깁니다. 어린이와 청소년, 청년과 장년이 각자의 자리에서 믿음을 배우고, 세대가 서로를 응원하며, 지역 안에서 사랑을 구체적으로 나누는 교회를 지향합니다.",
@@ -39,6 +40,7 @@ const church = {
   denomination_name: "대한예수교장로회(합동) 서울강서노회",
   denomination_intro: "대한예수교장로회(합동) 서울강서노회 소속입니다.",
   denomination_detail: "글로벌교회는 개혁주의 신앙 전통 안에서 성경을 신앙과 삶의 기준으로 삼으며, 예수 그리스도의 복음과 교회의 공공성을 소중히 여깁니다.\n\n지역 교회가 홀로 서기보다 같은 신앙을 고백하는 교회들과 책임 있게 협력하고, 건강한 목회와 선교를 함께 이어가기 위해 노회와 교단의 질서 안에 있습니다.",
+  church_history: "글로벌교회는 시흥 지역에서 예배와 말씀의 공동체를 세우기 위해 개척되었습니다.\n\n개척의 구체적인 연도와 주요 발자취는 확인되는 순서대로 이곳에 기록합니다.",
   ministers_intro: "말씀과 삶의 자리에서 함께 걸으며, 각 사람의 이야기에 귀 기울이는 교역자들입니다.",
   address: "경기도 시흥시 하상로8번길 12-1",
   map_url: "https://share.google/0DF5W8pHQeUwgCa4t",
@@ -55,4 +57,4 @@ if (ministers.length === 0) await request("/items/church_ministers", "POST", [
   { site_settings: settings.id, name: "김민", role: "교육목사", description: "교육과 다음 세대 사역을 통해 믿음의 성장을 돕고 공동체를 섬깁니다.", sort: 2, status: "published" },
 ]);
 
-console.log("Church information and worship services seeded.");
+console.log("Church information seeded.");

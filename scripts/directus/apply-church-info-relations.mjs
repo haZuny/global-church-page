@@ -17,6 +17,9 @@ const directusFileFields = await request("/fields/directus_files");
 if (!directusFileFields.some((field) => field.field === "minister_photo_files")) {
   await request("/fields/directus_files", "POST", { field: "minister_photo_files", type: "alias", meta: { special: ["o2m"], hidden: true, interface: "list-o2m", readonly: true }, schema: null });
 }
+if (!directusFileFields.some((field) => field.field === "pastor_photo_files")) {
+  await request("/fields/directus_files", "POST", { field: "pastor_photo_files", type: "alias", meta: { special: ["o2m"], hidden: true, interface: "list-o2m", readonly: true }, schema: null });
+}
 
 const settingsFields = await request("/fields/site_settings");
 const ministersField = settingsFields.find((field) => field.field === "ministers");
@@ -34,6 +37,10 @@ const addRelation = async (field, relatedCollection, meta, schema) => {
 };
 await addRelation("site_settings", "site_settings", { many_collection: "church_ministers", many_field: "site_settings", one_collection: "site_settings", one_field: "ministers", one_deselect_action: "delete" }, { table: "church_ministers", column: "site_settings", foreign_key_table: "site_settings", foreign_key_column: "id", on_delete: "CASCADE", on_update: "NO ACTION" });
 await addRelation("photo", "directus_files", { many_collection: "church_ministers", many_field: "photo", one_collection: "directus_files", one_field: "minister_photo_files", one_deselect_action: "nullify" }, { table: "church_ministers", column: "photo", foreign_key_table: "directus_files", foreign_key_column: "id", on_delete: "SET NULL", on_update: "NO ACTION" });
+
+if (!relations.some((relation) => relation.collection === "site_settings" && relation.field === "pastor_photo")) {
+  await request("/relations", "POST", { collection: "site_settings", field: "pastor_photo", related_collection: "directus_files", meta: { many_collection: "site_settings", many_field: "pastor_photo", one_collection: "directus_files", one_field: "pastor_photo_files", one_deselect_action: "nullify" }, schema: { table: "site_settings", column: "pastor_photo", foreign_key_table: "directus_files", foreign_key_column: "id", on_delete: "SET NULL", on_update: "NO ACTION" } });
+}
 
 const ministerFields = await request("/fields/church_ministers");
 for (const field of ministerFields.filter((item) => ["site_settings", "sort"].includes(item.field))) {

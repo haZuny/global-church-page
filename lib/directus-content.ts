@@ -6,11 +6,11 @@ export type BulletinAttachment = { id: string; name: string; title?: string; typ
 export type BulletinEntry = { id: number; title: string; date: string; category: string; image: string; body: string; attachments: BulletinAttachment[] };
 export type NewsEntry = { kind: "bulletin" | "notice"; id: number; href: string; title: string; date: string; dateTime: string; category: string; image?: string; body: string; attachments?: BulletinAttachment[] };
 export type SermonEntry = { id: number; title: string; summary: string; scripture: string; preacher: string; date: string; dateTime: string; video?: string };
-export type ChurchInfo = { churchName: string; englishName: string; heroTitle: string; heroCopy: string; introduction: string; greetingTitle: string; greetingLead: string; greetingBody: string; pastorName: string; aboutTitle: string; visionTitle: string; visionIntro: string; visions: { title: string; body: string }[]; denominationName: string; denominationIntro: string; denominationDetail: string; address: string; showSermons: boolean; mapUrl?: string; phone?: string; transitInfo?: string; parkingInfo?: string };
+export type ChurchInfo = { churchName: string; englishName: string; heroTitle: string; heroCopy: string; introduction: string; pastorTitle: string; pastorLead: string; pastorBody: string; pastorName: string; pastorRole: string; pastorPhoto?: string; aboutTitle: string; denominationName: string; denominationDetail: string; historyBody: string; address: string; showSermons: boolean; mapUrl?: string; phone?: string; transitInfo?: string; parkingInfo?: string };
 export type Minister = { id: number; name: string; role: string; description: string; photo?: string };
 
 export const fallbackChurchInfo: ChurchInfo = {
-  churchName: "글로벌교회", englishName: "Global Community Church", heroTitle: "시흥에서 함께 예배하고 함께 자라는 공동체", heroCopy: "예배와 일상에서 함께 질문하고 자라갑니다.", introduction: "시흥에서 함께 예배하고 자라는 공동체입니다.", greetingTitle: "글로벌교회를 찾아주신 여러분을 환영합니다.", greetingLead: "처음 오신 분도 편안히 머물 수 있도록 돕겠습니다.", greetingBody: "", pastorName: "", aboutTitle: "시흥에서 함께 예배하고 함께 자라는 공동체", visionTitle: "", visionIntro: "", visions: [], denominationName: "", denominationIntro: "", denominationDetail: "", address: "주소를 준비하고 있습니다.", showSermons: false,
+  churchName: "글로벌교회", englishName: "Global Community Church", heroTitle: "시흥에서 함께 예배하고 함께 자라는 공동체", heroCopy: "예배와 일상에서 함께 질문하고 자라갑니다.", introduction: "시흥에서 함께 예배하고 자라는 공동체입니다.", pastorTitle: "글로벌교회를 찾아주신 여러분을 환영합니다.", pastorLead: "처음 오신 분도 편안히 머물 수 있도록 돕겠습니다.", pastorBody: "", pastorName: "", pastorRole: "담임목사", aboutTitle: "시흥에서 함께 예배하고 함께 자라는 공동체", denominationName: "", denominationDetail: "", historyBody: "", address: "주소를 준비하고 있습니다.", showSermons: false,
 };
 
 const directusUrl = process.env.DIRECTUS_URL ?? "http://127.0.0.1:8055";
@@ -38,17 +38,16 @@ export async function getChurchInfo(): Promise<ChurchInfo> {
     heroTitle: item.hero_title || item.church_name,
     heroCopy: item.hero_copy || item.introduction,
     introduction: item.introduction,
-    greetingTitle: item.greeting_title || item.church_name,
-    greetingLead: item.greeting_lead || "",
-    greetingBody: plainTextToRichText(item.greeting_body),
+    pastorTitle: item.greeting_title || item.church_name,
+    pastorLead: item.greeting_lead || "",
+    pastorBody: plainTextToRichText(item.greeting_body),
     pastorName: item.pastor_name || "",
+    pastorRole: item.pastor_role || "담임목사",
+    pastorPhoto: item.pastor_photo ? `${directusAssetsUrl}/assets/${item.pastor_photo}` : undefined,
     aboutTitle: item.about_title || item.church_name,
-    visionTitle: item.vision_title || "",
-    visionIntro: plainTextToRichText(item.vision_intro),
-    visions: [[item.vision_one_title, item.vision_one_body], [item.vision_two_title, item.vision_two_body], [item.vision_three_title, item.vision_three_body]].filter(([title]) => title).map(([title, body]) => ({ title, body: plainTextToRichText(body) })),
     denominationName: item.denomination_name || "",
-    denominationIntro: item.denomination_intro || "",
     denominationDetail: plainTextToRichText(item.denomination_detail),
+    historyBody: plainTextToRichText(item.church_history),
     showSermons: Boolean(item.show_sermons),
     address: item.address,
     mapUrl: item.map_url || undefined,
