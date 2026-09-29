@@ -9,7 +9,7 @@
 .home :global(.home-page > .hero) { order:1; }
 .home :global(.home-page > .home-updates--stories) { order:2; }
 .home :global(.home-page > .worship) { order:3; }
-.home :global(.home-page > .home-updates--news) { order:4; background:#e5dccd; }
+.home :global(.home-page > .home-updates--news) { order:4; background:#dfece8; }
 .home :global(.home-page > .location) { order:5; }
 .home :global(.hero) { position:relative; min-height:var(--home-panel-height); height:var(--home-panel-height); max-height:none; overflow:hidden; background:var(--forest); color:var(--white); }
 .home :global(.home-updates) { display:flex; align-items:center; }
@@ -41,7 +41,7 @@
 }
 .home :global(.hero__image), .home :global(.hero__veil) { position:absolute; inset:0; width:100%; height:100%; }
 .home :global(.hero__image) { object-fit:cover; object-position:center 38%; animation:hero-arrive 1.4s cubic-bezier(.22,1,.36,1) both; }
-.home :global(.hero__veil) { background:linear-gradient(90deg,rgba(18,33,26,.86) 0%,rgba(18,33,26,.57) 34%,rgba(18,33,26,.05) 68%),linear-gradient(0deg,rgba(10,22,17,.45) 0%,transparent 36%); }
+.home :global(.hero__veil) { background:linear-gradient(90deg,rgba(10,46,62,.88) 0%,rgba(10,46,62,.58) 34%,rgba(10,46,62,.05) 68%),linear-gradient(0deg,rgba(8,36,51,.46) 0%,transparent 36%); }
 .home :global(.hero__content) { position:relative; z-index:2; display:flex; flex-direction:column; justify-content:center; height:100%; padding-bottom:50px; }
 .home :global(.hero__eyebrow) { color:rgba(255,255,255,.72); opacity:1; }
 .home :global(.hero h1) { max-width:760px; font-family:var(--serif); font-size:clamp(58px,6.1vw,94px); font-weight:400; letter-spacing:-.07em; line-height:1.06; text-wrap:balance; opacity:1; animation:none; }
@@ -96,14 +96,14 @@
 .stories :global(.archive-filter-empty), .news :global(.archive-filter-empty) { text-align:center; }
 .stories :global(.archive-filter-reset), .news :global(.archive-filter-reset) { display:inline-flex; gap:10px; margin-top:22px; padding-bottom:4px; border-bottom:1px solid var(--ink); color:var(--ink); font-size:14px; font-weight:700; }
 
-.about :global(.archive-bridge), .stories :global(.archive-bridge), .news :global(.archive-bridge) { padding-block:68px; background:#e7dfd1; }
+.about :global(.archive-bridge), .stories :global(.archive-bridge), .news :global(.archive-bridge) { padding-block:68px; background:#e5efec; }
 .about :global(.archive-bridge .page-shell), .stories :global(.archive-bridge .page-shell), .news :global(.archive-bridge .page-shell) { display:flex; align-items:center; justify-content:space-between; }
 .about :global(.archive-bridge p), .stories :global(.archive-bridge p), .news :global(.archive-bridge p) { color:var(--muted); font-size:14px; }
 .about :global(.archive-bridge a), .stories :global(.archive-bridge a), .news :global(.archive-bridge a) { font-family:var(--serif); font-size:28px; font-weight:600; letter-spacing:-.04em; }
 .about :global(.archive-bridge a span), .stories :global(.archive-bridge a span), .news :global(.archive-bridge a span) { margin-left:18px; }
 
 .stories :global(.detail-hero), .sermons :global(.detail-hero) { background:var(--cream); }
-.news :global(.detail-hero--bulletin) { background:#e7dfd1; }
+.news :global(.detail-hero--bulletin) { background:#e5efec; }
 .stories :global(.detail-hero__inner), .news :global(.detail-hero__inner), .sermons :global(.detail-hero__inner) { max-width:1040px; padding-block:72px 86px; }
 .stories :global(.detail-back), .news :global(.detail-back), .sermons :global(.detail-back) { display:inline-flex; align-items:center; gap:10px; margin-bottom:74px; color:var(--muted); font-size:13px; font-weight:700; }
 .stories :global(.detail-back:hover), .news :global(.detail-back:hover), .sermons :global(.detail-back:hover) { color:var(--ink); }
@@ -132,7 +132,7 @@
 .news :global(.bulletin-document__toolbar) { display:flex; align-items:center; justify-content:space-between; min-height:70px; padding-inline:28px; border-bottom:1px solid var(--line); }
 .news :global(.bulletin-document__toolbar p) { font-size:12px; font-weight:700; }
 .news :global(.bulletin-document__toolbar span) { color:var(--muted); font-size:12px; }
-.news :global(.bulletin-document__page) { position:relative; aspect-ratio:var(--media-document-ratio); overflow:hidden; background:#fdf9e9; }
+.news :global(.bulletin-document__page) { position:relative; aspect-ratio:var(--media-document-ratio); overflow:hidden; background:#fbfdfc; }
 .news :global(.bulletin-document__page img) { width:100%; height:100%; object-fit:contain; }
 .news :global(.resource-attachments) { max-width:940px; margin:86px auto 0; padding-top:34px; border-top:1px solid var(--line); }
 .news :global(.resource-attachments__heading) { max-width:620px; }
@@ -145,7 +145,7 @@
 .news :global(.resource-downloads a), .news :global(.resource-images div > a) { display:inline-flex; flex:none; gap:10px; padding-bottom:3px; border-bottom:1px solid var(--ink); color:var(--ink); font-size:13px; font-weight:700; }
 .news :global(.resource-images) { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:28px; margin-top:42px; }
 .news :global(.resource-images article) { overflow:hidden; border:1px solid var(--line); background:var(--cream); }
-.news :global(.resource-images__preview) { position:relative; display:block; overflow:hidden; aspect-ratio:var(--media-card-ratio); background:#e7dfd1; }
+.news :global(.resource-images__preview) { position:relative; display:block; overflow:hidden; aspect-ratio:var(--media-card-ratio); background:#e5efec; }
 .news :global(.resource-images__preview img) { width:100%; height:100%; object-fit:cover; transition:transform .3s ease; }
 .news :global(.resource-images__preview:hover img) { transform:scale(1.03); }
 .news :global(.resource-images__preview span) { position:absolute; right:14px; bottom:12px; padding:7px 9px; background:rgba(25,33,29,.78); color:var(--white); font-size:11px; font-weight:700; }
@@ -153,10 +153,10 @@
 .news :global(.resource-images div > a) { margin-top:18px; }
 
 .stories :global(.archive-hero), .news :global(.archive-hero), .sermons :global(.archive-hero), .worship :global(.archive-hero) { display:flex; min-height:500px; color:var(--white); }
-.stories :global(.archive-hero--stories) { background:radial-gradient(circle at 83% 14%,rgba(176,194,173,.2),transparent 27%),var(--forest); }
-.news :global(.archive-hero--news) { background:linear-gradient(125deg,transparent 53%,rgba(255,255,255,.07) 53% 54%,transparent 54%),#27352f; }
-.sermons :global(.archive-hero--sermons) { background:radial-gradient(circle at 74% 36%,rgba(169,183,163,.18),transparent 28%),#1c3028; }
-.worship :global(.archive-hero--worship) { background:linear-gradient(125deg,transparent 53%,rgba(255,255,255,.07) 53% 54%,transparent 54%),#20382e; }
+.stories :global(.archive-hero--stories) { background:radial-gradient(circle at 83% 14%,rgba(100,197,118,.2),transparent 27%),var(--forest); }
+.news :global(.archive-hero--news) { background:linear-gradient(125deg,transparent 53%,rgba(255,255,255,.07) 53% 54%,transparent 54%),#16475a; }
+.sermons :global(.archive-hero--sermons) { background:radial-gradient(circle at 74% 36%,rgba(100,197,118,.18),transparent 28%),#103849; }
+.worship :global(.archive-hero--worship) { background:linear-gradient(125deg,transparent 53%,rgba(255,255,255,.07) 53% 54%,transparent 54%),#15576b; }
 .stories :global(.archive-hero__inner), .news :global(.archive-hero__inner), .sermons :global(.archive-hero__inner), .worship :global(.archive-hero__inner) { display:grid; grid-template-columns:1.15fr .85fr; gap:10%; align-items:end; padding-block:94px 78px; }
 .stories :global(.archive-hero .eyebrow), .news :global(.archive-hero .eyebrow), .sermons :global(.archive-hero .eyebrow), .worship :global(.archive-hero .eyebrow) { color:var(--sage); }
 .stories :global(.archive-hero h1), .news :global(.archive-hero h1), .sermons :global(.archive-hero h1), .worship :global(.archive-hero h1) { font-family:var(--serif); font-size:clamp(62px,7vw,96px); font-weight:400; letter-spacing:-.075em; line-height:1.02; }
