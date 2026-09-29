@@ -23,12 +23,12 @@
 }
 
 .mark {
+  display: inline-block;
+  flex: none;
   width: 32px;
-  height: 32px;
-  margin-right: 13px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.2;
+  height: 34px;
+  margin-right: 11px;
+  background: url("../../assets/images/logo1.png") center / 88px no-repeat;
 }
 
 .details {
