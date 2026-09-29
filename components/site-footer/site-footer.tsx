@@ -24,10 +24,7 @@ export function SiteFooter({ info }: { info: FooterInfo }) {
       <div className="page-shell">
         <div className={styles.top}>
           <Link className={styles.brand} href="/#home">
-            <svg className={styles.mark} viewBox="0 0 32 32" aria-hidden="true">
-              <path d="M16 3.5v25M7 12.5h18" />
-              <circle cx="16" cy="16" r="13.5" />
-            </svg>
+            <span className={styles.mark} aria-hidden="true" />
             <span>{info.churchName}</span>
           </Link>
 
