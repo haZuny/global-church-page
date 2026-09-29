@@ -11,7 +11,8 @@ export const dynamic = "force-dynamic";
 
 const storyFilters = ["전체", "장년부", "교육부서"] as const;
 type StoryFilter = typeof storyFilters[number];
-const pageSize = 6;
+// The first entry is featured, leaving six cards to fill the two-row desktop grid.
+const pageSize = 7;
 
 const pageNumber = (value: string | undefined) => {
   const parsed = Number(value);
