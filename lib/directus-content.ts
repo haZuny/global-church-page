@@ -23,7 +23,7 @@ const assetUrl = (file: unknown) => {
 };
 const imageTransforms: Record<ContentImagePreset, { width: number; height?: number; fit?: "cover" | "contain"; quality: number }> = {
   "home-preview": { width: 1280, height: 800, fit: "cover", quality: 82 },
-  "story-feature": { width: 1440, height: 1800, fit: "cover", quality: 84 },
+  "story-feature": { width: 1200, height: 900, fit: "cover", quality: 84 },
   "story-card": { width: 960, height: 720, fit: "cover", quality: 80 },
   "story-detail": { width: 1600, height: 1200, fit: "cover", quality: 86 },
   "news-feature": { width: 960, height: 1200, fit: "cover", quality: 84 },
