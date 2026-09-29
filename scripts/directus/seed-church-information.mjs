@@ -41,6 +41,7 @@ const church = {
   denomination_intro: "대한예수교장로회(합동) 서울강서노회 소속입니다.",
   denomination_detail: "글로벌교회는 개혁주의 신앙 전통 안에서 성경을 신앙과 삶의 기준으로 삼으며, 예수 그리스도의 복음과 교회의 공공성을 소중히 여깁니다.\n\n지역 교회가 홀로 서기보다 같은 신앙을 고백하는 교회들과 책임 있게 협력하고, 건강한 목회와 선교를 함께 이어가기 위해 노회와 교단의 질서 안에 있습니다.",
   church_history: "글로벌교회는 시흥 지역에서 예배와 말씀의 공동체를 세우기 위해 개척되었습니다.\n\n개척의 구체적인 연도와 주요 발자취는 확인되는 순서대로 이곳에 기록합니다.",
+  denomination_history: "<h3>소속 교단·노회</h3><p>대한예수교장로회(합동) 서울강서노회</p><p>글로벌교회는 개혁주의 신앙 전통 안에서 성경을 신앙과 삶의 기준으로 삼으며, 예수 그리스도의 복음과 교회의 공공성을 소중히 여깁니다.</p><h3>글로벌교회 연혁</h3><p>글로벌교회는 시흥 지역에서 예배와 말씀의 공동체를 세우기 위해 개척되었습니다. 개척의 구체적인 연도와 주요 발자취는 확인되는 순서대로 이곳에 기록합니다.</p>",
   ministers_intro: "말씀과 삶의 자리에서 함께 걸으며, 각 사람의 이야기에 귀 기울이는 교역자들입니다.",
   address: "경기도 시흥시 하상로8번길 12-1",
   map_url: "https://share.google/0DF5W8pHQeUwgCa4t",
@@ -51,10 +52,9 @@ const existingChurch = await request("/items/site_settings");
 const missingChurchValues = Object.fromEntries(Object.entries(church).filter(([field]) => existingChurch[field] === null || existingChurch[field] === undefined || existingChurch[field] === ""));
 if (Object.keys(missingChurchValues).length > 0) await request("/items/site_settings", "PATCH", missingChurchValues);
 const settings = await request("/items/site_settings");
-const ministers = await request("/items/church_ministers?limit=1");
-if (ministers.length === 0) await request("/items/church_ministers", "POST", [
-  { site_settings: settings.id, name: "권오선", role: "담임목사", description: "말씀과 예배 사역을 중심으로 교회의 방향과 공동체를 섬깁니다.", sort: 1, status: "published" },
-  { site_settings: settings.id, name: "김민", role: "교육목사", description: "교육과 다음 세대 사역을 통해 믿음의 성장을 돕고 공동체를 섬깁니다.", sort: 2, status: "published" },
+const ministers = await request(`/items/church_ministers?filter[site_settings][_eq]=${settings.id}&limit=-1`);
+if (!ministers.some((minister) => minister.role !== settings.pastor_role)) await request("/items/church_ministers", "POST", [
+  { site_settings: settings.id, name: "김민", role: "교육목사", description: "교육과 다음 세대 사역을 통해 믿음의 성장을 돕고 공동체를 섬깁니다.", sort: 1, status: "published" },
 ]);
 
 console.log("Church information seeded.");
