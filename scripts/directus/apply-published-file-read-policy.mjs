@@ -27,6 +27,7 @@ const requiredRelations = [
   ["bulletins", "document_file", "bulletin_document_files"],
   ["sermons", "video_file", "sermon_video_files"],
   ["church_ministers", "photo", "minister_photo_files"],
+  ["site_settings", "pastor_photo", "pastor_photo_files"],
 ];
 const relations = await request("/relations");
 for (const [collection, field, alias] of requiredRelations) {
@@ -47,6 +48,7 @@ const publishedFileFilter = {
     { bulletin_document_files: { _some: { status: { _eq: "published" } } } },
     { sermon_video_files: { _some: { status: { _eq: "published" } } } },
     { minister_photo_files: { _some: { status: { _eq: "published" } } } },
+    { pastor_photo_files: { _some: { id: { _nnull: true } } } },
   ],
 };
 const permissions = await request("/permissions");

@@ -16,6 +16,10 @@ export const fallbackChurchInfo: ChurchInfo = {
 const directusUrl = process.env.DIRECTUS_URL ?? "http://127.0.0.1:8055";
 const directusAssetsUrl = process.env.DIRECTUS_ASSETS_URL ?? directusUrl;
 const dateLabel = (value: string) => value.slice(0, 10).replaceAll("-", ". ");
+const assetUrl = (file: unknown) => {
+  const id = typeof file === "string" ? file : typeof file === "object" && file !== null && "id" in file && typeof file.id === "string" ? file.id : undefined;
+  return id ? `${directusAssetsUrl}/assets/${id}` : undefined;
+};
 export const isImageAttachment = (attachment: BulletinAttachment) => attachment.type.startsWith("image/") || /\.(avif|gif|jpe?g|png|svg|webp)$/i.test(attachment.name);
 
 async function readCollection<T>(path: string): Promise<T[]> {
@@ -43,7 +47,7 @@ export async function getChurchInfo(): Promise<ChurchInfo> {
     pastorBody: plainTextToRichText(item.greeting_body),
     pastorName: item.pastor_name || "",
     pastorRole: item.pastor_role || "담임목사",
-    pastorPhoto: item.pastor_photo ? `${directusAssetsUrl}/assets/${item.pastor_photo}` : undefined,
+    pastorPhoto: assetUrl(item.pastor_photo),
     aboutTitle: item.about_title || item.church_name,
     denominationHistory: plainTextToRichText(item.denomination_history),
     showSermons: Boolean(item.show_sermons),
@@ -57,7 +61,7 @@ export async function getChurchInfo(): Promise<ChurchInfo> {
 
 export async function getMinisters(): Promise<Minister[]> {
   const items = await readCollection<any>("church_ministers?filter[status][_eq]=published&sort=sort&limit=-1");
-  return items.map((item) => ({ id: item.id, name: item.name, role: item.role, description: item.description || "", photo: item.photo ? `${directusAssetsUrl}/assets/${item.photo}` : undefined }));
+  return items.map((item) => ({ id: item.id, name: item.name, role: item.role, description: item.description || "", photo: assetUrl(item.photo) }));
 }
 
 export async function getStories() {
