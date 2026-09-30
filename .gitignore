@@ -1,6 +1,8 @@
 node_modules/
 .next/
 .next-dev/
+test-results/
+playwright-report/
 tsconfig.tsbuildinfo
 .DS_Store
 **/.DS_Store
