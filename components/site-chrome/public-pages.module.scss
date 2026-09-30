@@ -257,20 +257,6 @@
   margin-left: 12px;
 }
 
-.demo-label {
-  position: absolute;
-  right: 30px;
-  top: 115px;
-  z-index: 3;
-  padding: 7px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 999px;
-  color: rgba(255, 255, 255, 0.76);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-}
-
 .intro {
   background: var(--paper);
 }
@@ -2321,11 +2307,6 @@ img.minister-card__photo {
     left: 20px;
     width: fit-content;
     transform: none;
-  }
-
-  .demo-label {
-    top: 88px;
-    right: 20px;
   }
 
   .intro__grid,

@@ -51,7 +51,6 @@
 .home :global(.hero__quick-info > *) { display:flex; flex-direction:column; justify-content:center; padding-inline:28px; border-left:1px solid rgba(25,33,29,.13); }
 .home :global(.hero__quick-info > a) { flex-direction:row; align-items:center; gap:24px; background:var(--forest); color:var(--white); font-size:13px; font-weight:700; }
 .home :global(.hero__bottom-link) { position:absolute; bottom:44px; left:50%; z-index:3; transform:translateX(-50%); padding-bottom:5px; border-bottom:1px solid rgba(255,255,255,.72); color:var(--white); font-size:13px; font-weight:700; }
-.home :global(.demo-label) { position:absolute; right:30px; top:115px; z-index:3; padding:7px 10px; border:1px solid rgba(255,255,255,.35); border-radius:999px; color:rgba(255,255,255,.76); font-size:9px; font-weight:700; letter-spacing:.16em; }
 @keyframes hero-arrive { from { transform:scale(1.04); opacity:.35; } to { transform:scale(1); opacity:1; } }
 @keyframes copy-arrive { from { transform:translateY(18px); opacity:0; } to { transform:translateY(0); opacity:1; } }
 
