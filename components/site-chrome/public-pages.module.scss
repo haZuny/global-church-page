@@ -963,116 +963,14 @@
   position: absolute;
   inset: 48px calc(50% + 24px) 48px 48px;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 28% 24%, rgba(255, 255, 255, 0.46), transparent 22%),
-    #dce1d7;
+  background: #dce1d7;
 }
 
-.map-road {
-  position: absolute;
-  background: #f4f1e9;
-  box-shadow: 0 0 0 1px rgba(38, 55, 45, 0.04);
-}
-
-.map-road--one {
-  top: 45%;
-  left: -10%;
-  width: 78%;
-  height: 35px;
-  transform: rotate(-7deg);
-}
-
-.map-road--two {
-  top: -15%;
-  left: 28%;
-  width: 30px;
-  height: 110%;
-  transform: rotate(14deg);
-}
-
-.map-road--three {
-  top: 20%;
-  left: 4%;
-  width: 55%;
-  height: 17px;
-  transform: rotate(36deg);
-}
-
-.map-block {
-  position: absolute;
-  border: 1px solid rgba(43, 63, 51, 0.12);
-  background: rgba(245, 244, 237, 0.48);
-}
-
-.map-block--one {
-  top: 16%;
-  left: 6%;
-  width: 19%;
-  height: 20%;
-  transform: rotate(-7deg);
-}
-
-.map-block--two {
-  bottom: 14%;
-  left: 14%;
-  width: 22%;
-  height: 24%;
-  transform: rotate(5deg);
-}
-
-.map-block--three {
-  top: 18%;
-  left: 42%;
-  width: 12%;
-  height: 18%;
-  transform: rotate(4deg);
-}
-
-.map-water {
-  position: absolute;
-  right: 35%;
-  bottom: -30%;
-  width: 20%;
-  height: 105%;
-  transform: rotate(-19deg);
-  border-radius: 50%;
-  background: rgba(125, 156, 161, 0.35);
-}
-
-.map-pin {
-  position: absolute;
-  top: 47%;
-  left: 32%;
-  transform: translate(-50%, -100%);
-  filter: drop-shadow(0 8px 10px rgba(25, 33, 29, 0.18));
-}
-
-.map-pin svg {
-  width: 48px;
-  fill: var(--forest);
-  stroke: var(--cream);
-  stroke-width: 1.4;
-}
-
-.map-pin circle {
-  fill: var(--cream);
-}
-
-.map-label {
-  position: absolute;
-  color: rgba(25, 33, 29, 0.48);
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.map-label--one {
-  top: 27%;
-  left: 16%;
-}
-
-.map-label--two {
-  bottom: 23%;
-  left: 43%;
+.location__map iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
 .location__card {
@@ -2692,10 +2590,6 @@ img.minister-card__photo {
 
   .location__card h2 {
     font-size: 44px;
-  }
-
-  .map-pin {
-    left: 48%;
   }
 
   .site-footer {
