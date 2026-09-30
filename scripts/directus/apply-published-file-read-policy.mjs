@@ -23,8 +23,6 @@ const request = async (path, method = "GET", body) => {
 const requiredRelations = [
   ["story_media", "file", "story_media_files"],
   ["bulletin_media", "file", "bulletin_media_files"],
-  ["stories", "cover_image", "story_cover_files"],
-  ["bulletins", "document_file", "bulletin_document_files"],
   ["sermons", "video_file", "sermon_video_files"],
   ["church_ministers", "photo", "minister_photo_files"],
   ["site_settings", "pastor_photo", "pastor_photo_files"],
@@ -44,8 +42,6 @@ const publishedFileFilter = {
   _or: [
     { story_media_files: { _some: { story: { status: { _eq: "published" } } } } },
     { bulletin_media_files: { _some: { bulletin: { status: { _eq: "published" } } } } },
-    { story_cover_files: { _some: { status: { _eq: "published" } } } },
-    { bulletin_document_files: { _some: { status: { _eq: "published" } } } },
     { sermon_video_files: { _some: { status: { _eq: "published" } } } },
     { minister_photo_files: { _some: { status: { _eq: "published" } } } },
     { pastor_photo_files: { _some: { id: { _nnull: true } } } },

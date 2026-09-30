@@ -120,9 +120,9 @@ export async function getMinisters(): Promise<Minister[]> {
 
 function mapStories(items: any[], mediaItems: any[]) {
   return items.map((item): StoryEntry => {
-    const media = mediaItems.filter((media) => media.story === item.id).map((media) => ({ image: `${directusAssetsUrl}/assets/${media.file}`, alt: media.alt || item.title }));
+    const media = mediaItems.filter((media) => media.story === item.id).map((media) => ({ image: `${directusAssetsUrl}/assets/${media.file}`, alt: item.title }));
     const latestMedia = media.at(-1);
-    return { id: item.id, category: item.category === "교육부서" ? "교육부서" : "장년부", date: dateLabel(item.published_at), dateTime: item.published_at.slice(0, 10), title: item.title, image: latestMedia?.image ?? "", alt: latestMedia?.alt ?? item.title, body: plainTextToRichText(item.body), media };
+    return { id: item.id, category: item.category === "교육부서" ? "교육부서" : "장년부", date: dateLabel(item.published_at), dateTime: item.published_at.slice(0, 10), title: item.title, image: latestMedia?.image ?? "", alt: item.title, body: plainTextToRichText(item.body), media };
   });
 }
 
@@ -213,7 +213,7 @@ export async function getNewsEntry(key: string) {
 
 export async function getSermons() {
   const items = await readCollection<any>("sermons?sort=-sermon_date&limit=-1");
-  return items.map((item): SermonEntry => ({ id: item.id, title: item.title, summary: item.summary, scripture: item.scripture, preacher: item.preacher, date: dateLabel(item.sermon_date), dateTime: item.sermon_date, video: item.video_file ? `${directusAssetsUrl}/assets/${item.video_file}` : item.video_url || undefined }));
+  return items.map((item): SermonEntry => ({ id: item.id, title: item.title, summary: item.summary, scripture: item.scripture, preacher: item.preacher, date: dateLabel(item.sermon_date), dateTime: item.sermon_date, video: item.video_file ? `${directusAssetsUrl}/assets/${item.video_file}` : undefined }));
 }
 
 export async function getSermon(id: string) {

@@ -50,7 +50,7 @@ const viewerRole = await ensureRole({
   parent: null,
 });
 
-const contentCollections = ["stories", "story_media", "bulletins", "bulletin_media", "news_items", "sermons", "worship_services", "church_ministers", "site_settings"];
+const contentCollections = ["stories", "story_media", "bulletins", "bulletin_media", "news_items", "sermons", "church_ministers", "site_settings"];
 const statisticsCollections = ["directus_dashboards", "directus_panels", "directus_activity"];
 const fileCollections = ["directus_files", "directus_folders"];
 const operatorUserValidation = { role: { _in: [managerRole.id, viewerRole.id] } };
