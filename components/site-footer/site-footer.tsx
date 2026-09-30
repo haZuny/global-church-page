@@ -31,7 +31,7 @@ export function SiteFooter({ info }: { info: FooterInfo }) {
           <dl className={styles.details}>
             <div>
               <dt>주소</dt>
-              <dd>{info.address || "주소 안내 준비 중"}</dd>
+              <dd className={styles.address}>{info.address || "주소 안내 준비 중"}</dd>
             </div>
             <div>
               <dt>연락처</dt>
