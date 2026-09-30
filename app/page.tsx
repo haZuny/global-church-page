@@ -173,7 +173,7 @@ export default async function HomePage() {
           </address>
           <dl>
             <div>
-              <dt>지하철</dt>
+              <dt>대중교통</dt>
               <dd>{church.transitInfo || "대중교통 정보는 교회에 문의해 주세요."}</dd>
             </div>
             <div>
