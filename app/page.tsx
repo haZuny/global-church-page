@@ -70,7 +70,7 @@ export default async function HomePage() {
           <div className="home-updates__heading">
             <div className="section-heading">
               <p className="eyebrow">CHURCH STORIES</p>
-              <h2 id="home-stories-title">함께 살아가는<br/>이야기</h2>
+              <h2 id="home-stories-title">우리의 소중한 순간들</h2>
             </div>
             <p>최근의 사진과 기록으로 글로벌교회의 오늘을 전합니다.</p>
           </div>
@@ -99,8 +99,6 @@ export default async function HomePage() {
           <div className="section-heading">
             <p className="eyebrow">SUNDAY WITH US</p>
             <h2 id="worship-title">
-              이번 주
-              <br />
               예배 시간
             </h2>
             <p>처음 오신 분도 별도 등록 없이 예배에 참여하실 수 있습니다.</p>
@@ -127,7 +125,7 @@ export default async function HomePage() {
       <section className="home-updates home-updates--news section" aria-labelledby="home-news-title">
         <div className="page-shell">
           <div className="home-updates__heading">
-            <div className="section-heading"><p className="eyebrow">BULLETIN &amp; NEWS</p><h2 id="home-news-title">이번 주<br/>주보·소식</h2></div>
+            <div className="section-heading"><p className="eyebrow">BULLETIN &amp; NEWS</p><h2 id="home-news-title">주보와 소식</h2></div>
             <p>가장 최근에 발행된 주보 또는 공지입니다.</p>
           </div>
           {latestNews ? <article className="latest-story latest-news-card">
@@ -173,7 +171,7 @@ export default async function HomePage() {
           </address>
           <dl>
             <div>
-              <dt>지하철</dt>
+              <dt>대중교통</dt>
               <dd>{church.transitInfo || "대중교통 정보는 교회에 문의해 주세요."}</dd>
             </div>
             <div>
