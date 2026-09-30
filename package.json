@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "start": "next start",
     "lint": "next lint",
     "cms:bootstrap": "directus bootstrap",
@@ -28,10 +30,11 @@
     "next": "15.5.25",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "sass": "1.86.3",
-    "sanitize-html": "^2.13.1"
+    "sanitize-html": "^2.13.1",
+    "sass": "1.86.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@types/node": "22.15.2",
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
