@@ -1,0 +1,39 @@
+services:
+  directus:
+    image: directus/directus:11.3.5
+    container_name: global-church-directus
+    restart: unless-stopped
+    init: true
+    env_file:
+      - .env.docker
+    ports:
+      - "127.0.0.1:8056:8055"
+    environment:
+      DB_CLIENT: sqlite3
+      DB_FILENAME: /directus/database/directus.sqlite
+      STORAGE_LOCATIONS: local
+      STORAGE_LOCAL_ROOT: /directus/uploads
+      CORS_ENABLED: "true"
+      ROOT_REDIRECT: ./admin
+      MAX_PAYLOAD_SIZE: 100mb
+    volumes:
+      - directus-database:/directus/database
+      - directus-uploads:/directus/uploads
+      - directus-extensions:/directus/extensions
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          node -e "fetch('http://127.0.0.1:8055/server/health').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+volumes:
+  directus-database:
+    name: global-church-directus-database
+  directus-uploads:
+    name: global-church-directus-uploads
+  directus-extensions:
+    name: global-church-directus-extensions
