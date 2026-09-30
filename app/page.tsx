@@ -32,6 +32,7 @@ export default async function HomePage() {
   const latestStories = stories.slice(0, 3);
   const latestStory = latestStories[0];
   const latestNews = newsEntries[0];
+  const mapEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(church.address)}&z=17&output=embed`;
   return (
     <main id="main-content" tabIndex={-1} className="home-page">
       <section className="hero" id="home" aria-labelledby="hero-title">
@@ -142,22 +143,14 @@ export default async function HomePage() {
         id="location"
         aria-labelledby="location-title"
       >
-        <div className="location__map" aria-hidden="true">
-          <div className="map-road map-road--one" />
-          <div className="map-road map-road--two" />
-          <div className="map-road map-road--three" />
-          <div className="map-block map-block--one" />
-          <div className="map-block map-block--two" />
-          <div className="map-block map-block--three" />
-          <div className="map-water" />
-          <div className="map-pin">
-            <svg viewBox="0 0 32 40">
-              <path d="M16 39S3 25.5 3 14.5a13 13 0 1 1 26 0C29 25.5 16 39 16 39Z" />
-              <circle cx="16" cy="14" r="5" />
-            </svg>
-          </div>
-          <span className="map-label map-label--one">시흥시</span>
-          <span className="map-label map-label--two">글로벌교회</span>
+        <div className="location__map">
+          <iframe
+            title={`${church.churchName} 위치 지도`}
+            src={mapEmbedUrl}
+            loading="lazy"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          />
         </div>
         <div className="location__card">
           <p className="eyebrow">VISIT US</p>
