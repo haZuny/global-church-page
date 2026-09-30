@@ -1,14 +1,14 @@
 :root {
-  --ink: #19211d;
-  --forest: #17392d;
-  --forest-light: #2d5545;
-  --sage: #a9b7a3;
-  --cream: #f2eee5;
-  --paper: #fbfaf6;
-  --sand: #ded5c4;
+  --ink: #162033;
+  --forest: #31465a;
+  --forest-light: #238fd0;
+  --sage: #91ad83;
+  --cream: #eef2f8;
+  --paper: #f6f8fc;
+  --sand: #dce5f0;
   --white: #ffffff;
-  --line: rgba(25, 33, 29, 0.16);
-  --muted: #69716c;
+  --line: rgba(22, 32, 51, 0.14);
+  --muted: #617086;
   --shell: min(1240px, calc(100vw - 96px));
   --serif: "Iowan Old Style", "AppleMyungjo", "Noto Serif KR", Georgia, serif;
   --sans: Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
