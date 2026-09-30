@@ -49,7 +49,7 @@ export default async function HomePage() {
           <p className="eyebrow hero__eyebrow">{church.englishName}</p>
           <h1 id="hero-title">
             {church.heroTitle.split(" ").slice(0, -2).join(" ") || church.heroTitle}
-            {church.heroTitle.includes(" ") && <><br />{church.heroTitle.split(" ").slice(-2).join(" ")}</>}
+            {church.heroTitle.includes(" ") && <>{" "}<br />{church.heroTitle.split(" ").slice(-2).join(" ")}</>}
           </h1>
           <p className="hero__copy">
             {church.heroCopy}
