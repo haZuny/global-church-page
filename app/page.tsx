@@ -66,7 +66,6 @@ export default async function HomePage() {
             <Arrow />
           </Link>
         </div>
-        <span className="demo-label">CONCEPT DEMO</span>
       </section>
       <section className="home-updates home-updates--stories section" aria-labelledby="home-stories-title">
         <div className="page-shell">
