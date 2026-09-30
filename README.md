@@ -368,6 +368,12 @@ npm run test:e2e
 
 GitHub Actions에서도 `main` 푸시와 풀 리퀘스트마다 같은 테스트를 실행합니다.
 
+## 검색 노출 준비
+
+배포 도메인이 확정되면 `.env`의 `NEXT_PUBLIC_SITE_URL`에 대표 주소를 `https://`로 입력합니다. 이 주소를 기준으로 canonical URL, Open Graph 공유 미리보기, `robots.txt`, `sitemap.xml`, 교회 구조화 데이터가 생성됩니다.
+
+배포 후에는 Google Search Console과 네이버 서치어드바이저에 같은 대표 도메인을 등록하고, 각 서비스가 발급한 소유 확인 코드를 `GOOGLE_SITE_VERIFICATION`, `NAVER_SITE_VERIFICATION`에 입력합니다. 두 도구에서 `https://도메인/sitemap.xml`을 제출하고 홈·교회 소개 페이지의 수집 상태를 확인합니다. 사이트맵·canonical은 검색 노출을 돕는 신호이며, 특정 검색어의 상위 노출을 보장하지는 않습니다.
+
 ## 현재 상태
 
 Next.js 전환 기반을 마련한 단계입니다. Directus CMS, 실제 교회 정보와 콘텐츠 운영 정책은 후속 이슈에서 연결합니다.

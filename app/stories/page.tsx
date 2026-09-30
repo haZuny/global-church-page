@@ -5,7 +5,7 @@ import { ContentPagination } from "@/components/content-pagination/content-pagin
 import { ContentImagePlaceholder, ContentState } from "@/components/content-state/content-state";
 import { contentImageUrl, getStoriesPage } from "@/lib/directus-content";
 
-export const metadata: Metadata = { title: "교회 이야기" };
+export const metadata: Metadata = { title: "교회 이야기", description: "글로벌교회가 함께 예배하고 배우며 자라가는 오늘의 기록을 전합니다.", alternates: { canonical: "/stories" } };
 
 export const dynamic = "force-dynamic";
 

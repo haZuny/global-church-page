@@ -3,7 +3,7 @@ import { contentImageUrl, getChurchInfo, getMinisters } from "@/lib/directus-con
 import { RichText } from "@/components/rich-text/rich-text";
 import { ContentState } from "@/components/content-state/content-state";
 
-export const metadata: Metadata = { title: "교회 소개" };
+export const metadata: Metadata = { title: "교회 소개", description: "글로벌교회의 목회 철학, 섬기는 이, 교단과 연혁을 소개합니다.", alternates: { canonical: "/about" } };
 export const dynamic = "force-dynamic";
 
 export default async function AboutPage() {

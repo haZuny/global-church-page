@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ContentState } from "@/components/content-state/content-state";
 import { getSermons } from "@/lib/directus-content";
 
-export const metadata: Metadata = { title: "설교" };
+export const metadata: Metadata = { title: "설교", description: "글로벌교회의 최근 설교와 성경 본문을 확인하세요.", alternates: { canonical: "/sermons" } };
 export const dynamic = "force-dynamic";
 
 export default async function SermonsPage() {

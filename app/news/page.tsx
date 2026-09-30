@@ -5,7 +5,7 @@ import { ContentPagination } from "@/components/content-pagination/content-pagin
 import { ContentState } from "@/components/content-state/content-state";
 import { contentImageUrl, getNewsEntriesPage } from "@/lib/directus-content";
 
-export const metadata: Metadata = { title: "주보·소식" };
+export const metadata: Metadata = { title: "주보·소식", description: "글로벌교회의 최신 주보, 공지와 자료를 확인하세요.", alternates: { canonical: "/news" } };
 
 export const dynamic = "force-dynamic";
 const newsFilters = ["전체", "주보", "공지", "자료"] as const;
