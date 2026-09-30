@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ContentState } from "@/components/content-state/content-state";
 import { contentImageUrl, getNewsEntry, isImageAttachment } from "@/lib/directus-content";
 import { RichText } from "@/components/rich-text/rich-text";
+import { absoluteUrl } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
 const formatFileSize = (size?: number) => {
@@ -15,7 +16,7 @@ const formatFileSize = (size?: number) => {
 };
 const formatFileType = (name: string, type: string) => name.includes(".") ? name.split(".").at(-1)?.toUpperCase() || "파일" : type.split("/").at(-1)?.toUpperCase() || "파일";
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> { const { slug } = await params; try { return { title: (await getNewsEntry(slug))?.title ?? "주보·소식" }; } catch { return { title: "주보·소식" }; } }
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> { const { slug } = await params; try { const entry = await getNewsEntry(slug); return { title: entry?.title ?? "주보·소식", description: entry ? `${entry.title} | 글로벌교회 주보·소식` : undefined, alternates: { canonical: `/news/${slug}` }, openGraph: entry ? { type: "article", url: absoluteUrl(`/news/${slug}`), title: entry.title, description: `${entry.title} | 글로벌교회 주보·소식`, images: entry.image ? [{ url: entry.image, alt: entry.title }] : undefined } : undefined }; } catch { return { title: "주보·소식", alternates: { canonical: `/news/${slug}` } }; } }
 export default async function NewsDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   let entry: Awaited<ReturnType<typeof getNewsEntry>>;

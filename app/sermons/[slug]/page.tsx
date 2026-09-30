@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ContentState } from "@/components/content-state/content-state";
+import { absoluteUrl } from "@/lib/site-url";
 import { getSermon } from "@/lib/directus-content";
 
 export const dynamic = "force-dynamic";
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> { const { slug } = await params; try { return { title: (await getSermon(slug))?.title ?? "설교" }; } catch { return { title: "설교" }; } }
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> { const { slug } = await params; try { const sermon = await getSermon(slug); return { title: sermon?.title ?? "설교", description: sermon ? `${sermon.scripture} · ${sermon.preacher} | 글로벌교회 설교` : undefined, alternates: { canonical: `/sermons/${slug}` }, openGraph: sermon ? { type: "article", url: absoluteUrl(`/sermons/${slug}`), title: sermon.title, description: `${sermon.scripture} · ${sermon.preacher} | 글로벌교회 설교` } : undefined }; } catch { return { title: "설교", alternates: { canonical: `/sermons/${slug}` } }; } }
 
 export default async function SermonDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
