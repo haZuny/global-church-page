@@ -58,13 +58,11 @@ export default async function HomePage() {
               교회 소개 더보기
               <Arrow />
             </Link>
+            <a className="hero__directions" href="#location">
+              길 찾기
+              <Arrow />
+            </a>
           </div>
-        </div>
-        <div className="hero__quick-info" aria-label="길 찾기">
-          <Link href="#location">
-            길 찾기
-            <Arrow />
-          </Link>
         </div>
       </section>
       <section className="home-updates home-updates--stories section" aria-labelledby="home-stories-title">
