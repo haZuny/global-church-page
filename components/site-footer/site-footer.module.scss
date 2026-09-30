@@ -59,6 +59,11 @@
   white-space: pre-line;
 }
 
+.address {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
 .details a {
   text-decoration: underline;
   text-decoration-color: rgba(255, 255, 255, 0.25);
