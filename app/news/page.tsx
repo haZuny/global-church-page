@@ -50,13 +50,13 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
             <div>
               <p className="eyebrow">BULLETIN &amp; NEWS</p>
               <h1 id="page-title">
-                주보와
+                주보와{" "}
                 <br />
                 글로벌 소식
               </h1>
             </div>
             <p>
-              매주 예배 순서와 공동체 일정을 확인하고,
+              매주 예배 순서와 공동체 일정을 확인하고,{" "}
               <br />
               앞으로 함께할 모임과 공지 내용을 살펴보세요.
             </p>
