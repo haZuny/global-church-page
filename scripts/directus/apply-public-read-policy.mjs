@@ -27,9 +27,6 @@ for (const collection of collections) {
   if (!existing) await request("/permissions", "POST", { collection, action: "read", fields: ["*"], permissions: { status: { _eq: "published" } }, policy: publicPolicy.id });
 }
 
-const legacyWorshipPermission = permissions.find((permission) => permission.policy === publicPolicy.id && permission.collection === "worship_services" && permission.action === "read");
-if (legacyWorshipPermission) await request(`/permissions/${legacyWorshipPermission.id}`, "DELETE");
-
 const siteSettingsPermission = permissions.find((permission) => permission.policy === publicPolicy.id && permission.collection === "site_settings" && permission.action === "read");
 if (!siteSettingsPermission) await request("/permissions", "POST", { collection: "site_settings", action: "read", fields: ["*"], permissions: {}, policy: publicPolicy.id });
 

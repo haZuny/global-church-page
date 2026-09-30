@@ -30,7 +30,7 @@ if (!storyFields.some((field) => field.field === "media")) {
 const mediaFields = await request("/fields/story_media");
 const fileField = mediaFields.find((field) => field.field === "file");
 if (fileField) await request("/fields/story_media/file", "PATCH", { meta: { ...fileField.meta, interface: "file-image", special: ["file"], required: true, translations: [{ language: "ko-KR", translation: "이미지 파일" }] } });
-for (const field of mediaFields.filter((item) => ["story", "alt", "caption", "sort"].includes(item.field))) {
+for (const field of mediaFields.filter((item) => ["story", "sort"].includes(item.field))) {
   await request(`/fields/story_media/${field.field}`, "PATCH", { meta: { ...field.meta, hidden: true, required: false }, schema: { ...field.schema, is_nullable: true } });
 }
 
