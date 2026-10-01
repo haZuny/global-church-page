@@ -1,0 +1,58 @@
+services:
+  web:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+        GOOGLE_SITE_VERIFICATION: ${GOOGLE_SITE_VERIFICATION:-}
+        NAVER_SITE_VERIFICATION: ${NAVER_SITE_VERIFICATION:-}
+    restart: unless-stopped
+    init: true
+    env_file:
+      - ${ENV_FILE:-.env.production}
+    environment:
+      NODE_ENV: production
+      DIRECTUS_URL: http://directus:8055
+    depends_on:
+      directus:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3000:3000"
+
+  directus:
+    image: directus/directus:11.3.5
+    restart: unless-stopped
+    init: true
+    env_file:
+      - ${ENV_FILE:-.env.production}
+    environment:
+      DB_CLIENT: sqlite3
+      DB_FILENAME: /directus/database/directus.sqlite
+      STORAGE_LOCATIONS: local
+      STORAGE_LOCAL_ROOT: /directus/uploads
+      CORS_ENABLED: "true"
+      ROOT_REDIRECT: ./admin
+      MAX_PAYLOAD_SIZE: 100mb
+    ports:
+      - "127.0.0.1:8055:8055"
+    volumes:
+      - directus-database:/directus/database
+      - directus-uploads:/directus/uploads
+      - directus-extensions:/directus/extensions
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          node -e "fetch('http://127.0.0.1:8055/server/health').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+volumes:
+  directus-database:
+    name: global-church-production-database
+  directus-uploads:
+    name: global-church-production-uploads
+  directus-extensions:
+    name: global-church-production-extensions

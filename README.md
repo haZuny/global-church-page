@@ -49,6 +49,8 @@ Docker Compose로 Directus의 SQLite 데이터베이스와 업로드 파일을 �
 
 `globalchurch.kr`의 운영 배포는 Cloudflare Tunnel을 기준으로 합니다. 변동 공인 IP와 공유기 포트 포워딩 없이 도메인을 연결하는 이유, 가비아 네임서버 변경, HTTPS·관리자 접근 보호, 실제 운영 호스트 구조는 [docs/DEPLOYMENT_NETWORK.md](docs/DEPLOYMENT_NETWORK.md)에 정리합니다.
 
+Ubuntu 서버의 Docker Compose 배포, 로컬 CMS 데이터 이전, 기동·업데이트 절차는 [docs/PRODUCTION_DEPLOYMENT.md](docs/PRODUCTION_DEPLOYMENT.md)를 참고합니다.
+
 ## 콘텐츠 아웃라인 (검토 초안)
 
 > 상태: **검토용 초안**. 이 구조에 대한 피드백을 확정한 뒤에만 공개 웹과 Directus 콘텐츠 모델을 수정합니다.

@@ -32,10 +32,9 @@ Cloudflare Tunnel도 서버 자체가 꺼져 있거나 인터넷이 끊기면 �
 | 호스트명 | 용도 | 공개 범위 |
 | --- | --- | --- |
 | `globalchurch.kr` | 방문자용 Next.js 공개 웹 | 공개 |
-| `cms.globalchurch.kr` | 공개 콘텐츠 API와 이미지·문서 자산 | 공개, published 콘텐츠만 |
-| `admin.globalchurch.kr` | Directus 관리자 화면 | Cloudflare Access 등으로 관리자만 |
+| `cms.globalchurch.kr` | Directus 공개 콘텐츠 API·이미지·문서 자산·관리 화면 | API·자산은 공개, `/admin`은 관리자만 |
 
-`cms.globalchurch.kr/admin`처럼 API 호스트로 관리자 화면을 우회하지 않게, 서버의 역방향 프록시에서 `cms` 호스트의 `/admin` 경로를 차단합니다. `admin` 호스트만 관리자 화면을 프록시하고 Cloudflare Access 정책을 적용합니다.
+호스트를 불필요하게 나누지 않습니다. Directus 관리 화면은 `cms.globalchurch.kr/admin`을 사용하고, Cloudflare Access를 이 경로에만 적용합니다. API와 자산은 같은 `cms` 호스트에서 공개하되 Directus 공개 역할은 `published` 콘텐츠 읽기만 허용합니다.
 
 ## 최초 연결 순서
 
@@ -64,17 +63,16 @@ Cloudflare Zero Trust 대시보드에서 Named Tunnel을 만들고, Linux 서버
 | Public Hostname | Tunnel origin | 역할 |
 | --- | --- | --- |
 | `globalchurch.kr` | `http://127.0.0.1:3000` | Next.js 공개 웹 |
-| `cms.globalchurch.kr` | `http://127.0.0.1:8080` | API·자산용 프록시 |
-| `admin.globalchurch.kr` | `http://127.0.0.1:8080` | 관리자용 프록시 |
+| `cms.globalchurch.kr` | `http://127.0.0.1:8055` | Directus API·자산·관리 화면 |
 
-`8080`은 서버 내부 Caddy/Nginx 역방향 프록시의 예시 포트입니다. 프록시는 요청 Host에 따라 Next.js와 Directus를 구분하고, `cms`의 `/admin`을 거부합니다. Cloudflare Tunnel은 이 프록시까지만 접속하며 공인 IP로 서비스 포트를 노출하지 않습니다.
+각 서비스 포트는 서버의 `127.0.0.1`에만 바인딩합니다. Cloudflare Tunnel만 이 루프백 주소로 접속하므로, Caddy/Nginx나 공인 포트 개방은 필요하지 않습니다.
 
 ### 4. HTTPS와 관리자 접근 보호
 
 - 방문자는 Cloudflare가 제공하는 HTTPS로 접속합니다. HTTP 요청은 HTTPS로 리다이렉트합니다.
-- `admin.globalchurch.kr`에는 Cloudflare Access 애플리케이션을 만들고 승인된 관리자 이메일만 허용합니다.
+- `cms.globalchurch.kr/admin*`에는 Cloudflare Access 애플리케이션을 만들고 승인된 관리자 이메일만 허용합니다.
 - Directus 자체 로그인과 Cloudflare Access는 함께 유지합니다. Access는 입구를 보호하고, Directus 역할·정책은 로그인 뒤 할 수 있는 일을 제한합니다.
-- `cms.globalchurch.kr`은 공개 읽기 API와 자산만 제공하며, Directus 공개 권한은 `published` 상태로 제한합니다.
+- `cms.globalchurch.kr`의 공개 API와 자산은 Directus 공개 권한을 `published` 상태로 제한합니다.
 
 ### 5. 애플리케이션 환경 변수 전환
 
@@ -85,8 +83,8 @@ Cloudflare Zero Trust 대시보드에서 Named Tunnel을 만들고, Linux 서버
 | `NEXT_PUBLIC_SITE_URL` | `https://globalchurch.kr` |
 | `DIRECTUS_URL` | `http://127.0.0.1:8055` 또는 Docker 내부 Directus 주소 |
 | `DIRECTUS_ASSETS_URL` | `https://cms.globalchurch.kr` |
-| `NEXT_PUBLIC_DIRECTUS_ADMIN_URL` | `https://admin.globalchurch.kr/admin` |
-| Directus `PUBLIC_URL` | `https://admin.globalchurch.kr` |
+| `NEXT_PUBLIC_DIRECTUS_ADMIN_URL` | `https://cms.globalchurch.kr/admin` |
+| Directus `PUBLIC_URL` | `https://cms.globalchurch.kr` |
 | Directus `CORS_ORIGIN` | `https://globalchurch.kr` |
 
 실제 Docker Compose에서 Next.js와 Directus가 같은 네트워크에 있으면 `DIRECTUS_URL`은 컨테이너 서비스명으로 변경할 수 있습니다. 공개 웹 브라우저가 이미지 파일을 내려받는 주소는 반드시 `https://cms.globalchurch.kr`을 사용합니다.
@@ -97,8 +95,7 @@ Cloudflare Zero Trust 대시보드에서 Named Tunnel을 만들고, Linux 서버
 
 - `https://globalchurch.kr`의 홈, 목록, 상세 화면과 이미지가 정상 표시되는가
 - `https://cms.globalchurch.kr`에서 published 콘텐츠와 파일만 공개되는가
-- `https://cms.globalchurch.kr/admin`이 차단되는가
-- `https://admin.globalchurch.kr/admin`이 Cloudflare Access와 Directus 로그인을 모두 요구하는가
+- `https://cms.globalchurch.kr/admin`이 Cloudflare Access와 Directus 로그인을 모두 요구하는가
 - HTTP 주소가 HTTPS로 전환되는가
 - Docker 재기동, 공유기 재기동 또는 Tunnel 재연결 뒤에도 도메인이 유지되는가
 
@@ -107,7 +104,7 @@ Cloudflare Zero Trust 대시보드에서 Named Tunnel을 만들고, Linux 서버
 1. Cloudflare 대시보드의 도메인 상태가 `Active`인지 확인합니다.
 2. Tunnel 상태가 `Healthy`인지 확인합니다.
 3. Linux 서버에서 `cloudflared` 서비스 로그와 Docker 컨테이너 상태를 확인합니다.
-4. Tunnel origin의 `127.0.0.1:3000`, `127.0.0.1:8080`이 서버 내부에서 응답하는지 확인합니다.
+4. Tunnel origin의 `127.0.0.1:3000`, `127.0.0.1:8055`가 서버 내부에서 응답하는지 확인합니다.
 5. DNS 레코드, Cloudflare Access 정책, CORS·`PUBLIC_URL` 값이 호스트명과 일치하는지 확인합니다.
 
 ## 다음 작업
