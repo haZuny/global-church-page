@@ -2105,7 +2105,8 @@ img.minister-card__photo {
   }
 
   .hero__image {
-    object-position: 78% 38%;
+    /* The wide source places the church to the right; avoid cutting off its left facade on portrait screens. */
+    object-position: 58% 38%;
   }
 
   .hero__veil {
