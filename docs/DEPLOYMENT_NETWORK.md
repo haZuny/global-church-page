@@ -57,7 +57,7 @@ Cloudflare Tunnel도 서버 자체가 꺼져 있거나 인터넷이 끊기면 �
 
 ### 3. Cloudflare Tunnel 생성
 
-Cloudflare Zero Trust 대시보드에서 Named Tunnel을 만들고, Linux 서버에 `cloudflared`를 설치합니다. 터널 토큰은 서버의 비밀값으로만 보관합니다. 저장소·문서·채팅에 토큰을 넣지 않습니다.
+Cloudflare Zero Trust 대시보드에서 Named Tunnel을 만들고, Linux 서버에 `cloudflared`를 설치합니다. **Zero Trust Free 플랜도 최초 활성화 시 결제수단과 청구 프로필 입력을 요구할 수 있습니다.** Free 플랜을 선택하면 무료 범위 내에서는 청구되지 않지만, 유료 애드온이나 과금형 기능을 활성화하지 않도록 구독·청구 화면을 확인합니다. 터널 토큰은 서버의 비밀값으로만 보관합니다. 저장소·문서·채팅에 토큰을 넣지 않습니다.
 
 터널에는 다음의 Public Hostname을 연결합니다.
 
