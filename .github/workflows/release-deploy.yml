@@ -1,0 +1,44 @@
+name: Release deploy
+
+on:
+  push:
+    branches:
+      - "release/**"
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify release
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+
+  deploy:
+    name: Deploy to production
+    needs: verify
+    runs-on: [self-hosted, linux, x64, global-church-production]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy verified commit on this server
+        env:
+          DEPLOY_REF: ${{ github.sha }}
+          DEPLOY_ROOT: /home/global/global-church-page
+          DEPLOY_ENV_FILE: /home/global/global-church-page/.env.production
+        run: bash "$GITHUB_WORKSPACE/scripts/deploy/production.sh"
