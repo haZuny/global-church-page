@@ -149,13 +149,13 @@ Cloudflare Tunnel이 `active`, 두 컨테이너가 `Up`이고 위 두 HTTP 요�
 
 ### 배포 브랜치 원칙
 
-`main`은 통합 개발 기준입니다. 운영 서버에는 `main`을 직접 배포하지 않고, 검증된 커밋으로 만든 별도 release 브랜치만 반영합니다.
+`main`은 통합 개발 기준입니다. 운영 서버에는 `main`을 직접 배포하지 않고, 검증된 커밋을 고정 `release` 브랜치에 반영합니다.
 
 ```text
-main → release/YYYY-MM 또는 release/버전명 생성 → 검증 → 운영 서버 배포
+main → release 반영 → 검증 → 운영 서버 배포
 ```
 
-현재는 수동 배포를 사용하며, release 브랜치 자동 검증·배포·롤백은 [#54 CI/CD 이슈](https://github.com/haZuny/global-church-page/issues/54)에서 구축합니다.
+`release` 푸시마다 GitHub Actions가 자동 검증·배포·롤백을 수행합니다. 운영 절차는 [PRODUCTION_DEPLOYMENT.md](docs/PRODUCTION_DEPLOYMENT.md)를 참고합니다.
 
 ## 도메인·Cloudflare 운영
 

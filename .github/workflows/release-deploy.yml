@@ -2,8 +2,7 @@ name: Release deploy
 
 on:
   push:
-    branches:
-      - "release/**"
+    branches: [release]
 
 concurrency:
   group: production-deploy

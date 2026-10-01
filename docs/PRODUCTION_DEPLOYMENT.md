@@ -14,12 +14,12 @@ Next.js 컨테이너         → Docker 내부망     → Directus:8055
 
 ## 서버 최초 준비
 
-1. 저장소를 서버에 복제하고, 운영용 release 브랜치로 전환합니다. `main`은 통합 개발 브랜치이므로 운영 서버에서 직접 배포하지 않습니다.
+1. 저장소를 서버에 복제하고, 운영용 `release` 브랜치로 전환합니다. `main`은 통합 개발 브랜치이므로 운영 서버에서 직접 배포하지 않습니다.
 
    ```bash
    git clone https://github.com/haZuny/global-church-page.git ~/global-church-page
    cd ~/global-church-page
-   git switch <release-branch>
+   git switch release
    cp .env.production.example .env.production
    chmod 600 .env.production
    ```
@@ -83,10 +83,10 @@ curl --fail http://127.0.0.1:8055/server/health
 
 ## 자동 배포 (GitHub Actions)
 
-운영 서버는 공인 IP를 고정하지 않아도 되므로, GitHub가 서버로 SSH 접속하는 방식은 사용하지 않습니다. Ubuntu 서버에 설치된 self-hosted runner가 GitHub에 **아웃바운드로** 연결을 유지하고, 검증된 `release/*` 푸시를 받으면 서버 내부에서 배포합니다.
+운영 서버는 공인 IP를 고정하지 않아도 되므로, GitHub가 서버로 SSH 접속하는 방식은 사용하지 않습니다. Ubuntu 서버에 설치된 self-hosted runner가 GitHub에 **아웃바운드로** 연결을 유지하고, 검증된 `release` 푸시를 받으면 서버 내부에서 배포합니다.
 
 ```text
-release/* push
+release push
   → GitHub-hosted runner: TypeScript · Next.js build · Playwright E2E 검증
   → Ubuntu self-hosted runner: Docker 이미지 로컬 빌드 · 기동 · 헬스체크
 ```
@@ -108,13 +108,13 @@ cd /home/global/actions-runner
 
 서비스 등록 뒤에는 재로그인하거나 runner 서비스를 재시작해 Docker 그룹 권한을 반영합니다. GitHub에 runner가 `Idle`로 표시되는지 확인합니다.
 
-`release/*` 브랜치 푸시가 발생하면 [release-deploy.yml](../.github/workflows/release-deploy.yml)이 먼저 GitHub-hosted runner에서 검증을 수행하고, 성공한 정확한 커밋 SHA만 서버의 `/home/global/global-church-page`에 checkout합니다. 배포 스크립트는 웹과 Directus 헬스체크에 실패하면 직전 커밋을 다시 빌드·기동합니다.
+`release` 브랜치 푸시가 발생하면 [release-deploy.yml](../.github/workflows/release-deploy.yml)이 먼저 GitHub-hosted runner에서 검증을 수행하고, 성공한 정확한 커밋 SHA만 서버의 `/home/global/global-church-page`에 checkout합니다. 배포 스크립트는 웹과 Directus 헬스체크에 실패하면 직전 커밋을 다시 빌드·기동합니다.
 
 ## 수동 업데이트와 롤백
 
 ```bash
-git pull --ff-only origin <release-branch>
+git pull --ff-only origin release
 docker compose --env-file .env.production -f docker-compose.production.yml up -d --build
 ```
 
-`<release-branch>`에는 실제 운영 중인 브랜치명(예: `release/2026-10`)을 넣습니다. 업데이트 전에는 SQLite DB와 업로드 볼륨을 같은 시점에 백업합니다. 문제가 생기면 검증된 이전 Git 커밋으로 되돌린 뒤 다시 빌드하고, 필요한 경우 해당 시점의 DB·업로드 백업을 복구합니다. 자동 배포가 설정된 뒤에도 장애 대응이나 runner 점검 시 이 수동 절차를 사용할 수 있습니다.
+업데이트 전에는 SQLite DB와 uploads 볼륨을 같은 시점에 백업합니다. 문제가 생기면 검증된 이전 Git 커밋으로 되돌린 뒤 다시 빌드하고, 필요한 경우 해당 시점의 DB·uploads 백업을 복구합니다. 자동 배포가 설정된 뒤에도 장애 대응이나 runner 점검 시 이 수동 절차를 사용할 수 있습니다.
