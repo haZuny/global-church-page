@@ -31,6 +31,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
 COPY --from=builder /app/public ./public
+# public/assets is a repository symlink to ../assets. Keep its target in the
+# runtime image so root-relative image URLs such as /assets/images/... work.
+COPY --from=builder /app/assets ./assets
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
