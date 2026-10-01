@@ -10,7 +10,7 @@ cms.globalchurch.kr      → Cloudflare Tunnel → 127.0.0.1:8055 → Directus A
 Next.js 컨테이너         → Docker 내부망     → Directus:8055
 ```
 
-`cms.globalchurch.kr/admin`은 Cloudflare Access로 보호합니다. 공개 API와 이미지는 같은 `cms` 호스트에서 제공하되, Directus 공개 역할은 `published` 콘텐츠 읽기만 허용합니다.
+`cms.globalchurch.kr/admin`은 Directus의 사용자·역할 정책으로 보호합니다. 공개 API와 이미지는 같은 `cms` 호스트에서 제공하되, Directus 공개 역할은 `published` 콘텐츠 읽기만 허용합니다. 개인 이메일을 수동으로 관리하는 Cloudflare Access 정책은 새 관리자를 동적으로 추가하는 운영 방식과 맞지 않으므로 기본 구성에 포함하지 않습니다.
 
 ## 서버 최초 준비
 
@@ -62,9 +62,11 @@ docker run --rm -v global-church-production-database:/target alpine tar -C /targ
 docker run --rm -v global-church-production-uploads:/target alpine tar -C /target -czf - . > ~/backups/global-church-initial/directus-uploads-before-import.tar.gz
 docker run --rm -v global-church-production-database:/target -v ~/global-church-import:/source:ro alpine sh -c 'rm -f /target/directus.sqlite && cp /source/directus.sqlite /target/directus.sqlite'
 docker run --rm -v global-church-production-uploads:/target -v ~/global-church-import/uploads:/source:ro alpine sh -c 'cp -a /source/. /target/'
+docker run --rm -v global-church-production-database:/target alpine chown -R 1000:1000 /target
+docker run --rm -v global-church-production-uploads:/target alpine chown -R 1000:1000 /target
 ```
 
-데이터 이전은 기존 운영 데이터를 덮어쓰는 작업입니다. 실행 전 로컬 원본과 서버 백업 파일의 존재를 확인합니다.
+데이터 이전은 기존 운영 데이터를 덮어쓰는 작업입니다. 실행 전 로컬 원본과 서버 백업 파일의 존재를 확인합니다. 마지막 두 명령은 Directus 컨테이너가 사용하는 `node` 사용자(UID/GID 1000)가 SQLite 세션과 업로드 파일에 쓸 수 있게 하는 필수 단계입니다.
 
 ## 빌드·기동·검증
 

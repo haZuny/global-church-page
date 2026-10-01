@@ -34,7 +34,7 @@ Cloudflare Tunnel도 서버 자체가 꺼져 있거나 인터넷이 끊기면 �
 | `globalchurch.kr` | 방문자용 Next.js 공개 웹 | 공개 |
 | `cms.globalchurch.kr` | Directus 공개 콘텐츠 API·이미지·문서 자산·관리 화면 | API·자산은 공개, `/admin`은 관리자만 |
 
-호스트를 불필요하게 나누지 않습니다. Directus 관리 화면은 `cms.globalchurch.kr/admin`을 사용하고, Cloudflare Access를 이 경로에만 적용합니다. API와 자산은 같은 `cms` 호스트에서 공개하되 Directus 공개 역할은 `published` 콘텐츠 읽기만 허용합니다.
+호스트를 불필요하게 나누지 않습니다. Directus 관리 화면은 `cms.globalchurch.kr/admin`을 사용합니다. API와 자산은 같은 `cms` 호스트에서 공개하되 Directus 공개 역할은 `published` 콘텐츠 읽기만 허용합니다. 관리자는 Directus의 사용자·역할 정책으로 관리하므로, 새 관리자를 추가할 때 Cloudflare 이메일 목록을 별도로 수정할 필요가 없습니다.
 
 ## 최초 연결 순서
 
@@ -70,8 +70,8 @@ Cloudflare Zero Trust 대시보드에서 Named Tunnel을 만들고, Linux 서버
 ### 4. HTTPS와 관리자 접근 보호
 
 - 방문자는 Cloudflare가 제공하는 HTTPS로 접속합니다. HTTP 요청은 HTTPS로 리다이렉트합니다.
-- `cms.globalchurch.kr/admin*`에는 Cloudflare Access 애플리케이션을 만들고 승인된 관리자 이메일만 허용합니다.
-- Directus 자체 로그인과 Cloudflare Access는 함께 유지합니다. Access는 입구를 보호하고, Directus 역할·정책은 로그인 뒤 할 수 있는 일을 제한합니다.
+- Directus 자체 로그인과 역할·정책으로 관리자 접근을 제어합니다.
+- Cloudflare Access는 교회 Google Workspace 그룹처럼 관리 대상이 자동 동기화되는 조직용 ID 공급자가 생긴 뒤 선택 적용합니다. 개인 이메일을 정책에 수동으로 나열하면 Directus에서 동적으로 추가한 관리자가 차단되므로 기본 운영 방식으로 사용하지 않습니다.
 - `cms.globalchurch.kr`의 공개 API와 자산은 Directus 공개 권한을 `published` 상태로 제한합니다.
 
 ### 5. 애플리케이션 환경 변수 전환
@@ -95,7 +95,7 @@ Cloudflare Zero Trust 대시보드에서 Named Tunnel을 만들고, Linux 서버
 
 - `https://globalchurch.kr`의 홈, 목록, 상세 화면과 이미지가 정상 표시되는가
 - `https://cms.globalchurch.kr`에서 published 콘텐츠와 파일만 공개되는가
-- `https://cms.globalchurch.kr/admin`이 Cloudflare Access와 Directus 로그인을 모두 요구하는가
+- `https://cms.globalchurch.kr/admin`에서 Directus 관리자 로그인이 정상 동작하는가
 - HTTP 주소가 HTTPS로 전환되는가
 - Docker 재기동, 공유기 재기동 또는 Tunnel 재연결 뒤에도 도메인이 유지되는가
 
@@ -105,7 +105,7 @@ Cloudflare Zero Trust 대시보드에서 Named Tunnel을 만들고, Linux 서버
 2. Tunnel 상태가 `Healthy`인지 확인합니다.
 3. Linux 서버에서 `cloudflared` 서비스 로그와 Docker 컨테이너 상태를 확인합니다.
 4. Tunnel origin의 `127.0.0.1:3000`, `127.0.0.1:8055`가 서버 내부에서 응답하는지 확인합니다.
-5. DNS 레코드, Cloudflare Access 정책, CORS·`PUBLIC_URL` 값이 호스트명과 일치하는지 확인합니다.
+5. DNS 레코드, Directus 역할·정책, CORS·`PUBLIC_URL` 값이 호스트명과 일치하는지 확인합니다.
 
 ## 다음 작업
 
