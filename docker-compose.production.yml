@@ -12,6 +12,8 @@ services:
       - ${ENV_FILE:-.env.production}
     environment:
       NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
       DIRECTUS_URL: http://directus:8055
     depends_on:
       directus:
@@ -26,6 +28,8 @@ services:
     env_file:
       - ${ENV_FILE:-.env.production}
     environment:
+      HOST: 0.0.0.0
+      PORT: 8055
       DB_CLIENT: sqlite3
       DB_FILENAME: /directus/database/directus.sqlite
       STORAGE_LOCATIONS: local
