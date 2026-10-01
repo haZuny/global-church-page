@@ -59,7 +59,7 @@
 }
 
 @media (max-width: 780px) {
-  .home :global(.hero__image) { object-position:78% 38%; }
+  .home :global(.hero__image) { object-position:58% 38%; }
   .home :global(.home-page) { --home-panel-height:100dvh; }
   .home :global(.home-updates) { display:block; }
   .home :global(.home-updates--stories .home-updates__grid) { grid-template-columns:1fr; gap:42px; }
