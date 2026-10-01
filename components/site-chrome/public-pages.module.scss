@@ -2102,22 +2102,23 @@ img.minister-card__photo {
   .hero {
     min-height: 720px;
     max-height: 900px;
+    background: #132636;
   }
 
   .hero__image {
-    /* The wide source places the church to the right; avoid cutting off its left facade on portrait screens. */
-    object-position: 58% 38%;
+    /* The object position is calculated from the church building's protected bounds. */
+    object-position: 80% 38%;
   }
 
   .hero__veil {
     background:
-      linear-gradient(90deg, rgba(18, 33, 26, 0.82) 0%, rgba(18, 33, 26, 0.32) 100%),
-      linear-gradient(0deg, rgba(10, 22, 17, 0.7) 0%, transparent 48%);
+      linear-gradient(90deg, rgba(19, 38, 54, 0.78) 0%, rgba(19, 38, 54, 0.32) 62%, rgba(19, 38, 54, 0.06) 100%),
+      linear-gradient(0deg, rgba(19, 38, 54, 0.64) 0%, transparent 48%);
   }
 
   .hero__content {
     justify-content: flex-end;
-    padding-bottom: 96px;
+    padding-bottom: clamp(104px, 13svh, 132px);
   }
 
   .hero h1 {

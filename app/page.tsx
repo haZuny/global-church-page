@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ContentImagePlaceholder, ContentState } from "@/components/content-state/content-state";
+import { ResponsiveHeroImage } from "@/components/responsive-hero-image/responsive-hero-image";
 import { contentImageUrl, fallbackChurchInfo, getChurchInfo, getNewsEntriesPage, getStoriesPage } from "@/lib/directus-content";
 export const metadata: Metadata = { title: "함께 비전을 세우는 공동체", alternates: { canonical: "/" } };
 export const dynamic = "force-dynamic";
@@ -36,15 +37,7 @@ export default async function HomePage() {
   return (
     <main id="main-content" tabIndex={-1} className="home-page">
       <section className="hero" id="home" aria-labelledby="hero-title">
-        <Image
-          className="hero__image"
-          src="/assets/images/church-building.png"
-          alt="푸른 하늘 아래 자리한 글로벌교회 건물 전경"
-          fill
-          priority
-          sizes="100vw"
-        />
-        <div className="hero__veil" />
+        <ResponsiveHeroImage />
         <div className="hero__content page-shell">
           <p className="eyebrow hero__eyebrow">{church.englishName}</p>
           <h1 id="hero-title">
