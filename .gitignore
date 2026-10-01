@@ -8,6 +8,7 @@ tsconfig.tsbuildinfo
 **/.DS_Store
 .env
 .env.docker
+.env.production
 data/
 uploads/
 backups/

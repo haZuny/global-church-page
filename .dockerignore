@@ -1,0 +1,16 @@
+.git
+.github
+.next
+.next-dev
+node_modules
+test-results
+playwright-report
+data
+uploads
+backups
+runtime
+.env
+.env.*
+app/server.env
+.DS_Store
+**/.DS_Store
