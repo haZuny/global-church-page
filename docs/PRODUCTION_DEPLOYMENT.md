@@ -14,11 +14,12 @@ Next.js 컨테이너         → Docker 내부망     → Directus:8055
 
 ## 서버 최초 준비
 
-1. 저장소를 서버에 복제합니다.
+1. 저장소를 서버에 복제하고, 운영용 release 브랜치로 전환합니다. `main`은 통합 개발 브랜치이므로 운영 서버에서 직접 배포하지 않습니다.
 
    ```bash
    git clone https://github.com/haZuny/global-church-page.git ~/global-church-page
    cd ~/global-church-page
+   git switch <release-branch>
    cp .env.production.example .env.production
    chmod 600 .env.production
    ```
@@ -83,8 +84,8 @@ curl --fail http://127.0.0.1:8055/server/health
 ## 업데이트와 롤백
 
 ```bash
-git pull --ff-only origin main
+git pull --ff-only origin <release-branch>
 docker compose --env-file .env.production -f docker-compose.production.yml up -d --build
 ```
 
-업데이트 전에는 SQLite DB와 업로드 볼륨을 같은 시점에 백업합니다. 문제가 생기면 검증된 이전 Git 커밋으로 되돌린 뒤 다시 빌드하고, 필요한 경우 해당 시점의 DB·업로드 백업을 복구합니다.
+`<release-branch>`에는 실제 운영 중인 브랜치명(예: `release/2026-10`)을 넣습니다. 업데이트 전에는 SQLite DB와 업로드 볼륨을 같은 시점에 백업합니다. 문제가 생기면 검증된 이전 Git 커밋으로 되돌린 뒤 다시 빌드하고, 필요한 경우 해당 시점의 DB·업로드 백업을 복구합니다.
