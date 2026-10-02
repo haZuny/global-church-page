@@ -15,9 +15,22 @@ const defaultLinks = [
   ["오시는 길", "/#location"],
 ] as const;
 
+function displayPastorName(name?: string, role?: string) {
+  const normalizedName = name?.trim();
+  const normalizedRole = role?.trim();
+
+  if (!normalizedName) return undefined;
+  if (!normalizedRole) return normalizedName;
+
+  const escapedRole = normalizedRole.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const withoutRepeatedRole = normalizedName.replace(new RegExp(`^${escapedRole}\\s*`), "").trim();
+
+  return withoutRepeatedRole || undefined;
+}
+
 export function SiteFooter({ info }: { info: FooterInfo }) {
   const directusAdminUrl = process.env.NEXT_PUBLIC_DIRECTUS_ADMIN_URL ?? "http://127.0.0.1:8055/admin";
-  const pastor = [info.pastorRole, info.pastorName].filter(Boolean).join(" ");
+  const pastorName = displayPastorName(info.pastorName, info.pastorRole);
 
   return (
     <footer className={styles.footer}>
@@ -39,7 +52,7 @@ export function SiteFooter({ info }: { info: FooterInfo }) {
             </div>
             <div>
               <dt>담임목사</dt>
-              <dd>{pastor || "담임목사 안내 준비 중"}</dd>
+              <dd>{pastorName || "담임목사 안내 준비 중"}</dd>
             </div>
           </dl>
         </div>
