@@ -80,8 +80,9 @@ main() {
   require_command date
   [[ -f "$COMPOSE_FILE" ]] || fail "compose file not found: $COMPOSE_FILE"
   [[ -f "$ENV_FILE" ]] || fail "environment file not found: $ENV_FILE"
-  [[ -n "$REMOTE_TARGET" ]] || fail "BACKUP_REMOTE_TARGET is required; refusing to leave the only backup on this server"
-  require_command rclone
+  if [[ -n "$REMOTE_TARGET" ]]; then
+    require_command rclone
+  fi
 
   mkdir -p "$BACKUP_ROOT"
   staging_dir="$(mktemp -d "$BACKUP_ROOT/.snapshot.XXXXXX")"
@@ -126,15 +127,21 @@ EOF
   tar -tzf "$backup_path" >/dev/null
   sha256sum "$backup_path" > "${backup_path}.sha256"
 
-  if ! rclone copyto "$backup_path" "$REMOTE_TARGET/$backup_name"; then
-    fail "remote archive upload failed"
-  fi
-  if ! rclone copyto "${backup_path}.sha256" "$REMOTE_TARGET/${backup_name}.sha256"; then
-    fail "remote checksum upload failed"
+  if [[ -n "$REMOTE_TARGET" ]]; then
+    if ! rclone copyto "$backup_path" "$REMOTE_TARGET/$backup_name"; then
+      fail "remote archive upload failed"
+    fi
+    if ! rclone copyto "${backup_path}.sha256" "$REMOTE_TARGET/${backup_name}.sha256"; then
+      fail "remote checksum upload failed"
+    fi
   fi
 
   prune_local_backups
-  log "SUCCESS: $backup_name uploaded to configured remote backup storage"
+  if [[ -n "$REMOTE_TARGET" ]]; then
+    log "SUCCESS: $backup_name uploaded to configured remote backup storage"
+  else
+    log "SUCCESS: $backup_name stored on the host filesystem only"
+  fi
 }
 
 main "$@"
