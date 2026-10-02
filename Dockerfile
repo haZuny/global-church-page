@@ -5,7 +5,9 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends python3 python3-distutils make g++ \
   && rm -rf /var/lib/apt/lists/*
 COPY package.json package-lock.json ./
-RUN npm ci
+# npm 7+ can run package lifecycle scripts in the background. Run them in the
+# foreground so esbuild's binary is never executed while it is being installed.
+RUN npm ci --foreground-scripts
 
 FROM node:22-bookworm-slim AS builder
 

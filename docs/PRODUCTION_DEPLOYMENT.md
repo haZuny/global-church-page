@@ -113,7 +113,7 @@ cd /home/global/actions-runner
 
 `release` 브랜치 푸시가 발생하면 [release-deploy.yml](../.github/workflows/release-deploy.yml)이 먼저 GitHub-hosted runner에서 검증을 수행하고, 성공한 정확한 커밋 SHA만 서버의 `/home/global/global-church-page`에 checkout합니다.
 
-`release`로 향하는 PR의 CI는 Docker Compose로 Directus 서비스 구성 해시를 계산하는 사전 점검을 포함합니다. 이 검사는 호스트 Node.js 없이 실행되므로, 운영 runner의 PATH 차이로 배포가 중단되는 문제를 병합 전에 잡습니다. self-hosted runner에는 Docker와 Docker Compose만 필요하며, 호스트 Node.js 설치를 배포 전제 조건으로 두지 않습니다.
+`release`로 향하는 PR의 CI는 Docker Compose로 Directus 서비스 구성 해시를 계산하는 사전 점검과 운영 Dockerfile 전체 빌드를 포함합니다. 이 검사는 호스트 Node.js 없이 실행되므로, 운영 runner의 PATH 차이와 `npm ci` lifecycle 스크립트 오류를 병합 전에 잡습니다. self-hosted runner에는 Docker와 Docker Compose만 필요하며, 호스트 Node.js 설치를 배포 전제 조건으로 두지 않습니다.
 
 배포 스크립트는 배포 잠금으로 같은 서버에서의 중복 실행을 막고, 현재 실행 중인 웹 이미지에 직전 커밋 태그를 보존합니다. 새 웹 이미지는 기존 컨테이너를 내리기 전에 빌드하며, 의존성 설치 과정에서 일시적인 파일 경합이 발생하면 진단 로그를 남긴 뒤 Docker 캐시 없이 한 번만 재시도합니다.
 
