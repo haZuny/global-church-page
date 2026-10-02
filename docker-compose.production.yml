@@ -1,5 +1,6 @@
 services:
   web:
+    image: global-church-page-web:${WEB_IMAGE_TAG:-latest}
     build:
       context: .
       args:
@@ -49,7 +50,7 @@ services:
       test:
         - CMD-SHELL
         - >-
-          node -e "fetch('http://127.0.0.1:8055/server/health').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"
+          node -e "fetch('http://127.0.0.1:8055/server/ping').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"
       interval: 15s
       timeout: 5s
       retries: 10

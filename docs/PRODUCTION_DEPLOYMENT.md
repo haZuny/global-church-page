@@ -78,10 +78,11 @@ cd ~/global-church-page
 docker compose --env-file .env.production -f docker-compose.production.yml up -d --build
 docker compose --env-file .env.production -f docker-compose.production.yml ps
 curl --fail http://127.0.0.1:3000
-curl --fail http://127.0.0.1:8055/server/health
+curl --fail http://127.0.0.1:8055/server/ping
+curl --fail 'http://127.0.0.1:8055/items/stories?limit=1'
 ```
 
-컨테이너가 정상이라면 외부·모바일 네트워크에서 `https://globalchurch.kr`, `https://cms.globalchurch.kr/server/health`를 확인합니다. Directus 관리자 URL은 `https://cms.globalchurch.kr/admin`입니다.
+컨테이너가 정상이라면 외부·모바일 네트워크에서 `https://globalchurch.kr`, `https://cms.globalchurch.kr/server/ping`을 확인합니다. Directus 관리자 URL은 `https://cms.globalchurch.kr/admin`입니다. 마지막 API 요청은 CMS가 단순히 기동된 상태를 넘어 공개된 콘텐츠를 실제로 읽을 수 있는지 확인합니다.
 
 ## 자동 배포 (GitHub Actions)
 
@@ -90,7 +91,7 @@ curl --fail http://127.0.0.1:8055/server/health
 ```text
 release push
   → GitHub-hosted runner: TypeScript · Next.js build · Playwright E2E 검증
-  → Ubuntu self-hosted runner: Docker 이미지 로컬 빌드 · 기동 · 헬스체크
+  → Ubuntu self-hosted runner: 새 웹 이미지 빌드 · 기동 · 콘텐츠 헬스체크
 ```
 
 이미지는 현재 운영 서버에서 직접 빌드합니다. 따라서 GitHub Container Registry나 GitHub Secrets에 Directus 키·관리자 비밀번호·Cloudflare 토큰을 저장하지 않습니다. 비밀값은 `/home/global/global-church-page/.env.production`에만 둡니다.
@@ -110,7 +111,9 @@ cd /home/global/actions-runner
 
 서비스 등록 뒤에는 재로그인하거나 runner 서비스를 재시작해 Docker 그룹 권한을 반영합니다. GitHub에 runner가 `Idle`로 표시되는지 확인합니다.
 
-`release` 브랜치 푸시가 발생하면 [release-deploy.yml](../.github/workflows/release-deploy.yml)이 먼저 GitHub-hosted runner에서 검증을 수행하고, 성공한 정확한 커밋 SHA만 서버의 `/home/global/global-church-page`에 checkout합니다. 배포 스크립트는 웹과 Directus 헬스체크에 실패하면 직전 커밋을 다시 빌드·기동합니다.
+`release` 브랜치 푸시가 발생하면 [release-deploy.yml](../.github/workflows/release-deploy.yml)이 먼저 GitHub-hosted runner에서 검증을 수행하고, 성공한 정확한 커밋 SHA만 서버의 `/home/global/global-church-page`에 checkout합니다.
+
+배포 스크립트는 배포 잠금으로 같은 서버에서의 중복 실행을 막고, 현재 실행 중인 웹 이미지에 직전 커밋 태그를 보존합니다. 새 웹 이미지는 기존 컨테이너를 내리기 전에 빌드하며, 의존성 설치 과정에서 일시적인 파일 경합이 발생하면 진단 로그를 남긴 뒤 Docker 캐시 없이 한 번만 재시도합니다. 새 웹·CMS·공개 `stories` API 검사가 모두 성공해야 배포를 완료합니다. 이후 단계가 실패하면 직전 checkout과 보존한 이미지로 **재빌드 없이** 되돌립니다.
 
 ## 수동 업데이트와 롤백
 
@@ -119,7 +122,18 @@ git pull --ff-only origin release
 docker compose --env-file .env.production -f docker-compose.production.yml up -d --build
 ```
 
-업데이트 전에는 SQLite DB와 uploads 볼륨을 같은 시점에 백업합니다. 문제가 생기면 검증된 이전 Git 커밋으로 되돌린 뒤 다시 빌드하고, 필요한 경우 해당 시점의 DB·uploads 백업을 복구합니다. 자동 배포가 설정된 뒤에도 장애 대응이나 runner 점검 시 이 수동 절차를 사용할 수 있습니다.
+업데이트 전에는 SQLite DB와 uploads 볼륨을 같은 시점에 백업합니다. 문제가 생기면 먼저 GitHub Actions 배포 로그에 표시된 `rollback-<commit-sha>` 웹 이미지 태그로 재기동합니다. 이 복구는 새 이미지를 빌드하지 않습니다. CMS 데이터 마이그레이션까지 되돌려야 할 때만 같은 시점의 DB·uploads 백업을 복구합니다. 자동 배포가 설정된 뒤에도 장애 대응이나 runner 점검 시 이 수동 절차를 사용할 수 있습니다.
+
+자동 롤백이 추가된 이후의 수동 복구 예시는 다음과 같습니다. `<previous-commit-sha>`에는 Actions 로그의 직전 정상 커밋을 넣습니다.
+
+```bash
+git checkout --detach <previous-commit-sha>
+WEB_IMAGE_TAG=rollback-<previous-commit-sha> \
+  docker compose --env-file .env.production -f docker-compose.production.yml up -d --no-build directus web
+curl --fail http://127.0.0.1:3000
+curl --fail http://127.0.0.1:8055/server/ping
+curl --fail 'http://127.0.0.1:8055/items/stories?limit=1'
+```
 
 ### Directus 메이저 업데이트
 
@@ -127,7 +141,7 @@ Directus는 메이저 버전에서도 데이터베이스 마이그레이션이 �
 
 1. `scripts/backup/backup-directus.sh`로 DB와 uploads를 같은 시점에 백업하고, 생성된 `.sha256` 파일을 확인합니다.
 2. PR CI와 로컬 또는 별도 테스트 환경에서 관리자 로그인, 게시 콘텐츠, 이미지·PDF 파일, 공개 API를 확인합니다.
-3. 배포 직후 관리자 화면과 `/server/health`를 확인합니다. 문제가 생기면 먼저 직전 커밋으로 롤백하고, 데이터 마이그레이션까지 되돌려야 할 때만 같은 시점의 백업을 복구합니다.
+3. 배포 직후 관리자 화면, `/server/ping`, 그리고 공개 `stories` API를 확인합니다. 문제가 생기면 먼저 직전 커밋과 보존된 웹 이미지로 롤백하고, 데이터 마이그레이션까지 되돌려야 할 때만 같은 시점의 백업을 복구합니다.
 
 이미지 태그는 `latest` 대신 검증한 정확한 버전으로 유지합니다.
 
@@ -202,7 +216,7 @@ BACKUP_REMOTE_TARGET=<remote-name>:global-church/production
 cd /home/global/global-church-page
 scripts/backup/restore-directus.sh /home/global/backups/global-church/directus-YYYYMMDDTHHMMSSZ.tar.gz --confirm-restore
 docker compose --env-file .env.production -f docker-compose.production.yml ps
-curl --fail http://127.0.0.1:8055/server/health
+curl --fail http://127.0.0.1:8055/server/ping
 ```
 
 복구 뒤에는 Directus 관리자에서 최근 게시물 하나와 해당 게시물의 이미지·PDF 파일을 열어, DB 레코드와 파일 참조가 함께 복구됐는지 확인합니다. 이 절차를 운영 전 최소 한 번 수행해 결과와 사용한 백업 시각을 이슈에 남깁니다.
