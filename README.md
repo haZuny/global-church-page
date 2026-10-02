@@ -165,6 +165,26 @@ main → release 반영 → 검증 → 운영 서버 배포
 - 새 메일 서비스를 붙일 때는 Cloudflare DNS에 MX·SPF·DKIM 레코드를 함께 등록합니다.
 - Tunnel 토큰, 서버 비밀번호, `.env.production`은 문서·GitHub 이슈·채팅에 기록하지 않습니다.
 
+### HTTPS·HSTS 설정
+
+Cloudflare `SSL/TLS → 에지 인증서`에서 다음 설정을 운영 기준으로 유지합니다.
+
+| 설정 | 현재 값 | 이유 |
+| --- | --- | --- |
+| Always Use HTTPS | 켬 | 모든 `http://` 요청을 HTTPS로 301 리디렉션 |
+| HSTS | 켬, `max-age=15552000` (6개월) | 접속한 브라우저가 이후에도 HTTPS만 사용하도록 함 |
+| `includeSubDomains` | 끔 | 아직 추가할 하위 도메인의 HTTPS 준비 여부를 보장할 수 없음 |
+| HSTS preload | 끔 | 브라우저 내장 목록 등록은 되돌리기 오래 걸리므로, 장기 운영 검증 전에는 사용하지 않음 |
+
+HSTS는 매 HTTPS 응답마다 6개월 기간을 다시 전달하므로, Cloudflare 설정을 유지하는 한 **수동으로 주기 연장할 필요는 없습니다.** 다만 새 하위 도메인·외부 서비스를 추가하기 전에는 이 설정을 다시 검토합니다. 변경 뒤에는 아래처럼 실제 응답을 확인합니다.
+
+```bash
+curl -I http://globalchurch.kr
+curl -I https://globalchurch.kr
+```
+
+첫 응답은 HTTPS 주소로 `301`, 두 번째 응답에는 `strict-transport-security: max-age=15552000` 헤더가 있어야 합니다.
+
 Cloudflare Tunnel은 서버 IP가 바뀌어도 도메인 연결을 유지하지만, 서버 자체가 꺼지거나 인터넷이 끊기면 서비스도 중단됩니다. 네트워크 세부 절차와 장애 확인 순서는 [DEPLOYMENT_NETWORK.md](docs/DEPLOYMENT_NETWORK.md)를 참고합니다.
 
 ## 백업·복구
@@ -190,5 +210,4 @@ npm run test:e2e
 ## 운영 이슈
 
 - [#54 CI/CD 구축](https://github.com/haZuny/global-church-page/issues/54)
-- [#55 운영 서버 네트워크·도메인·HTTPS](https://github.com/haZuny/global-church-page/issues/55)
 - [#57 자동 백업·복구](https://github.com/haZuny/global-church-page/issues/57)
