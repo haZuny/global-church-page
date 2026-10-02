@@ -22,7 +22,7 @@ services:
       - "127.0.0.1:3000:3000"
 
   directus:
-    image: directus/directus:11.3.5
+    image: directus/directus:12.4.1
     restart: unless-stopped
     init: true
     env_file:

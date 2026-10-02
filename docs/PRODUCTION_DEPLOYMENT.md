@@ -119,6 +119,16 @@ docker compose --env-file .env.production -f docker-compose.production.yml up -d
 
 업데이트 전에는 SQLite DB와 uploads 볼륨을 같은 시점에 백업합니다. 문제가 생기면 검증된 이전 Git 커밋으로 되돌린 뒤 다시 빌드하고, 필요한 경우 해당 시점의 DB·uploads 백업을 복구합니다. 자동 배포가 설정된 뒤에도 장애 대응이나 runner 점검 시 이 수동 절차를 사용할 수 있습니다.
 
+### Directus 메이저 업데이트
+
+Directus는 메이저 버전에서도 데이터베이스 마이그레이션이 발생할 수 있습니다. `directus/directus` 이미지 태그를 변경하는 PR을 `release`에 반영하기 전에는 다음 순서를 지킵니다.
+
+1. `scripts/backup/backup-directus.sh`로 DB와 uploads를 같은 시점에 백업하고, 생성된 `.sha256` 파일을 확인합니다.
+2. PR CI와 로컬 또는 별도 테스트 환경에서 관리자 로그인, 게시 콘텐츠, 이미지·PDF 파일, 공개 API를 확인합니다.
+3. 배포 직후 관리자 화면과 `/server/health`를 확인합니다. 문제가 생기면 먼저 직전 커밋으로 롤백하고, 데이터 마이그레이션까지 되돌려야 할 때만 같은 시점의 백업을 복구합니다.
+
+이미지 태그는 `latest` 대신 검증한 정확한 버전으로 유지합니다.
+
 ## Directus 자동 백업·복구
 
 운영 CMS 데이터는 Docker 볼륨 두 개에 나뉘어 있습니다.
