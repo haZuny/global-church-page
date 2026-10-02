@@ -6,6 +6,28 @@ on:
   pull_request:
 
 jobs:
+  container-build:
+    name: Container build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build production web image
+        run: >-
+          docker build
+          --build-arg NEXT_PUBLIC_SITE_URL=https://globalchurch.kr
+          --tag global-church-page-web:ci
+          .
+
+  deployment-preflight:
+    name: Deployment preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify deployment signature without host Node.js
+        run: scripts/deploy/test-directus-service-signature.sh
+
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 15
