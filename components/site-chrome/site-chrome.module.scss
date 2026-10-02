@@ -60,7 +60,8 @@
 }
 
 @media (max-width: 780px) {
-  .home :global(.home-page) { --home-panel-height:100dvh; }
+  /* Keep the hero stable while mobile browsers animate their address and bottom bars. */
+  .home :global(.home-page) { --home-panel-height:100svh; }
   .home :global(.home-updates) { display:block; }
   .home :global(.home-updates--stories .home-updates__grid) { grid-template-columns:1fr; gap:42px; }
   .home :global(.worship__grid) { min-height:calc(var(--home-panel-height) - 112px); }
