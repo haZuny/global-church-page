@@ -6,6 +6,15 @@ on:
   pull_request:
 
 jobs:
+  deployment-preflight:
+    name: Deployment preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify deployment signature without host Node.js
+        run: scripts/deploy/test-directus-service-signature.sh
+
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 15
