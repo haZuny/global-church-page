@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily Global Church Directus backup
+
+[Timer]
+OnCalendar=*-*-* 03:17:00 Asia/Seoul
+RandomizedDelaySec=20m
+Persistent=true
+Unit=global-church-backup.service
+
+[Install]
+WantedBy=timers.target

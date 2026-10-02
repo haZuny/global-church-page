@@ -118,3 +118,74 @@ docker compose --env-file .env.production -f docker-compose.production.yml up -d
 ```
 
 업데이트 전에는 SQLite DB와 uploads 볼륨을 같은 시점에 백업합니다. 문제가 생기면 검증된 이전 Git 커밋으로 되돌린 뒤 다시 빌드하고, 필요한 경우 해당 시점의 DB·uploads 백업을 복구합니다. 자동 배포가 설정된 뒤에도 장애 대응이나 runner 점검 시 이 수동 절차를 사용할 수 있습니다.
+
+## Directus 자동 백업·복구
+
+운영 CMS 데이터는 Docker 볼륨 두 개에 나뉘어 있습니다.
+
+- `global-church-production-database`: SQLite DB, 콘텐츠, 사용자·권한
+- `global-church-production-uploads`: 이미지·PDF 등 업로드 파일
+
+`scripts/backup/backup-directus.sh`는 Directus 컨테이너를 잠시 멈춘 뒤 두 볼륨을 하나의 압축 파일로 보관합니다. 이 짧은 중지는 SQLite와 파일 참조가 서로 다른 시점으로 저장되는 일을 막기 위한 것입니다. 백업이 끝나면 이전에 실행 중이던 Directus만 다시 시작합니다.
+
+백업은 로컬 파일만 남기지 않습니다. `BACKUP_REMOTE_TARGET`으로 지정한 rclone 원격 저장소 업로드까지 성공해야 성공으로 처리합니다. 즉, 서버 디스크가 망가져도 백업을 복구할 수 있습니다.
+
+### 외부 백업 저장소와 timer 설정
+
+1. 운영 서버의 `global` 계정으로 외부 저장소를 rclone remote로 설정합니다. Google Drive, S3 호환 오브젝트 스토리지, NAS의 SFTP 등 교회가 관리할 저장소를 사용합니다. 저장소 계정은 개인 계정이 아닌 교회 소유 계정을 권장합니다.
+
+   ```bash
+   rclone config
+   rclone mkdir <remote-name>:global-church/production
+   ```
+
+2. 서버에서만 사용하는 환경 파일을 생성합니다. 이 파일은 Git에 올리지 않습니다.
+
+   ```bash
+   mkdir -p /home/global/.config/global-church
+   chmod 700 /home/global/.config/global-church
+   cat > /home/global/.config/global-church/backup.env <<'EOF'
+   BACKUP_ROOT=/home/global/backups/global-church
+   BACKUP_REMOTE_TARGET=<remote-name>:global-church/production
+   BACKUP_KEEP_DAILY_DAYS=14
+   BACKUP_KEEP_WEEKLY_WEEKS=8
+   EOF
+   chmod 600 /home/global/.config/global-church/backup.env
+   ```
+
+   `BACKUP_REMOTE_TARGET`에는 비밀번호·토큰을 넣지 않습니다. 인증 정보는 `global` 계정의 rclone 설정 파일에만 둡니다.
+
+3. systemd unit과 timer를 설치한 뒤, timer를 켜기 전에 한 번 수동 실행합니다.
+
+   ```bash
+   sudo cp ops/systemd/global-church-backup.service /etc/systemd/system/
+   sudo cp ops/systemd/global-church-backup.timer /etc/systemd/system/
+   sudo systemctl daemon-reload
+   sudo systemctl start global-church-backup.service
+   sudo systemctl status global-church-backup.service
+   sudo systemctl enable --now global-church-backup.timer
+   systemctl list-timers global-church-backup.timer
+   ```
+
+timer는 매일 한국 시간 03:17부터 최대 20분 사이에 실행합니다. 로컬 보관본은 최근 14일을 모두 남기고, 그 이전에는 주별 최신 1개를 8주까지 남깁니다. 원격 저장소의 장기 보관·삭제 정책은 해당 저장소의 lifecycle 기능에서 최소 90일로 설정합니다.
+
+성공·실패는 비밀값 없이 systemd journal에 기록됩니다.
+
+```bash
+journalctl -u global-church-backup.service --since '7 days ago'
+```
+
+### 복구 리허설과 실제 복구
+
+복구는 데이터 볼륨을 덮어쓰는 작업이므로, 새 백업을 먼저 만든 뒤 점검 시간에 실행합니다. 원격 저장소의 백업 파일과 `.sha256` 파일을 같은 디렉터리에 내려받아야 합니다.
+
+```bash
+rclone copy <remote-name>:global-church/production/directus-YYYYMMDDTHHMMSSZ.tar.gz /home/global/restore/
+rclone copy <remote-name>:global-church/production/directus-YYYYMMDDTHHMMSSZ.tar.gz.sha256 /home/global/restore/
+cd /home/global/global-church-page
+scripts/backup/restore-directus.sh /home/global/restore/directus-YYYYMMDDTHHMMSSZ.tar.gz --confirm-restore
+docker compose --env-file .env.production -f docker-compose.production.yml ps
+curl --fail http://127.0.0.1:8055/server/health
+```
+
+복구 뒤에는 Directus 관리자에서 최근 게시물 하나와 해당 게시물의 이미지·PDF 파일을 열어, DB 레코드와 파일 참조가 함께 복구됐는지 확인합니다. 이 절차를 운영 전 최소 한 번 수행해 결과와 사용한 백업 시각을 이슈에 남깁니다.

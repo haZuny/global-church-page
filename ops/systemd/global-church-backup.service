@@ -1,0 +1,17 @@
+[Unit]
+Description=Global Church Directus backup
+Documentation=https://github.com/haZuny/global-church-page/blob/main/docs/PRODUCTION_DEPLOYMENT.md
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=global
+Group=global
+WorkingDirectory=/home/global/global-church-page
+EnvironmentFile=/home/global/.config/global-church/backup.env
+ExecStart=/home/global/global-church-page/scripts/backup/backup-directus.sh
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
