@@ -55,6 +55,8 @@ const statisticsCollections = ["directus_dashboards", "directus_panels", "direct
 const fileCollections = ["directus_files", "directus_folders"];
 const operatorUserValidation = { role: { _in: [managerRole.id, viewerRole.id] } };
 const operatorUserTarget = { role: { _in: [managerRole.id, viewerRole.id] } };
+const operatorUserReadFields = ["id", "first_name", "last_name", "email", "status", "role", "avatar", "language", "title", "description"];
+const operatorUserWriteFields = [...operatorUserReadFields, "password"];
 
 const permissions = await request("/permissions?limit=-1");
 const upsertPermission = async (policyId, collection, action, body = {}) => {
@@ -82,7 +84,8 @@ for (const action of ["create", "read", "update", "delete"]) {
   const body = action === "read" || action === "delete"
     ? { permissions: operatorUserTarget }
     : { permissions: action === "update" ? operatorUserTarget : {}, validation: operatorUserValidation };
-  await upsertPermission(managerPolicy.id, "directus_users", action, body);
+  const fields = action === "read" || action === "delete" ? operatorUserReadFields : operatorUserWriteFields;
+  await upsertPermission(managerPolicy.id, "directus_users", action, { ...body, fields });
 }
 
 console.log("Operator roles and policies applied.");
