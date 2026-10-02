@@ -49,20 +49,21 @@ cleanup_snapshot() {
 }
 
 prune_local_backups() {
-  local now_epoch file stamp age_days week_key
+  local now_epoch file stamp parsed_stamp age_days week_key
   declare -A kept_weeks=()
 
   now_epoch="$(date +%s)"
   while IFS= read -r -d '' file; do
     stamp="$(basename "$file" | sed -E 's/^directus-([0-9]{8}T[0-9]{6}Z)\.tar\.gz$/\1/')"
     [[ "$stamp" =~ ^[0-9]{8}T[0-9]{6}Z$ ]] || continue
+    parsed_stamp="${stamp:0:4}-${stamp:4:2}-${stamp:6:2} ${stamp:9:2}:${stamp:11:2}:${stamp:13:2} UTC"
 
-    age_days=$(( (now_epoch - $(date -u -d "$stamp" +%s)) / 86400 ))
+    age_days=$(( (now_epoch - $(date -u -d "$parsed_stamp" +%s)) / 86400 ))
     if (( age_days <= KEEP_DAILY_DAYS )); then
       continue
     fi
 
-    week_key="$(date -u -d "$stamp" +%G-W%V)"
+    week_key="$(date -u -d "$parsed_stamp" +%G-W%V)"
     if (( age_days <= KEEP_WEEKLY_WEEKS * 7 )) && [[ -z "${kept_weeks[$week_key]+x}" ]]; then
       kept_weeks[$week_key]=1
       continue
