@@ -12,6 +12,8 @@ Next.js 컨테이너         → Docker 내부망     → Directus:8055
 
 `cms.globalchurch.kr/admin`은 Directus의 사용자·역할 정책으로 보호합니다. 공개 API와 이미지는 같은 `cms` 호스트에서 제공하되, Directus 공개 역할은 `published` 콘텐츠 읽기만 허용합니다. 개인 이메일을 수동으로 관리하는 Cloudflare Access 정책은 새 관리자를 동적으로 추가하는 운영 방식과 맞지 않으므로 기본 구성에 포함하지 않습니다.
 
+공개 웹은 Directus REST API만 사용합니다. 운영 Compose에서는 GraphQL introspection과 GraphQL WebSocket을 비활성화해 사용하지 않는 API 탐색면을 줄입니다.
+
 ## 서버 최초 준비
 
 1. 저장소를 서버에 복제하고, 운영용 `release` 브랜치로 전환합니다. `main`은 통합 개발 브랜치이므로 운영 서버에서 직접 배포하지 않습니다.
