@@ -141,11 +141,12 @@ Ubuntu 서버에서 저장소 디렉터리로 이동한 뒤 실행합니다.
 docker compose --env-file .env.production -f docker-compose.production.yml ps
 docker compose --env-file .env.production -f docker-compose.production.yml logs --tail=100 web directus
 curl --fail http://127.0.0.1:3000
-curl --fail http://127.0.0.1:8055/server/health
+curl --fail http://127.0.0.1:8055/server/ping
+curl --fail 'http://127.0.0.1:8055/items/stories?limit=1'
 systemctl status cloudflared
 ```
 
-Cloudflare Tunnel이 `active`, 두 컨테이너가 `Up`이고 위 두 HTTP 요청이 성공하면 서버 내부 구성은 정상입니다.
+Cloudflare Tunnel이 `active`, 두 컨테이너가 `Up`이고 위 세 HTTP 요청이 성공하면 서버 내부 구성은 정상입니다. 마지막 요청은 공개 콘텐츠 권한까지 확인합니다.
 
 ### 배포 브랜치 원칙
 

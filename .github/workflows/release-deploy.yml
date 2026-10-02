@@ -40,4 +40,5 @@ jobs:
           DEPLOY_REF: ${{ github.sha }}
           DEPLOY_ROOT: /home/global/global-church-page
           DEPLOY_ENV_FILE: /home/global/global-church-page/.env.production
+          DEPLOY_LOCK_FILE: /tmp/global-church-production-deploy.lock
         run: bash "$GITHUB_WORKSPACE/scripts/deploy/production.sh"
