@@ -12,6 +12,7 @@ DEPLOY_LOCK_FILE="${DEPLOY_LOCK_FILE:-/tmp/global-church-production-deploy.lock}
 WEB_SERVICE="${WEB_SERVICE:-web}"
 CMS_SERVICE="${CMS_SERVICE:-directus}"
 CANDIDATE_PORT="${CANDIDATE_PORT:-3001}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 exec 9>"$DEPLOY_LOCK_FILE"
 if ! flock -n 9; then
@@ -51,9 +52,8 @@ compose() {
 directus_service_signature() {
   local compose_file="$1"
 
-  ENV_FILE="$DEPLOY_ENV_FILE" WEB_IMAGE_TAG="signature" \
-    docker compose --env-file "$DEPLOY_ENV_FILE" -f "$compose_file" config --format json \
-    | node -e 'let body=""; process.stdin.setEncoding("utf8"); process.stdin.on("data", (chunk) => { body += chunk; }); process.stdin.on("end", () => { const { createHash } = require("node:crypto"); const service = JSON.parse(body).services?.directus; if (!service) process.exit(1); const { env_file, ...stableService } = service; process.stdout.write(createHash("sha256").update(JSON.stringify(stableService)).digest("hex")); });'
+  DEPLOY_ENV_FILE="$DEPLOY_ENV_FILE" CMS_SERVICE="$CMS_SERVICE" \
+    "$SCRIPT_DIR/directus-service-signature.sh" "$compose_file"
 }
 
 remove_candidate() {
