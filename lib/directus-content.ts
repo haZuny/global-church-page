@@ -20,6 +20,15 @@ export const fallbackChurchInfo: ChurchInfo = {
 const directusUrl = process.env.DIRECTUS_URL ?? "http://127.0.0.1:8055";
 const directusAssetsUrl = process.env.DIRECTUS_ASSETS_URL ?? directusUrl;
 const dateLabel = (value: string) => value.slice(0, 10).replaceAll("-", ". ");
+const safeExternalUrl = (value: unknown) => {
+  if (typeof value !== "string") return undefined;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" ? url.toString() : undefined;
+  } catch {
+    return undefined;
+  }
+};
 const assetUrl = (file: unknown) => {
   const id = typeof file === "string" ? file : typeof file === "object" && file !== null && "id" in file && typeof file.id === "string" ? file.id : undefined;
   return id ? `${directusAssetsUrl}/assets/${id}` : undefined;
@@ -106,7 +115,7 @@ export async function getChurchInfo(): Promise<ChurchInfo> {
     denominationHistory: plainTextToRichText(item.denomination_history),
     showSermons: Boolean(item.show_sermons),
     address: item.address,
-    mapUrl: item.map_url || undefined,
+    mapUrl: safeExternalUrl(item.map_url),
     phone: item.phone || undefined,
     transitInfo: item.transit_info || undefined,
     parkingInfo: item.parking_info || undefined,

@@ -18,7 +18,7 @@
 | --- | --- |
 | 공개 웹 | Next.js App Router, React, TypeScript |
 | 스타일 | SCSS CSS Modules + 전역 디자인 토큰 |
-| CMS | Directus 11 + SQLite |
+| CMS | Directus 12.4.1 + SQLite |
 | 파일 | Directus uploads 볼륨 |
 | 컨테이너 | Docker Compose |
 | 도메인 등록 | 가비아 |
@@ -68,7 +68,7 @@ docker-compose.production.yml 운영 Next.js + Directus 구성
 
 ## 로컬 개발
 
-필수: Node.js 20 이상, npm, 로컬 Directus 또는 Docker Desktop.
+필수: Node.js 22 이상, npm, 로컬 Directus 또는 Docker Desktop.
 
 ```bash
 npm ci

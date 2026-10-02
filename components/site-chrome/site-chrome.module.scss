@@ -42,7 +42,7 @@
 .home :global(.hero__media) { position:absolute; inset:0; }
 .home :global(.hero__image), .home :global(.hero__veil) { position:absolute; inset:0; width:100%; height:100%; }
 .home :global(.hero__image) { object-fit:cover; object-position:center 38%; animation:hero-arrive 1.4s cubic-bezier(.22,1,.36,1) both; }
-.home :global(.hero__veil) { background:linear-gradient(90deg,rgba(35,52,69,.82) 0%,rgba(35,52,69,.50) 34%,rgba(35,52,69,.04) 68%),linear-gradient(0deg,rgba(25,38,52,.42) 0%,transparent 36%); }
+.home :global(.hero__veil) { background:linear-gradient(90deg,rgba(19,38,54,.82) 0%,rgba(19,38,54,.50) 34%,rgba(19,38,54,.04) 68%),linear-gradient(0deg,rgba(13,28,43,.42) 0%,transparent 36%); }
 .home :global(.hero__content) { position:relative; z-index:2; display:flex; flex-direction:column; justify-content:center; height:100%; padding-bottom:50px; }
 .home :global(.hero__eyebrow) { color:rgba(255,255,255,.72); opacity:1; }
 .home :global(.hero h1) { max-width:760px; font-family:var(--serif); font-size:clamp(58px,6.1vw,94px); font-weight:400; letter-spacing:-.07em; line-height:1.06; text-wrap:balance; opacity:1; animation:none; }
@@ -60,7 +60,19 @@
 }
 
 @media (max-width: 780px) {
-  .home :global(.home-page) { --home-panel-height:100dvh; }
+  /* Keep the hero stable while mobile browsers animate their address and bottom bars. */
+  .home :global(.home-page) { --home-panel-height:100svh; }
+  .home :global(.hero__image) {
+    /* Crop the lower road while scaling from the left, leaving copy room before the facade. */
+    object-position:left top;
+    transform-origin:left top;
+    /* The portrait source is more vivid than the desktop original; match its quieter colour grade. */
+    filter:saturate(.76) brightness(.94) contrast(.96);
+    animation:hero-arrive-mobile 1.4s cubic-bezier(.22,1,.36,1) both;
+  }
+  .home :global(.hero__veil) {
+    background:linear-gradient(90deg,rgba(19,38,54,.84) 0%,rgba(19,38,54,.52) 38%,rgba(19,38,54,.06) 72%),linear-gradient(0deg,rgba(13,28,43,.56) 0%,transparent 44%);
+  }
   .home :global(.home-updates) { display:block; }
   .home :global(.home-updates--stories .home-updates__grid) { grid-template-columns:1fr; gap:42px; }
   .home :global(.worship__grid) { min-height:calc(var(--home-panel-height) - 112px); }
@@ -72,6 +84,11 @@
     max-width:160px;
     aspect-ratio:3 / 4;
   }
+}
+
+@keyframes hero-arrive-mobile {
+  from { transform:scale(1.11); opacity:.35; }
+  to { transform:scale(1.08); opacity:1; }
 }
 
 .about :global(main) { display:flex; flex-direction:column; }

@@ -15,14 +15,32 @@ export function SiteHeader({ showSermons }: { showSermons: boolean }) {
   const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const scrolledRef = useRef(false);
   const close = () => setOpen(false);
   const links = showSermons ? [...baseLinks, ["설교", "/sermons"] as const] : baseLinks;
 
   useEffect(() => {
-    const syncHeader = () => setScrolled(window.scrollY > 24);
+    let frameId: number | undefined;
+    const syncHeader = () => {
+      frameId = undefined;
+      const scrollY = Math.max(window.scrollY, 0);
+      // Use separate enter/exit points so the browser chrome expanding while a
+      // user reverses scroll direction does not flicker the transparent header.
+      const nextScrolled = scrolledRef.current ? scrollY > 12 : scrollY > 32;
+      if (nextScrolled !== scrolledRef.current) {
+        scrolledRef.current = nextScrolled;
+        setScrolled(nextScrolled);
+      }
+    };
+    const requestSync = () => {
+      if (frameId === undefined) frameId = window.requestAnimationFrame(syncHeader);
+    };
     syncHeader();
-    window.addEventListener("scroll", syncHeader, { passive: true });
-    return () => window.removeEventListener("scroll", syncHeader);
+    window.addEventListener("scroll", requestSync, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", requestSync);
+      if (frameId !== undefined) window.cancelAnimationFrame(frameId);
+    };
   }, []);
 
   useEffect(() => {

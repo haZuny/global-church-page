@@ -12,6 +12,8 @@ Next.js 컨테이너         → Docker 내부망     → Directus:8055
 
 `cms.globalchurch.kr/admin`은 Directus의 사용자·역할 정책으로 보호합니다. 공개 API와 이미지는 같은 `cms` 호스트에서 제공하되, Directus 공개 역할은 `published` 콘텐츠 읽기만 허용합니다. 개인 이메일을 수동으로 관리하는 Cloudflare Access 정책은 새 관리자를 동적으로 추가하는 운영 방식과 맞지 않으므로 기본 구성에 포함하지 않습니다.
 
+공개 웹은 Directus REST API만 사용합니다. 운영 Compose에서는 GraphQL introspection과 GraphQL WebSocket을 비활성화해 사용하지 않는 API 탐색면을 줄입니다.
+
 ## 서버 최초 준비
 
 1. 저장소를 서버에 복제하고, 운영용 `release` 브랜치로 전환합니다. `main`은 통합 개발 브랜치이므로 운영 서버에서 직접 배포하지 않습니다.
@@ -118,6 +120,16 @@ docker compose --env-file .env.production -f docker-compose.production.yml up -d
 ```
 
 업데이트 전에는 SQLite DB와 uploads 볼륨을 같은 시점에 백업합니다. 문제가 생기면 검증된 이전 Git 커밋으로 되돌린 뒤 다시 빌드하고, 필요한 경우 해당 시점의 DB·uploads 백업을 복구합니다. 자동 배포가 설정된 뒤에도 장애 대응이나 runner 점검 시 이 수동 절차를 사용할 수 있습니다.
+
+### Directus 메이저 업데이트
+
+Directus는 메이저 버전에서도 데이터베이스 마이그레이션이 발생할 수 있습니다. `directus/directus` 이미지 태그를 변경하는 PR을 `release`에 반영하기 전에는 다음 순서를 지킵니다.
+
+1. `scripts/backup/backup-directus.sh`로 DB와 uploads를 같은 시점에 백업하고, 생성된 `.sha256` 파일을 확인합니다.
+2. PR CI와 로컬 또는 별도 테스트 환경에서 관리자 로그인, 게시 콘텐츠, 이미지·PDF 파일, 공개 API를 확인합니다.
+3. 배포 직후 관리자 화면과 `/server/health`를 확인합니다. 문제가 생기면 먼저 직전 커밋으로 롤백하고, 데이터 마이그레이션까지 되돌려야 할 때만 같은 시점의 백업을 복구합니다.
+
+이미지 태그는 `latest` 대신 검증한 정확한 버전으로 유지합니다.
 
 ## Directus 자동 백업·복구
 

@@ -1,6 +1,6 @@
 services:
   directus:
-    image: directus/directus:11.3.5
+    image: directus/directus:12.4.1
     container_name: global-church-directus
     restart: unless-stopped
     init: true
@@ -16,6 +16,8 @@ services:
       CORS_ENABLED: "true"
       ROOT_REDIRECT: ./admin
       MAX_PAYLOAD_SIZE: 100mb
+      GRAPHQL_INTROSPECTION: "false"
+      WEBSOCKETS_GRAPHQL_ENABLED: "false"
     volumes:
       - directus-database:/directus/database
       - directus-uploads:/directus/uploads
