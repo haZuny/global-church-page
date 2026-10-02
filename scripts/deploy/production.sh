@@ -11,6 +11,7 @@ DEPLOY_ENV_FILE="${DEPLOY_ENV_FILE:-$DEPLOY_ROOT/.env.production}"
 DEPLOY_LOCK_FILE="${DEPLOY_LOCK_FILE:-/tmp/global-church-production-deploy.lock}"
 WEB_SERVICE="${WEB_SERVICE:-web}"
 CMS_SERVICE="${CMS_SERVICE:-directus}"
+CANDIDATE_PORT="${CANDIDATE_PORT:-3001}"
 
 exec 9>"$DEPLOY_LOCK_FILE"
 if ! flock -n 9; then
@@ -39,10 +40,27 @@ PREVIOUS_REF="$(git rev-parse HEAD)"
 ROLLBACK_WEB_TAG="rollback-${PREVIOUS_REF}"
 ROLLBACK_ARMED=false
 SERVICES_CHANGED=false
+CANDIDATE_NAME="global-church-web-candidate-${DEPLOY_REF:0:12}"
+CANDIDATE_STARTED=false
 
 compose() {
-  WEB_IMAGE_TAG="$WEB_IMAGE_TAG" \
+  ENV_FILE="$DEPLOY_ENV_FILE" WEB_IMAGE_TAG="$WEB_IMAGE_TAG" \
     docker compose --env-file "$DEPLOY_ENV_FILE" -f docker-compose.production.yml "$@"
+}
+
+directus_service_signature() {
+  local compose_file="$1"
+
+  ENV_FILE="$DEPLOY_ENV_FILE" WEB_IMAGE_TAG="signature" \
+    docker compose --env-file "$DEPLOY_ENV_FILE" -f "$compose_file" config --format json \
+    | node -e 'let body=""; process.stdin.setEncoding("utf8"); process.stdin.on("data", (chunk) => { body += chunk; }); process.stdin.on("end", () => { const { createHash } = require("node:crypto"); const service = JSON.parse(body).services?.directus; if (!service) process.exit(1); const { env_file, ...stableService } = service; process.stdout.write(createHash("sha256").update(JSON.stringify(stableService)).digest("hex")); });'
+}
+
+remove_candidate() {
+  if [[ "$CANDIDATE_STARTED" == true ]]; then
+    docker rm -f "$CANDIDATE_NAME" >/dev/null || true
+    CANDIDATE_STARTED=false
+  fi
 }
 
 collect_build_diagnostics() {
@@ -97,6 +115,7 @@ rollback() {
   local status=$?
 
   trap - ERR
+  remove_candidate
 
   if [[ "$ROLLBACK_ARMED" != true ]]; then
     exit "$status"
@@ -107,7 +126,7 @@ rollback() {
 
   if [[ "$SERVICES_CHANGED" == true ]]; then
     WEB_IMAGE_TAG="$ROLLBACK_WEB_TAG"
-    compose up -d --no-build "$CMS_SERVICE" "$WEB_SERVICE"
+    compose up -d --no-build "$WEB_SERVICE"
     wait_for_url "rollback web" "http://127.0.0.1:3000/"
     wait_for_url "rollback CMS" "http://127.0.0.1:8055/server/ping"
     wait_for_url "rollback published stories" "http://127.0.0.1:8055/items/stories?limit=1"
@@ -127,15 +146,55 @@ fi
 CURRENT_WEB_IMAGE_ID="$(docker inspect --format '{{.Image}}' "$CURRENT_WEB_CONTAINER_ID")"
 docker image tag "$CURRENT_WEB_IMAGE_ID" "global-church-page-web:$ROLLBACK_WEB_TAG"
 
+CURRENT_NETWORK="$(docker inspect --format '{{range $name, $_ := .NetworkSettings.Networks}}{{$name}}{{end}}' "$CURRENT_WEB_CONTAINER_ID")"
+if [[ -z "$CURRENT_NETWORK" ]]; then
+  echo "Could not determine the current web container network; refusing an unsafe deployment." >&2
+  exit 1
+fi
+
+PREVIOUS_COMPOSE_FILE="$(mktemp)"
+cleanup_previous_compose_file() {
+  rm -f "$PREVIOUS_COMPOSE_FILE"
+}
+trap cleanup_previous_compose_file EXIT
+git show "$PREVIOUS_REF:docker-compose.production.yml" > "$PREVIOUS_COMPOSE_FILE"
+PREVIOUS_DIRECTUS_SIGNATURE="$(directus_service_signature "$PREVIOUS_COMPOSE_FILE")"
+
 git fetch --no-tags origin "$DEPLOY_REF"
 git checkout --detach "$DEPLOY_REF"
 ROLLBACK_ARMED=true
 
+CANDIDATE_DIRECTUS_SIGNATURE="$(directus_service_signature "docker-compose.production.yml")"
+if [[ "$PREVIOUS_DIRECTUS_SIGNATURE" != "$CANDIDATE_DIRECTUS_SIGNATURE" ]]; then
+  echo "Directus service configuration changed. Refusing a live replacement; verify it against a cloned DB in a separate deployment." >&2
+  exit 1
+fi
+
 WEB_IMAGE_TAG="$DEPLOY_REF"
 build_web_image
 
+docker rm -f "$CANDIDATE_NAME" >/dev/null 2>&1 || true
+docker run -d \
+  --name "$CANDIDATE_NAME" \
+  --network "$CURRENT_NETWORK" \
+  --env-file "$DEPLOY_ENV_FILE" \
+  --env NODE_ENV=production \
+  --env PORT=3000 \
+  --env HOSTNAME=0.0.0.0 \
+  --env DIRECTUS_URL="http://${CMS_SERVICE}:8055" \
+  --publish "127.0.0.1:${CANDIDATE_PORT}:3000" \
+  "global-church-page-web:${WEB_IMAGE_TAG}" >/dev/null
+CANDIDATE_STARTED=true
+
+wait_for_url "candidate web" "http://127.0.0.1:${CANDIDATE_PORT}/"
+wait_for_url "candidate CMS" "http://127.0.0.1:8055/server/ping"
+wait_for_url "candidate published stories" "http://127.0.0.1:8055/items/stories?limit=1"
+wait_for_url "candidate stories page" "http://127.0.0.1:${CANDIDATE_PORT}/stories"
+wait_for_url "candidate news page" "http://127.0.0.1:${CANDIDATE_PORT}/news"
+remove_candidate
+
 SERVICES_CHANGED=true
-compose up -d --no-build "$CMS_SERVICE" "$WEB_SERVICE"
+compose up -d --no-build "$WEB_SERVICE"
 
 wait_for_url "web" "http://127.0.0.1:3000/"
 wait_for_url "CMS" "http://127.0.0.1:8055/server/ping"
