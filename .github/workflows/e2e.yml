@@ -6,6 +6,21 @@ on:
   pull_request:
 
 jobs:
+  release-directus-compatibility:
+    name: Release Directus compatibility
+    if: github.event_name == 'pull_request' && github.base_ref == 'release'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Compare candidate with the release base
+        env:
+          BASE_REF: origin/release
+          DEPLOY_ENV_FILE: ${{ github.workspace }}/.env.production.example
+        run: scripts/deploy/verify-release-directus-compatibility.sh
+
   container-build:
     name: Container build
     runs-on: ubuntu-latest
