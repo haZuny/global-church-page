@@ -23,7 +23,10 @@ services:
       - "127.0.0.1:3000:3000"
 
   directus:
-    image: directus/directus:12.4.1
+    # Directus 12.4.1 rejects every public read permission that has an item
+    # filter after migrating this SQLite database. Keep the proven 11.3.5
+    # runtime until the compatibility work tracked in #74 is verified.
+    image: directus/directus:11.3.5
     restart: unless-stopped
     init: true
     env_file:

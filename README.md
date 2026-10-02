@@ -18,7 +18,7 @@
 | --- | --- |
 | 공개 웹 | Next.js App Router, React, TypeScript |
 | 스타일 | SCSS CSS Modules + 전역 디자인 토큰 |
-| CMS | Directus 12.4.1 + SQLite |
+| CMS | Directus 11.3.5 + SQLite |
 | 파일 | Directus uploads 볼륨 |
 | 컨테이너 | Docker Compose |
 | 도메인 등록 | 가비아 |
@@ -103,7 +103,7 @@ docker compose ps
 
 ## 콘텐츠 모델·권한
 
-- Directus 공개 역할은 `published` 콘텐츠만 읽을 수 있어야 합니다.
+- Directus 공개 역할은 `published` 콘텐츠만 읽을 수 있어야 합니다. 현재 운영 DB에서는 Directus 12.4.1이 조건부 공개 읽기 정책을 403으로 처리해, 검증된 `11.3.5` 이미지로 고정합니다. Directus 업그레이드는 별도 복제 DB 검증을 통과한 뒤에만 진행합니다.
 - 관리자 권한은 Cloudflare의 이메일 목록이 아니라 Directus 사용자·역할로 관리합니다. 새 관리자는 Directus에서 추가하고 역할을 부여합니다.
 - 모델·관계 설정 스크립트는 `scripts/directus/`에 있습니다. 실제 운영 DB에 적용하기 전에는 백업과 로컬 점검을 먼저 합니다.
 
