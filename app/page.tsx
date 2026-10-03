@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ContentImagePlaceholder, ContentState } from "@/components/content-state/content-state";
 import { ResponsiveHeroImage } from "@/components/responsive-hero-image/responsive-hero-image";
 import { contentImageUrl, fallbackChurchInfo, getChurchInfo, getNewsEntriesPage, getStoriesPage } from "@/lib/directus-content";
-export const metadata: Metadata = { title: "함께 비전을 세우는 공동체", alternates: { canonical: "/" } };
+export const metadata: Metadata = { title: "글로벌교회", alternates: { canonical: "/" } };
 export const dynamic = "force-dynamic";
 const Arrow = () => (
   <svg viewBox="0 0 20 20" aria-hidden="true">
