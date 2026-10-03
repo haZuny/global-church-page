@@ -62,6 +62,8 @@
 @media (max-width: 780px) {
   /* Keep the hero stable while mobile browsers animate their address and bottom bars. */
   .home :global(.home-page) { --home-panel-height:100svh; }
+  /* Story and news sections can be short; do not reserve a full viewport after their content. */
+  .home :global(.home-page > .home-updates) { min-height:0; }
   .home :global(.hero__image) {
     /* Crop the lower road while scaling from the left, leaving copy room before the facade. */
     object-position:left top;
@@ -83,6 +85,11 @@
   .home :global(.latest-news-card .latest-story__image) {
     max-width:160px;
     aspect-ratio:3 / 4;
+  }
+  .stories :global(.archive-toolbar nav > *), .news :global(.archive-toolbar nav > *), .sermons :global(.archive-toolbar nav > *) {
+    display:inline-flex;
+    align-items:center;
+    min-height:44px;
   }
 }
 
