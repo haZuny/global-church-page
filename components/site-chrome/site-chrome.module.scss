@@ -155,6 +155,8 @@
     align-items:center;
     min-height:44px;
   }
+  /* 목록 첫 화면에서 제목이 콘텐츠보다 커지지 않도록 아카이브별 밀도를 낮춥니다. */
+  .stories :global(.archive-hero h1), .news :global(.archive-hero h1) { max-width:10ch; }
   .stories :global(.archive-toolbar), .news :global(.archive-toolbar), .sermons :global(.archive-toolbar) {
     align-items:flex-start;
     flex-direction:column;
@@ -351,6 +353,7 @@
   .sermons :global(.archive-hero) { min-height:380px; }
   .sermons :global(.archive-hero__inner) { gap:18px; padding-block:58px 44px; }
   .sermons :global(.archive-hero h1) { max-width:9ch; font-size:clamp(38px,10vw,46px); line-height:1.08; }
+  .stories :global(.archive-hero h1), .news :global(.archive-hero h1) { font-size:clamp(36px,9.4vw,44px); }
   .sermons :global(.sermon-feature) { grid-template-columns:1fr; gap:56px; }
   .sermons :global(.sermon-feature .sermon-art) { min-height:300px; aspect-ratio:16 / 10; }
 }
