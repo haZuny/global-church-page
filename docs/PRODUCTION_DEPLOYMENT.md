@@ -141,12 +141,32 @@ curl --fail http://127.0.0.1:8055/server/ping
 curl --fail 'http://127.0.0.1:8055/items/stories?limit=1'
 ```
 
+### 현재 Directus 버전과 업그레이드 보류
+
+운영 Compose와 `package.json`의 Directus 버전은 **11.3.5**로 고정합니다. `latest` 태그나 버전 범위는 사용하지 않습니다.
+
+2026-10-03에 운영 백업으로 SQLite·uploads 복제본을 만들고 Directus 12.4.1을 검증했습니다. 컨테이너 기동과 `/server/ping`은 성공했지만, 공개 역할의 조건부 읽기 권한이 적용된 `GET /items/stories?limit=1`이 반복해서 **HTTP 403**을 반환했습니다. 공개 웹은 이 API에 의존하므로, 이 상태로 업그레이드하면 교회 이야기·공지 등 콘텐츠 화면이 보이지 않습니다.
+
+이 결과는 GitHub 이슈 #97에 기록돼 있습니다. 따라서 다음 조건을 모두 만족하기 전까지 Directus 11.3.5를 유지합니다.
+
+1. 해당 공개 권한 문제를 해결한 Directus 후보 버전을 정합니다.
+2. GitHub Actions의 **Directus clone compatibility** 수동 워크플로를 최신 운영 백업으로 실행합니다. 이 워크플로는 복제 SQLite·uploads 볼륨과 별도 포트의 컨테이너만 사용하며, 종료 시 모두 삭제합니다.
+3. 관리자 로그인, 공개 `stories`·`news` API, 이미지·PDF 파일 제공이 모두 통과한 결과를 이슈에 남깁니다.
+4. 별도 업그레이드 PR과 점검 시간을 승인한 뒤에만 `release`에 반영합니다.
+
+복제 검증이 실패해도 운영 컨테이너·DB·uploads는 수정하지 않습니다. 운영 공개 API는 항상 다음으로 확인합니다.
+
+```bash
+curl --fail http://127.0.0.1:8055/server/ping
+curl --fail 'http://127.0.0.1:8055/items/stories?limit=1'
+```
+
 ### Directus 메이저 업데이트
 
 Directus는 메이저 버전에서도 데이터베이스 마이그레이션이 발생할 수 있습니다. `directus/directus` 이미지 태그를 변경하는 PR을 `release`에 반영하기 전에는 다음 순서를 지킵니다.
 
 1. `scripts/backup/backup-directus.sh`로 DB와 uploads를 같은 시점에 백업하고, 생성된 `.sha256` 파일을 확인합니다.
-2. PR CI와 로컬 또는 별도 테스트 환경에서 관리자 로그인, 게시 콘텐츠, 이미지·PDF 파일, 공개 API를 확인합니다.
+2. **Directus clone compatibility** 수동 워크플로로 복제 DB에서 관리자 로그인, 게시 콘텐츠, 이미지·PDF 파일, 공개 API를 확인합니다.
 3. 배포 직후 관리자 화면, `/server/ping`, 그리고 공개 `stories` API를 확인합니다. 문제가 생기면 먼저 직전 커밋과 보존된 웹 이미지로 롤백하고, 데이터 마이그레이션까지 되돌려야 할 때만 같은 시점의 백업을 복구합니다.
 
 이미지 태그는 `latest` 대신 검증한 정확한 버전으로 유지합니다.
