@@ -1,0 +1,30 @@
+name: Directus clone compatibility
+
+on:
+  workflow_dispatch:
+    inputs:
+      backup_archive:
+        description: "latest, or an absolute path of the verified Directus backup archive on the production server"
+        required: true
+        default: latest
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify Directus 12.4.1 against an isolated clone
+    runs-on: [self-hosted, linux, x64, global-church-production]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run isolated compatibility check
+        env:
+          DEPLOY_ROOT: /home/global/global-church-page
+          DEPLOY_ENV_FILE: /home/global/global-church-page/.env.production
+          BACKUP_ARCHIVE: ${{ inputs.backup_archive }}
+        run: bash scripts/deploy/verify-directus-clone-compatibility.sh "$BACKUP_ARCHIVE"
