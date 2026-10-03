@@ -104,25 +104,6 @@
     /* 태블릿 공통 7% 간격이 모바일에서도 남지 않도록 한 행 간격으로 고정합니다. */
     row-gap:24px !important;
   }
-  /* 예배를 한 목록으로 늘어놓지 않고, 방문자가 먼저 찾는 주일예배와 평일예배를 구분합니다. */
-  .home :global(.schedule) { border-top:0; }
-  .home :global(.schedule__sunday) {
-    padding:22px 20px 18px;
-    border:1px solid rgba(255,255,255,.28);
-    background:rgba(255,255,255,.06);
-  }
-  .home :global(.schedule__sunday-heading) { padding:0 0 16px; }
-  .home :global(.schedule__weekday) { display:block; margin-top:30px; border-top:1px solid rgba(255,255,255,.22); }
-  .home :global(.schedule__weekday-label) {
-    display:block;
-    margin:0;
-    padding:17px 0 5px;
-    color:var(--sage);
-    font-size:11px;
-    font-weight:700;
-    letter-spacing:.12em;
-  }
-  .home :global(.schedule__weekday article) { min-height:78px; }
   .home :global(.latest-news-card > a) {
     grid-template-columns:minmax(0, 1fr) minmax(112px, 34%);
     gap:22px;
