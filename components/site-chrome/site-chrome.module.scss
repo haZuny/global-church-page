@@ -91,13 +91,16 @@
   /* 기존 모바일 .home-page .worship.section(36px)보다 우선해 실제 여백을 보장합니다. */
   .home :global(.home-page > .worship.section) {
     --home-worship-padding:clamp(88px, 12svh, 112px);
-    padding-block:var(--home-worship-padding);
+    /* 공개 페이지 공통 padding 선언보다 우선해 실제 기기에서도 동일한 여백을 유지합니다. */
+    padding-top:var(--home-worship-padding) !important;
+    padding-bottom:var(--home-worship-padding) !important;
   }
   /* 제목의 기본 하단 마진과 그리드 간격이 겹치지 않게 해, 빈 높이는 위·아래 호흡으로 돌립니다. */
   .home :global(.worship .section-heading) { margin-bottom:0; }
   .home :global(.worship__grid) {
     min-height:calc(var(--home-panel-height) - 2 * var(--home-worship-padding));
-    gap:24px;
+    /* 태블릿 공통 7% 간격이 모바일에서도 남지 않도록 한 행 간격으로 고정합니다. */
+    row-gap:24px !important;
   }
   .home :global(.latest-news-card > a) {
     grid-template-columns:minmax(0, 1fr) minmax(112px, 34%);
@@ -261,7 +264,10 @@
 @media (max-width: 760px) {
   .about :global(.subpage main), .worship :global(.subpage main), .stories :global(.subpage main), .news :global(.subpage main), .sermons :global(.subpage main) { padding-top:68px; }
   /* 교단·노회 설명이 끝난 뒤에는 푸터와 확실히 분리되는 여백을 둡니다. */
-  .about :global(.denomination-section) { padding-block:80px 168px; }
+  .about :global(.denomination-section) {
+    padding-top:80px !important;
+    padding-bottom:168px !important;
+  }
   .stories :global(.archive-hero), .news :global(.archive-hero), .sermons :global(.archive-hero), .worship :global(.archive-hero) { min-height:440px; }
   .stories :global(.archive-hero__inner), .news :global(.archive-hero__inner), .sermons :global(.archive-hero__inner), .worship :global(.archive-hero__inner) { grid-template-columns:1fr; gap:44px; align-content:end; padding-block:76px 64px; }
   .stories :global(.archive-hero h1), .news :global(.archive-hero h1), .sermons :global(.archive-hero h1), .worship :global(.archive-hero h1) { font-size:clamp(44px,12vw,60px); }
