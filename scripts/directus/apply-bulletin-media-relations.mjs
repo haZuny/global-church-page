@@ -21,16 +21,17 @@ if (!directusFileFields.some((field) => field.field === "bulletin_media_files"))
 const bulletinFields = await request("/fields/bulletins");
 const bulletinMediaCollection = (await request("/collections")).find((collection) => collection.collection === "bulletin_media");
 await request("/collections/bulletin_media", "PATCH", { meta: { ...bulletinMediaCollection.meta, display_template: "{{file.filename_download}}" } });
+const mediaMeta = { special: ["o2m"], interface: "list-o2m", display: "related-values", options: { layout: "list", template: "{{file.filename_download}}", enableCreate: true, enableSelect: false, enableLink: false }, note: "PDF·이미지·한글 문서 등 주보 원본 파일을 추가합니다. PDF는 공개 화면에서 미리보기와 다운로드를 모두 제공합니다.", translations: [{ language: "ko-KR", translation: "주보 파일" }] };
 if (!bulletinFields.some((field) => field.field === "media")) {
-  await request("/fields/bulletins", "POST", { field: "media", type: "alias", meta: { special: ["o2m"], interface: "list-o2m", display: "related-values", options: { layout: "list", template: "{{file.filename_download}}", enableCreate: true, enableSelect: false, enableLink: false }, sort: 7, translations: [{ language: "ko-KR", translation: "첨부 파일" }] } });
+  await request("/fields/bulletins", "POST", { field: "media", type: "alias", meta: { ...mediaMeta, sort: 7 } });
 } else {
   const mediaField = bulletinFields.find((field) => field.field === "media");
-  await request("/fields/bulletins/media", "PATCH", { meta: { ...mediaField.meta, special: ["o2m"], interface: "list-o2m", display: "related-values", options: { layout: "list", template: "{{file.filename_download}}", enableCreate: true, enableSelect: false, enableLink: false }, translations: [{ language: "ko-KR", translation: "첨부 파일" }] } });
+  await request("/fields/bulletins/media", "PATCH", { meta: { ...mediaField.meta, ...mediaMeta } });
 }
 
 const mediaFields = await request("/fields/bulletin_media");
 const fileField = mediaFields.find((field) => field.field === "file");
-if (fileField) await request("/fields/bulletin_media/file", "PATCH", { meta: { ...fileField.meta, interface: "file", special: ["file"], required: true, translations: [{ language: "ko-KR", translation: "첨부 파일" }] } });
+if (fileField) await request("/fields/bulletin_media/file", "PATCH", { meta: { ...fileField.meta, interface: "file", special: ["file"], required: true, note: "한 번에 파일 하나를 선택합니다. 저장한 뒤 ‘주보 파일 추가’로 PDF·이미지를 더 연결할 수 있습니다.", translations: [{ language: "ko-KR", translation: "파일 선택" }] } });
 for (const field of mediaFields.filter((item) => ["bulletin", "sort"].includes(item.field))) {
   await request(`/fields/bulletin_media/${field.field}`, "PATCH", { meta: { ...field.meta, hidden: true, required: false }, schema: { ...field.schema, is_nullable: true } });
 }
