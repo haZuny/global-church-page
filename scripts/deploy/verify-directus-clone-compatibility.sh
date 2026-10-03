@@ -90,8 +90,11 @@ require_command node
 
 backup_directory="$(dirname "$BACKUP_ARCHIVE")"
 backup_filename="$(basename "$BACKUP_ARCHIVE")"
-tar -tzf "$BACKUP_ARCHIVE" | grep -qx 'database/directus.sqlite' || fail "backup archive has no SQLite database"
-tar -tzf "$BACKUP_ARCHIVE" | grep -q '^uploads/' || fail "backup archive has no uploads directory"
+archive_entries="$(mktemp)"
+tar -tzf "$BACKUP_ARCHIVE" > "$archive_entries" || fail "backup archive cannot be read"
+grep -qx 'database/directus.sqlite' "$archive_entries" || fail "backup archive has no SQLite database"
+grep -q '^uploads/' "$archive_entries" || fail "backup archive has no uploads directory"
+rm -f "$archive_entries"
 
 production_database_before="$(volume_id "$PRODUCTION_DATABASE_VOLUME")"
 production_uploads_before="$(volume_id "$PRODUCTION_UPLOADS_VOLUME")"
