@@ -2487,7 +2487,10 @@ img.minister-card__photo {
     grid-template-columns: 1fr;
   }
 
-  .pastor-message__portrait { max-width: 350px; }
+  .pastor-message__portrait {
+    max-width: 350px;
+    margin-inline: auto;
+  }
 
   .pastor-message__copy {
     margin-top: 22px;
