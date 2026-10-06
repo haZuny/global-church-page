@@ -112,6 +112,10 @@
     max-width:160px;
     aspect-ratio:3 / 4;
   }
+  .home :global(.latest-story__image) {
+    border:1px solid rgba(49,70,90,.1);
+    border-radius:26px;
+  }
   /* 모바일에서는 섹션마다 다른 청회색 패널을 쌓지 않고, 종이·회녹색의 낮은 대비로 흐름을 잇습니다. */
   .home :global(.home-page > .home-updates--news) {
     border-bottom-color:#d9d5ca;
@@ -128,12 +132,12 @@
   }
   .home :global(.location__map) {
     border:1px solid rgba(49,70,90,.12);
-    border-radius:22px 22px 8px 8px;
+    border-radius:28px 28px 12px 12px;
   }
   .home :global(.location__card) {
     padding:34px 24px;
     border:1px solid rgba(49,70,90,.1);
-    border-radius:8px 8px 22px 22px;
+    border-radius:12px 12px 28px 28px;
     background:rgba(255,254,250,.8);
   }
   /* 모바일에서는 상세 교통 정보보다 길찾기와 전화 문의를 먼저 제시합니다. */
