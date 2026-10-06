@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ContentImagePlaceholder, ContentState } from "@/components/content-state/content-state";
+import { ContentState } from "@/components/content-state/content-state";
 import { ResponsiveHeroImage } from "@/components/responsive-hero-image/responsive-hero-image";
 import { contentImageUrl, fallbackChurchInfo, getChurchInfo, getNewsEntriesPage, getStoriesPage } from "@/lib/directus-content";
 export const metadata: Metadata = { title: "글로벌교회", alternates: { canonical: "/" } };
@@ -69,9 +69,9 @@ export default async function HomePage() {
             <p>최근의 사진과 기록으로 글로벌교회의 오늘을 전합니다.</p>
           </div>
           {latestStory ? <div className="home-updates__grid">
-            <article className="latest-story">
+            <article className={`latest-story${latestStory.image ? "" : " latest-story--text-only"}`}>
               <Link href={`/stories/${latestStory.id}`} aria-label={`${latestStory.title} 이야기 보기`}>
-                <div className="latest-story__image">{latestStory.image ? <Image src={contentImageUrl(latestStory.image, "home-preview")!} alt={latestStory.alt} fill unoptimized sizes="(max-width: 780px) 100vw, 52vw"/> : <ContentImagePlaceholder label={`${latestStory.title} 이미지 준비 중`}/>}</div>
+                {latestStory.image && <div className="latest-story__image"><Image src={contentImageUrl(latestStory.image, "home-preview")!} alt={latestStory.alt} fill unoptimized sizes="(max-width: 780px) 100vw, 52vw"/></div>}
                 <div className="latest-story__copy"><p><time dateTime={latestStory.dateTime}>{latestStory.date}</time></p><h3>{latestStory.title}</h3></div>
               </Link>
             </article>
@@ -125,9 +125,9 @@ export default async function HomePage() {
             <div className="section-heading"><p className="eyebrow">BULLETIN &amp; NEWS</p><h2 id="home-news-title">주보와 소식</h2></div>
             <p>가장 최근에 발행된 주보 또는 공지입니다.</p>
           </div>
-          {latestNews ? <article className="latest-story latest-news-card">
+          {latestNews ? <article className={`latest-story latest-news-card${latestNews.image ? "" : " latest-story--text-only latest-news-card--text-only"}`}>
             <Link href={`/news/${latestNews.href}`} aria-label={`${latestNews.title} 보기`}>
-              <div className="latest-story__image">{latestNews.image ? <Image src={contentImageUrl(latestNews.image, "home-preview")!} alt={latestNews.title} fill unoptimized sizes="(max-width: 780px) 100vw, 52vw"/> : <ContentImagePlaceholder label={`${latestNews.title} 이미지 준비 중`}/>}</div>
+              {latestNews.image && <div className="latest-story__image"><Image src={contentImageUrl(latestNews.image, "home-preview")!} alt={latestNews.title} fill unoptimized sizes="(max-width: 780px) 100vw, 52vw"/></div>}
               <div className="latest-story__copy"><p><time dateTime={latestNews.dateTime}>{latestNews.date}</time><span>{latestNews.category}</span></p><h3>{latestNews.title}</h3></div>
             </Link>
           </article> : <ContentState title="아직 공개된 주보·소식이 없습니다." description="새 소식이 게시되면 이곳에서 바로 확인하실 수 있습니다."/>}
