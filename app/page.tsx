@@ -104,15 +104,18 @@ export default async function HomePage() {
                 {sundayServices.map((service) => <li key={service.name}><div><strong>{service.name}</strong>{service.detail && <span>{service.detail}</span>}</div><time>{service.time}</time></li>)}
               </ul>
             </article>
-            {worshipSchedule.map((service) => (
-              <article key={service.name}>
-                <div>
-                  <p>{service.name}</p>
-                  <span>{service.detail}</span>
-                </div>
-                <strong>{service.time}</strong>
-              </article>
-            ))}
+            <div className="schedule__weekday" aria-label="평일 예배 시간">
+              <p className="schedule__weekday-label">평일 예배</p>
+              {worshipSchedule.map((service) => (
+                <article key={service.name}>
+                  <div>
+                    <p>{service.name}</p>
+                    <span>{service.detail}</span>
+                  </div>
+                  <strong>{service.time}</strong>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -155,6 +158,10 @@ export default async function HomePage() {
           <address>
             {church.address}
           </address>
+          <div className="location__quick-actions" aria-label="방문 빠른 메뉴">
+            <a href={church.mapUrl || "#location"} target="_blank" rel="noopener noreferrer">길찾기</a>
+            {church.phone && <a href={`tel:${church.phone.replace(/[^\d+]/g, "")}`}>전화 문의</a>}
+          </div>
           <dl>
             <div>
               <dt>대중교통</dt>
