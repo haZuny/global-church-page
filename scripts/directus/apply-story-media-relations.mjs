@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 
-const env = Object.fromEntries((await readFile(new URL("../../.env", import.meta.url), "utf8")).split(/\r?\n/).map((line) => line.trim()).filter((line) => line && !line.startsWith("#")).map((line) => line.split(/=(.*)/s)));
+const localEnv = Object.fromEntries((await readFile(new URL("../../.env", import.meta.url), "utf8")).split(/\r?\n/).map((line) => line.trim()).filter((line) => line && !line.startsWith("#")).map((line) => line.split(/=(.*)/s)));
+const env = { ...localEnv, ...process.env };
 const baseUrl = env.DIRECTUS_URL ?? "http://127.0.0.1:8055";
 const login = await fetch(`${baseUrl}/auth/login`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email: env.ADMIN_EMAIL, password: env.ADMIN_PASSWORD }) });
 const { data: session } = await login.json();
@@ -20,7 +21,7 @@ if (!directusFileFields.some((field) => field.field === "story_media_files")) {
 
 const storyFields = await request("/fields/stories");
 const storyMediaCollection = (await request("/collections")).find((collection) => collection.collection === "story_media");
-await request("/collections/story_media", "PATCH", { meta: { ...storyMediaCollection.meta, display_template: "{{file.filename_download}}" } });
+await request("/collections/story_media", "PATCH", { meta: { ...storyMediaCollection.meta, hidden: true, display_template: "{{file.filename_download}}" } });
 if (!storyFields.some((field) => field.field === "media")) {
   await request("/fields/stories", "POST", { field: "media", type: "alias", meta: { special: ["o2m"], interface: "list-o2m", display: "related-values", options: { layout: "list", template: "{{file.filename_download}}", enableCreate: true, enableSelect: false, enableLink: false }, sort: 7, translations: [{ language: "ko-KR", translation: "이미지 파일" }] } });
 } else {
