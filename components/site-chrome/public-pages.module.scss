@@ -105,8 +105,14 @@
   height: 100svh;
   max-height: 980px;
   overflow: hidden;
-  background: var(--forest);
+  background: #515554;
   color: var(--white);
+}
+
+.hero__picture {
+  position: absolute;
+  inset: 0;
+  display: block;
 }
 
 .hero__image,
