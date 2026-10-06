@@ -33,30 +33,4 @@ const bulletins = await request("/items/bulletins", "POST", bulletinTitles.map((
 await request("/items/news_items", "POST", noticeTitles.map((title, index) => ({ title: `${samplePrefix} ${title}`, body: `<p>검색·상태 필터·페이지네이션 확인을 위한 샘플 공지입니다.</p><blockquote>실제 운영 공지가 아닙니다.</blockquote>`, published_at: dateAt(index), status: statusAt(index) })));
 await request("/items/sermons", "POST", sermonTitles.map((title, index) => ({ title: `${samplePrefix} ${title}`, summary: "관리 화면의 검색과 설교 목록 페이지를 확인하기 위한 샘플 설교 요약입니다.", scripture: index % 2 ? "로마서 12:9-13" : "마태복음 5:13-16", preacher: index % 2 ? "샘플 교역자" : "샘플 담임목사", sermon_date: dateAt(index).slice(0, 10), status: statusAt(index) })));
 
-const sources = [
-  ["sample-community-01.jpg", "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?auto=format&fit=crop&w=1600&q=85"],
-  ["sample-community-02.jpg", "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1600&q=85"],
-  ["sample-community-03.jpg", "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1600&q=85"],
-  ["sample-community-04.jpg", "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=85"],
-];
-
-const imageIds = [];
-for (const [name, url] of sources) {
-  const image = await fetch(url);
-  if (!image.ok) throw new Error(`Unable to download ${url}`);
-  const upload = new FormData();
-  upload.append("file", new Blob([await image.arrayBuffer()], { type: image.headers.get("content-type") ?? "image/jpeg" }), name);
-  const response = await fetch(`${baseUrl}/files`, { method: "POST", headers: { authorization: headers.authorization }, body: upload });
-  const json = await response.json();
-  if (!response.ok) throw new Error(json.errors?.[0]?.message ?? `Unable to upload ${name}`);
-  imageIds.push(json.data.id);
-}
-
-const publishedStories = stories.filter((item) => item.status === "published").slice(0, 5);
-const publishedBulletins = bulletins.filter((item) => item.status === "published").slice(0, 5);
-await request("/items/story_media", "POST", publishedStories.map((item, index) => ({ story: item.id, file: imageIds[index % imageIds.length], sort: 1 })));
-await request("/items/bulletin_media", "POST", publishedBulletins.map((item, index) => ({ bulletin: item.id, file: imageIds[index % imageIds.length], sort: 1 })));
-await request("/items/story_media", "POST", { story: publishedStories[0].id, file: imageIds[1], sort: 2 });
-await request("/items/bulletin_media", "POST", { bulletin: publishedBulletins[0].id, file: imageIds[2], sort: 2 });
-
 console.log("Sample list content seeded.");

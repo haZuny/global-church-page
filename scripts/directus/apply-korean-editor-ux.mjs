@@ -19,7 +19,6 @@ const models = {
   site_settings: ["교회정보", "공개 페이지 순서에 맞춰 교회 기본정보, 메인, 소개, 방문 정보를 관리합니다.", { church_name: "교회 이름", english_name: "영문 교회 이름", hero_title: "첫 화면 제목", hero_copy: "첫 화면 소개", introduction: "교회 소개 페이지 설명", greeting_title: "담임목사 소개 제목", greeting_lead: "목회 철학 요약", greeting_body: "목회 철학 및 소개", pastor_name: "담임목사 이름", pastor_role: "담임목사 직함", pastor_photo: "담임목사 사진", about_title: "교회 소개 페이지 제목", denomination_history: "교단·연혁", address: "주소", map_url: "지도 링크", phone: "대표 연락처", transit_info: "대중교통 안내", parking_info: "주차 안내", show_sermons: "설교 메뉴 노출" }],
   church_ministers: ["섬기는 이", "교회정보에 표시할 부교역자를 관리합니다. 담임목사는 교회정보의 전용 항목에서 관리합니다.", { site_settings: "교회정보", name: "이름", role: "직함", description: "사역·소개", photo: "프로필 사진", sort: "노출 순서", status: "게시 상태" }],
   stories: ["교회 이야기", "공동체 활동과 사진 기록을 작성합니다.", { title: "제목", category: "분류", body: "본문", published_at: "공개일", status: "게시 상태" }],
-  story_media: ["이야기 이미지", "교회 이야기 안에 추가로 넣는 이미지입니다.", { story: "교회 이야기", file: "이미지 파일", sort: "노출 순서" }],
   sermons: ["설교", "설교 제목, 본문, 영상 정보를 관리합니다.", { title: "제목", summary: "설교 요약", scripture: "성경 본문", preacher: "설교자", sermon_date: "설교일", video_file: "설교 영상", status: "게시 상태" }],
   bulletins: ["주보", "주보와 예배 자료를 관리합니다. PDF는 공개 화면에서 미리보기와 다운로드를 제공합니다.", { title: "제목", category: "분류", body: "본문", published_at: "공개일", status: "게시 상태" }],
   bulletin_media: ["주보 첨부 파일", "주보에는 이미지와 내려받을 자료를 함께 연결할 수 있습니다.", { bulletin: "주보", file: "첨부 파일", sort: "노출 순서" }],
@@ -66,7 +65,7 @@ const collections = await request("/collections");
 for (const [collection, [label, note, labels]] of Object.entries(models)) {
   const current = collections.find((item) => item.collection === collection);
   if (!current) continue;
-  await request(`/collections/${collection}`, "PATCH", { meta: { ...current.meta, icon: "edit_note", note, hidden: ["story_media", "bulletin_media", "church_ministers"].includes(collection), translations: [{ language: "ko-KR", translation: label, singular: label, plural: label }] } });
+  await request(`/collections/${collection}`, "PATCH", { meta: { ...current.meta, icon: "edit_note", note, hidden: ["bulletin_media", "church_ministers", "content_assets"].includes(collection), translations: [{ language: "ko-KR", translation: label, singular: label, plural: label }] } });
   const fields = await request(`/fields/${collection}`);
   for (const [field, translation] of Object.entries(labels)) {
     const currentField = fields.find((item) => item.field === field);

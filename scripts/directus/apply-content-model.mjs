@@ -42,7 +42,7 @@ const fields = {
   site_settings: [["church_name", "string", true], ["english_name", "string", false], ["hero_title", "text", false], ["hero_copy", "text", false], ["introduction", "text", true], ["greeting_title", "text", false], ["greeting_lead", "text", false], ["greeting_body", "text", false], ["pastor_name", "string", false], ["pastor_role", "string", false], ["pastor_photo", "uuid", false], ["about_title", "text", false], ["denomination_history", "text", false], ["address", "text", true], ["map_url", "string", false], ["phone", "string", false], ["transit_info", "text", false], ["parking_info", "text", false], ["show_sermons", "boolean", false]],
   church_ministers: [["site_settings", "integer", true], ["name", "string", true], ["role", "string", true], ["description", "text", false], ["photo", "uuid", false], ["sort", "integer", true], ["status", "string", true]],
   stories: [["title", "string", true], ["category", "string", true], ["body", "text", true], ["published_at", "timestamp", false], ["status", "string", true]],
-  story_media: [["story", "integer", true], ["file", "string", true], ["sort", "integer", true]],
+  content_assets: [["file", "uuid", true], ["status", "string", true]],
   sermons: [["title", "string", true], ["summary", "text", true], ["scripture", "string", true], ["preacher", "string", true], ["sermon_date", "date", true], ["video_file", "uuid", false], ["status", "string", true]],
   bulletins: [["title", "string", true], ["category", "string", true], ["body", "text", false], ["published_at", "timestamp", false], ["status", "string", true]],
   bulletin_media: [["bulletin", "integer", true], ["file", "uuid", true], ["sort", "integer", true]],
