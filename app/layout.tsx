@@ -12,6 +12,10 @@ export const metadata: Metadata = {
   description: "시흥 글로벌교회의 분위기와 예배, 공동체 이야기를 편안하게 소개합니다.",
   alternates: { canonical: "/" },
   applicationName: "글로벌교회",
+  icons: {
+    icon: [{ url: "/assets/images/favicon.png", type: "image/png", sizes: "240x240" }],
+    apple: [{ url: "/assets/images/favicon.png", type: "image/png", sizes: "240x240" }],
+  },
   keywords: ["글로벌교회", "시흥글로벌교회", "시흥 교회", "시흥시 교회", "시흥 예배"],
   openGraph: {
     type: "website",

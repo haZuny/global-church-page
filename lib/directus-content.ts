@@ -1,7 +1,6 @@
 import { plainTextToRichText } from "@/lib/rich-text";
 
-export type StoryImage = { image: string; alt: string };
-export type StoryEntry = { id: number; category: "장년부" | "교육부서"; date: string; dateTime: string; title: string; image: string; alt: string; body: string; media: StoryImage[] };
+export type StoryEntry = { id: number; category: "장년부" | "교육부서"; date: string; dateTime: string; title: string; image: string; alt: string; body: string };
 export type BulletinAttachment = { id: string; name: string; title?: string; type: string; size?: number; width?: number; height?: number; url: string };
 export type BulletinEntry = { id: number; title: string; date: string; category: string; image: string; body: string; attachments: BulletinAttachment[] };
 export type NewsEntry = { kind: "bulletin" | "notice"; id: number; href: string; title: string; date: string; dateTime: string; category: string; image?: string; body: string; attachments?: BulletinAttachment[] };
@@ -127,26 +126,21 @@ export async function getMinisters(): Promise<Minister[]> {
   return items.map((item) => ({ id: item.id, name: item.name, role: item.role, description: item.description || "", photo: assetUrl(item.photo) }));
 }
 
-function mapStories(items: any[], mediaItems: any[]) {
+function mapStories(items: any[]) {
   return items.map((item): StoryEntry => {
-    const media = mediaItems.filter((media) => media.story === item.id).map((media) => ({ image: `${directusAssetsUrl}/assets/${media.file}`, alt: item.title }));
-    const latestMedia = media.at(-1);
-    return { id: item.id, category: item.category === "교육부서" ? "교육부서" : "장년부", date: dateLabel(item.published_at), dateTime: item.published_at.slice(0, 10), title: item.title, image: latestMedia?.image ?? "", alt: item.title, body: plainTextToRichText(item.body), media };
+    return { id: item.id, category: item.category === "교육부서" ? "교육부서" : "장년부", date: dateLabel(item.published_at), dateTime: item.published_at.slice(0, 10), title: item.title, image: "", alt: item.title, body: plainTextToRichText(item.body) };
   });
 }
 
 export async function getStoriesPage({ category, page, pageSize }: { category?: StoryCategory; page?: number; pageSize: number }): Promise<PageResult<StoryEntry>> {
   const storyPage = await readCollectionPage<any>("stories", { page, pageSize, query: { sort: "-published_at", ...(category ? { "filter[category][_eq]": category } : {}) } });
-  const storyIds = storyPage.items.map((item) => item.id);
-  const mediaItems = storyIds.length ? await readCollection<any>(`story_media?sort=sort&limit=-1&filter[story][_in]=${storyIds.join(",")}`) : [];
-  return { ...storyPage, items: mapStories(storyPage.items, mediaItems) };
+  return { ...storyPage, items: mapStories(storyPage.items) };
 }
 
 export async function getStory(id: string) {
   const items = await readCollection<any>(`stories?filter[id][_eq]=${encodeURIComponent(id)}&limit=1`);
   if (!items.length) return undefined;
-  const mediaItems = await readCollection<any>(`story_media?sort=sort&limit=-1&filter[story][_eq]=${items[0].id}`);
-  return mapStories(items, mediaItems)[0];
+  return mapStories(items)[0];
 }
 
 function mapBulletins(items: any[], mediaItems: any[]) {
@@ -156,8 +150,7 @@ function mapBulletins(items: any[], mediaItems: any[]) {
       if (!file?.id) return [];
       return [{ id: file.id, name: file.filename_download || "첨부 파일", title: file.title || undefined, type: file.type || "", size: file.filesize || undefined, width: file.width || undefined, height: file.height || undefined, url: `${directusAssetsUrl}/assets/${file.id}` }];
     });
-    const image = attachments.find(isImageAttachment);
-    return { id: item.id, title: item.title, date: dateLabel(item.published_at), category: item.category, image: image?.url ?? "", body: plainTextToRichText(item.body), attachments };
+    return { id: item.id, title: item.title, date: dateLabel(item.published_at), category: item.category, image: "", body: plainTextToRichText(item.body), attachments: attachments.filter((attachment) => !isImageAttachment(attachment)) };
   });
 }
 

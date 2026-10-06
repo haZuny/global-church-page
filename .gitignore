@@ -9,6 +9,7 @@ tsconfig.tsbuildinfo
 .env
 .env.docker
 .env.production
+app/server.env
 data/
 uploads/
 backups/

@@ -20,7 +20,7 @@ const policies = await request("/policies");
 const publicPolicy = policies.find((policy) => policy.name === "$t:public_label");
 if (!publicPolicy) throw new Error("Directus public policy was not found.");
 
-const collections = ["stories", "sermons", "bulletins", "news_items", "church_ministers"];
+const collections = ["stories", "sermons", "bulletins", "news_items", "church_ministers", "content_assets"];
 const permissions = await request("/permissions");
 for (const collection of collections) {
   const existing = permissions.find((permission) => permission.policy === publicPolicy.id && permission.collection === collection && permission.action === "read");
@@ -30,10 +30,11 @@ for (const collection of collections) {
 const siteSettingsPermission = permissions.find((permission) => permission.policy === publicPolicy.id && permission.collection === "site_settings" && permission.action === "read");
 if (!siteSettingsPermission) await request("/permissions", "POST", { collection: "site_settings", action: "read", fields: ["*"], permissions: {}, policy: publicPolicy.id });
 
-const storyMediaPermission = permissions.find((permission) => permission.policy === publicPolicy.id && permission.collection === "story_media" && permission.action === "read");
-if (!storyMediaPermission) await request("/permissions", "POST", { collection: "story_media", action: "read", fields: ["*"], permissions: { story: { status: { _eq: "published" } } }, policy: publicPolicy.id });
-
 const bulletinMediaPermission = permissions.find((permission) => permission.policy === publicPolicy.id && permission.collection === "bulletin_media" && permission.action === "read");
 if (!bulletinMediaPermission) await request("/permissions", "POST", { collection: "bulletin_media", action: "read", fields: ["*"], permissions: { bulletin: { status: { _eq: "published" } } }, policy: publicPolicy.id });
+
+for (const permission of permissions.filter((permission) => permission.policy === publicPolicy.id && permission.collection === "story_media")) {
+  await request(`/permissions/${permission.id}`, "DELETE");
+}
 
 console.log("Published-only public read policy applied.");

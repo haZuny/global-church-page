@@ -30,9 +30,14 @@
 .image small { font-size: .75rem; }
 
 @media (max-width: 780px) {
+  .state {
+    border-radius: 26px;
+  }
+
   .image {
     min-height: 10rem;
     padding: 1rem;
+    border-radius: 26px;
     background: linear-gradient(145deg, #dce7e2, #c8d4cf);
     color: #47605b;
   }

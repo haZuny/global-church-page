@@ -105,8 +105,14 @@
   height: 100svh;
   max-height: 980px;
   overflow: hidden;
-  background: var(--forest);
+  background: #515554;
   color: var(--white);
+}
+
+.hero__picture {
+  position: absolute;
+  inset: 0;
+  display: block;
 }
 
 .hero__image,
@@ -475,7 +481,7 @@
   position: relative;
   aspect-ratio: var(--media-preview-ratio);
   overflow: hidden;
-  background: var(--sand);
+  background: var(--image-loading-surface);
 }
 
 .latest-story__image img {
@@ -619,7 +625,7 @@
 .story__image-wrap {
   position: relative;
   overflow: hidden;
-  background: var(--sand);
+  background: var(--image-loading-surface);
 }
 
 .story--featured .story__image-wrap {
@@ -1058,7 +1064,7 @@
   aspect-ratio: var(--media-card-ratio);
   align-self: center;
   overflow: hidden;
-  background: var(--sand);
+  background: var(--image-loading-surface);
 }
 
 .archive-feature__image img {
@@ -1130,7 +1136,7 @@
   aspect-ratio: var(--media-card-ratio);
   margin-bottom: 22px;
   overflow: hidden;
-  background: var(--sand);
+  background: var(--image-loading-surface);
 }
 
 .archive-card__image img {
@@ -2487,7 +2493,10 @@ img.minister-card__photo {
     grid-template-columns: 1fr;
   }
 
-  .pastor-message__portrait { max-width: 350px; }
+  .pastor-message__portrait {
+    max-width: 350px;
+    margin-inline: auto;
+  }
 
   .pastor-message__copy {
     margin-top: 22px;

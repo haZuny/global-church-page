@@ -7,7 +7,8 @@
 - 공개 콘텐츠 컬렉션은 모두 `status`(`draft`, `published`, `archived`)와 `published_at`을 가집니다.
 - `published_at`은 `published` 상태에서만 필수입니다. 목록 기본 정렬은 `published_at` 내림차순입니다.
 - 공개 상세 URL은 Directus가 자동 생성하는 `id`를 사용합니다. 기존 `slug`은 이전 데이터 식별용으로만 유지하며 관리자 화면에는 노출하지 않습니다.
-- 이미지 파일은 게시물 하위의 `story_media`·`bulletin_media` 관계로 저장합니다. 파일명은 관리자 목록에서 자동 표시하고, 별도 캡션·대체 텍스트 입력은 받지 않습니다.
+- 교회 이야기·공지·주보의 이미지는 리치 텍스트 본문에 삽입합니다. 본문 이미지 파일은 공개 파일 접근만 위해 숨겨진 `content_assets` 보관함에 연결하며, 게시물과 별도 이미지 관계를 만들지 않습니다.
+- 주보·자료의 `bulletin_media`는 PDF·문서처럼 내려받을 첨부 파일 전용입니다. 이미지는 본문에 삽입합니다.
 - 업로드 원본은 보존합니다. 공개 웹은 Directus Assets 변환을 사용해 목록·카드·프로필·상세·문서별로 정한 크기와 품질의 이미지를 요청하며, 카드 프레임은 `cover`, 주보 문서는 `contain`으로 표시합니다.
 - `archived`는 삭제가 아닌 복구 가능한 상태입니다.
 
@@ -21,8 +22,8 @@
 ### 레거시 필드 정리 원칙 (#30)
 
 - 공개 웹과 관리자 입력 화면에서 더 이상 쓰지 않는 필드는 즉시 **숨김·선택값**으로 전환합니다. 기존 데이터와 컬럼은 삭제하지 않습니다.
-- 기존 대표 이미지와 주보 파일은 `cms:legacy:media:migrate`로 하위 첨부 관계에 한 번 이관한 뒤에만 공개 웹의 참조를 제거합니다.
-- 삭제는 백업, 데이터 이관 확인, 참조 코드 제거를 모두 마친 별도 작업에서만 진행합니다. 현재 숨긴 필드는 이력 보존용입니다.
+- 기존 대표 이미지는 리치 텍스트 본문으로 이관하고, 공개 파일 권한은 `content_assets`로 보존한 뒤에만 이전 관계를 제거합니다.
+- 삭제는 백업, 데이터 이관 확인, 참조 코드 제거를 모두 마친 뒤에만 진행합니다. 남은 숨김 필드는 이력 보존용입니다.
 
 ## 컬렉션
 
@@ -85,21 +86,21 @@
 | `id` | uuid | 예 | 기본 키 |
 | `title` | string | 예 | 제목 |
 | `body` | text (rich text HTML) | 예 | 제목, 굵게, 기울임, 글자 크기·색상, 목록, 인용, 링크를 지원하는 본문 |
-| `media` | O2M `story_media` | 아니오 | 본문에 추가하는 여러 이미지 |
 | `published_at` | datetime | 조건부 | 게시일 |
 | `status` | select | 예 | `draft` / `published` / `archived` |
 
-### `story_media`
+숨김 이력 필드: `stories.slug`, `subtitle`, `summary`, `category`, `cover_image*`, `cover_alt`.
 
-이야기 본문에 포함하는 추가 사진입니다. `stories`와 `directus_files`를 각각 하나씩 참조하고 `sort` 순서대로 표시합니다.
+### `content_assets`
+
+본문에 삽입된 이미지를 공개 상태로 제공하기 위한 내부 파일 보관함입니다. 교회 이야기·공지·주보와 직접 연결하지 않으며, 공개 페이지는 본문 HTML의 Directus Assets URL만 사용합니다.
+
+새 본문 이미지를 게시하기 전에는 `npm run cms:content-assets:sync`를 실행해 누락 파일을 보관함에 등록합니다. 이 명령은 게시된 본문에서 참조한 파일만 추가하며 기존 보관함 항목을 삭제하지 않습니다.
 
 | 필드 | 형식 | 필수 | 설명 |
 | --- | --- | --- | --- |
-| `story` | M2O `stories` | 예 | 소속 이야기 |
-| `file` | M2O `directus_files` | 예 | 업로드 이미지 |
-| `sort` | integer | 예 | 표시 순서 |
-
-숨김 이력 필드: `stories.slug`, `subtitle`, `summary`, `category`, `cover_image*`, `cover_alt`; `story_media.alt`, `caption`.
+| `file` | M2O `directus_files` | 예 | 본문에 삽입한 이미지 파일 |
+| `status` | select | 예 | `published`일 때만 파일 공개 |
 
 ### `sermons`
 
@@ -126,13 +127,13 @@
 | `title` | string | 예 | 제목 |
 | `category` | select | 예 | `주보` / `자료` |
 | `body` | text (rich text HTML) | 아니오 | 웹에서 함께 보여 줄 서식 있는 본문 안내 |
-| `media` | O2M `bulletin_media` | 아니오 | `주보 파일`에서 연결하는 여러 PDF·이미지·자료 파일 |
+| `media` | O2M `bulletin_media` | 아니오 | `주보 파일`에서 연결하는 PDF·문서·자료 파일 |
 | `published_at` | datetime | 조건부 | 발행일 |
 | `status` | select | 예 | `draft` / `published` / `archived` |
 
 ### `bulletin_media`
 
-주보 하나에 여러 이미지와 자료를 연결합니다. 각 첨부 항목은 주보 편집 화면의 `주보 파일`에서 추가합니다. PDF는 주보·자료 상세 화면에서 미리보기와 다운로드를 모두 제공하고, 한글 문서·압축 파일처럼 브라우저가 직접 읽기 어려운 형식은 다운로드로 제공합니다. 이미지는 미리보기와 개별 원본 다운로드로 공개합니다.
+주보 하나에 여러 자료를 연결합니다. 각 첨부 항목은 주보 편집 화면의 `주보 파일`에서 추가합니다. PDF와 한글 문서·압축 파일처럼 브라우저에서 직접 읽기 어려운 형식은 다운로드로 제공합니다. 이미지는 본문에 삽입합니다.
 
 | 필드 | 형식 | 필수 | 설명 |
 | --- | --- | --- | --- |
@@ -157,10 +158,10 @@
 
 ## 공개 역할·정책
 
-Directus 공개 역할에는 `site_settings`, `church_ministers`, `stories`, `story_media`, `sermons`, `bulletins`, `bulletin_media`, `news_items`의 읽기만 허용합니다.
+Directus 공개 역할에는 `site_settings`, `church_ministers`, `stories`, `sermons`, `bulletins`, `bulletin_media`, `news_items`, `content_assets`의 읽기만 허용합니다.
 
 - 콘텐츠 컬렉션의 공개 읽기 필터: `status = "published"`
-- `story_media`는 연결된 `story.status = "published"`일 때만 읽을 수 있게 설정합니다.
+- `content_assets`는 `status = "published"`일 때만 읽을 수 있게 설정하며, 본문에서 참조한 파일 공개에만 사용합니다.
 - `bulletin_media`는 연결된 `bulletin.status = "published"`일 때만 읽을 수 있게 설정합니다.
 - 사용자, 역할, 정책, 관리자 설정과 `draft`·`archived` 콘텐츠는 공개 역할에 권한을 부여하지 않습니다.
 - 파일은 공개 콘텐츠에서 참조되는 항목만 제공하도록 파일 접근 정책을 별도로 검증합니다.
