@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { contentImageUrl, getChurchInfo, getMinisters } from "@/lib/directus-content";
+import { contentImageUrl, fallbackChurchInfo, getChurchInfo, getMinisters } from "@/lib/directus-content";
 import { RichText } from "@/components/rich-text/rich-text";
 import { ContentState } from "@/components/content-state/content-state";
 
@@ -7,7 +7,9 @@ export const metadata: Metadata = { title: "교회 소개", description: "글로
 export const dynamic = "force-dynamic";
 
 export default async function AboutPage() {
-  const [church, ministers] = await Promise.all([getChurchInfo(), getMinisters()]);
+  const [churchResult, ministersResult] = await Promise.allSettled([getChurchInfo(), getMinisters()]);
+  const church = churchResult.status === "fulfilled" ? churchResult.value : fallbackChurchInfo;
+  const ministers = ministersResult.status === "fulfilled" ? ministersResult.value : [];
   const servingMinisters = ministers.filter((minister) => minister.name !== church.pastorName && minister.role !== church.pastorRole);
   return <div className="subpage about-page"><main id="main-content" tabIndex={-1}>
     <section className="about-hero" aria-labelledby="about-page-title"><div className="page-shell about-hero__inner"><p className="eyebrow">ABOUT {church.englishName.toUpperCase()}</p><h1 id="about-page-title" style={{ overflowWrap: "anywhere", wordBreak: "break-all" }}>{church.aboutTitle}</h1><p>{church.introduction}</p></div></section>
