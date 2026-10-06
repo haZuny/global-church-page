@@ -15,11 +15,13 @@ test.describe("새신자 핵심 흐름", () => {
   test("교회 이야기와 주보·소식의 목록에서 상세로 이동한다", async ({ page }) => {
     await page.goto("/stories");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("함께한 날들의 작은 기록");
+    await expect(page.getByAltText("함께한 주일 예배")).toHaveAttribute("src", /fixture-story-image/);
     await Promise.all([
       page.waitForURL("**/stories/101"),
       page.getByRole("link", { name: /함께한 주일의 기록 이야기 보기/ }).click({ force: true }),
     ]);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("함께한 주일의 기록");
+    await expect(page.getByAltText("함께한 주일 예배")).toBeVisible();
 
     await page.goto("/news");
     await page.getByRole("link", { name: "공지", exact: true }).click();
