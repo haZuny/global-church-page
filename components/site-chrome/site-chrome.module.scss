@@ -9,11 +9,16 @@
 .home :global(.home-page > .hero) { order:1; }
 .home :global(.home-page > .home-updates--stories) { order:2; }
 .home :global(.home-page > .worship) { order:3; }
-.home :global(.home-page > .home-updates--news) { order:4; background:#e8eef8; }
-.home :global(.home-page > .location) { order:5; }
+.home :global(.home-page > .home-updates--news) {
+  order:4;
+  min-height:min(100svh, 740px);
+  border-bottom:1px solid #cbd8e3;
+  background:#e8eef8;
+}
+.home :global(.home-page > .location) { order:5; border-top:1px solid #cbd8cf; background:#dde7df; }
 .home :global(.hero) { position:relative; min-height:var(--home-panel-height); height:var(--home-panel-height); max-height:none; overflow:hidden; background:var(--forest); color:var(--white); }
-.home :global(.home-updates) { display:flex; align-items:center; }
-.home :global(.home-updates), .home :global(.worship) { padding-block:clamp(48px, 3vw, 64px); }
+.home :global(.home-updates) { display:flex; align-items:center; padding-block:clamp(56px, 4vw, 80px); }
+.home :global(.worship) { padding-block:clamp(88px, 8vw, 136px); }
 .home :global(.home-updates__heading) { margin-bottom:40px; }
 .home :global(.home-updates .section-heading h2) { font-size:clamp(42px, 4vw, 56px); }
 .home :global(.home-updates--stories .home-updates__grid) {
@@ -21,7 +26,15 @@
   justify-content:space-between;
   gap:48px;
 }
-.home :global(.worship__grid) { min-height:calc(var(--home-panel-height) - 2 * clamp(48px, 3vw, 64px)); align-content:center; }
+.home :global(.worship__grid) {
+  max-width:1080px;
+  min-height:calc(var(--home-panel-height) - 2 * clamp(88px, 8vw, 136px));
+  grid-template-columns:minmax(250px, .78fr) minmax(360px, 1fr);
+  gap:clamp(52px, 8vw, 112px);
+  align-content:center;
+}
+.home :global(.schedule__weekday-label) { display:none; }
+.home :global(.location__quick-actions) { display:none; }
 
 /* 주보·소식은 이번 주에 필요한 정보를 먼저 읽고, 이미지는 보조 단서로만 둡니다. */
 .home :global(.latest-news-card > a) {
@@ -62,6 +75,8 @@
 @media (max-width: 780px) {
   /* Keep the hero stable while mobile browsers animate their address and bottom bars. */
   .home :global(.home-page) { --home-panel-height:100svh; }
+  /* Story and news sections can be short; do not reserve a full viewport after their content. */
+  .home :global(.home-page > .home-updates) { min-height:0; }
   .home :global(.hero__image) {
     /* Crop the lower road while scaling from the left, leaving copy room before the facade. */
     object-position:left top;
@@ -75,7 +90,20 @@
   }
   .home :global(.home-updates) { display:block; }
   .home :global(.home-updates--stories .home-updates__grid) { grid-template-columns:1fr; gap:42px; }
-  .home :global(.worship__grid) { min-height:calc(var(--home-panel-height) - 112px); }
+  /* 기존 모바일 .home-page .worship.section(36px)보다 우선해 실제 여백을 보장합니다. */
+  .home :global(.home-page > .worship.section) {
+    --home-worship-padding:clamp(88px, 12svh, 112px);
+    /* 공개 페이지 공통 padding 선언보다 우선해 실제 기기에서도 동일한 여백을 유지합니다. */
+    padding-top:var(--home-worship-padding) !important;
+    padding-bottom:var(--home-worship-padding) !important;
+  }
+  /* 제목의 기본 하단 마진과 그리드 간격이 겹치지 않게 해, 빈 높이는 위·아래 호흡으로 돌립니다. */
+  .home :global(.worship .section-heading) { margin-bottom:0; }
+  .home :global(.worship__grid) {
+    min-height:calc(var(--home-panel-height) - 2 * var(--home-worship-padding));
+    /* 태블릿 공통 7% 간격이 모바일에서도 남지 않도록 한 행 간격으로 고정합니다. */
+    row-gap:24px !important;
+  }
   .home :global(.latest-news-card > a) {
     grid-template-columns:minmax(0, 1fr) minmax(112px, 34%);
     gap:22px;
@@ -84,6 +112,32 @@
     max-width:160px;
     aspect-ratio:3 / 4;
   }
+  /* 모바일에서는 상세 교통 정보보다 길찾기와 전화 문의를 먼저 제시합니다. */
+  .home :global(.location__quick-actions) {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+    margin-top:24px;
+  }
+  .home :global(.location__quick-actions a) {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:48px;
+    border:1px solid #31465a;
+    color:#31465a;
+    font-size:13px;
+    font-weight:700;
+  }
+  .home :global(.location__quick-actions a:first-child) { background:#31465a; color:var(--white); }
+  .home :global(.location__actions) { display:none; }
+  .stories :global(.archive-toolbar nav > *), .news :global(.archive-toolbar nav > *), .sermons :global(.archive-toolbar nav > *) {
+    display:inline-flex;
+    align-items:center;
+    min-height:44px;
+  }
+  /* 목록 첫 화면에서 제목이 콘텐츠보다 커지지 않도록 아카이브별 밀도를 낮춥니다. */
+  .stories :global(.archive-hero h1), .news :global(.archive-hero h1) { max-width:10ch; }
 }
 
 @keyframes hero-arrive-mobile {
@@ -99,6 +153,11 @@
 .about :global(main > .denomination-section) { order:5; }
 .about :global(main > .archive-bridge) { order:6; }
 .about :global(.subpage main), .worship :global(.subpage main), .stories :global(.subpage main), .news :global(.subpage main), .sermons :global(.subpage main) { padding-top:86px; }
+
+/* 소개 페이지의 서로 다른 이야기가 한 덩어리로 보이지 않도록, 따뜻한 종이색과 옅은 청록을 교차합니다. */
+.about :global(.pastor-message) { background:#faf9f4; }
+.about :global(.ministers-section) { border-block:1px solid #cfdadd; background:#e7eff0; }
+.about :global(.denomination-section) { padding-bottom:clamp(156px, 14vw, 220px); background:#f3f1e8; }
 
 .home :global(.reveal), .about :global(.reveal), .worship :global(.reveal), .stories :global(.reveal), .news :global(.reveal), .sermons :global(.reveal) { opacity:0; transform:translateY(34px); transition:opacity 820ms ease,transform 820ms cubic-bezier(.22,1,.36,1); }
 .home :global(.reveal.is-visible), .about :global(.reveal.is-visible), .worship :global(.reveal.is-visible), .stories :global(.reveal.is-visible), .news :global(.reveal.is-visible), .sermons :global(.reveal.is-visible) { opacity:1; transform:translateY(0); }
@@ -166,6 +225,12 @@
 .news :global(.resource-images__preview span) { position:absolute; right:14px; bottom:12px; padding:7px 9px; background:rgba(25,33,29,.78); color:var(--white); font-size:11px; font-weight:700; }
 .news :global(.resource-images article > div) { padding:18px; }
 .news :global(.resource-images div > a) { margin-top:18px; }
+.news :global(.bulletin-pdf) { overflow:hidden; margin-top:36px; border:1px solid var(--line); background:var(--cream); }
+.news :global(.bulletin-pdf header) { display:flex; align-items:center; justify-content:space-between; gap:24px; min-height:68px; padding:16px 22px; border-bottom:1px solid var(--line); }
+.news :global(.bulletin-pdf header strong) { display:block; overflow-wrap:anywhere; font-size:14px; }
+.news :global(.bulletin-pdf header span) { display:block; margin-top:6px; color:var(--muted); font-size:12px; font-weight:700; }
+.news :global(.bulletin-pdf header a) { display:inline-flex; flex:none; gap:9px; padding-bottom:3px; border-bottom:1px solid var(--ink); color:var(--ink); font-size:13px; font-weight:700; }
+.news :global(.bulletin-pdf object) { display:block; width:100%; height:min(76vh,900px); background:#eef2f8; }
 
 .stories :global(.archive-hero), .news :global(.archive-hero), .sermons :global(.archive-hero), .worship :global(.archive-hero) { display:flex; min-height:500px; color:var(--white); }
 .stories :global(.archive-hero--stories) { background:radial-gradient(circle at 83% 14%,rgba(145,173,131,.18),transparent 27%),var(--forest); }
@@ -214,10 +279,22 @@
   .news :global(.resource-attachments__heading > p:last-child) { font-size:14px; }
   .news :global(.resource-downloads li) { align-items:flex-start; flex-direction:column; gap:16px; }
   .news :global(.resource-images) { grid-template-columns:1fr; gap:18px; margin-top:30px; }
+  .news :global(.bulletin-pdf) { margin-top:28px; }
+  .news :global(.bulletin-pdf header) { align-items:flex-start; flex-direction:column; gap:13px; padding:17px 20px; }
+  .news :global(.bulletin-pdf object) { height:68vh; min-height:440px; }
 }
 
 @media (max-width: 760px) {
   .about :global(.subpage main), .worship :global(.subpage main), .stories :global(.subpage main), .news :global(.subpage main), .sermons :global(.subpage main) { padding-top:68px; }
+  /* 교단·노회 설명이 끝난 뒤에는 푸터와 확실히 분리되는 여백을 둡니다. */
+  .about :global(.denomination-section) {
+    padding-top:80px !important;
+    padding-bottom:168px !important;
+  }
+  /* 데스크톱의 2열 간격을 그대로 쌓지 않아 제목과 소속 교단·노회 설명을 한 흐름으로 만듭니다. */
+  .about :global(.denomination-section__grid) { gap:0; }
+  .about :global(.denomination-section .section-heading) { padding-bottom:26px; border-bottom:1px solid #d5d2c8; }
+  .about :global(.denomination-section__copy) { margin-top:28px !important; }
   .stories :global(.archive-hero), .news :global(.archive-hero), .sermons :global(.archive-hero), .worship :global(.archive-hero) { min-height:440px; }
   .stories :global(.archive-hero__inner), .news :global(.archive-hero__inner), .sermons :global(.archive-hero__inner), .worship :global(.archive-hero__inner) { grid-template-columns:1fr; gap:44px; align-content:end; padding-block:76px 64px; }
   .stories :global(.archive-hero h1), .news :global(.archive-hero h1), .sermons :global(.archive-hero h1), .worship :global(.archive-hero h1) { font-size:clamp(44px,12vw,60px); }
@@ -228,6 +305,10 @@
   .about :global(.about-page .about-hero__inner > p:last-child) { margin-top:14px; font-size:13px; }
   .stories :global(.archive-hero__inner), .news :global(.archive-hero__inner) { gap:18px; padding-block:54px 34px; }
   .stories :global(.archive-hero__inner > p), .news :global(.archive-hero__inner > p) { font-size:13px; }
+  .sermons :global(.archive-hero) { min-height:380px; }
+  .sermons :global(.archive-hero__inner) { gap:18px; padding-block:58px 44px; }
+  .sermons :global(.archive-hero h1) { max-width:9ch; font-size:clamp(38px,10vw,46px); line-height:1.08; }
+  .stories :global(.archive-hero h1), .news :global(.archive-hero h1) { font-size:clamp(36px,9.4vw,44px); }
   .sermons :global(.sermon-feature) { grid-template-columns:1fr; gap:56px; }
   .sermons :global(.sermon-feature .sermon-art) { min-height:300px; aspect-ratio:16 / 10; }
 }

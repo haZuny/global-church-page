@@ -68,4 +68,18 @@
   .edge {
     min-width: 42px;
   }
+
+  .edge {
+    display: none;
+  }
+}
+
+@media (max-width: 360px) {
+  .pagination {
+    gap: 6px;
+  }
+
+  .pagination ol li:nth-child(n + 4) {
+    display: none;
+  }
 }

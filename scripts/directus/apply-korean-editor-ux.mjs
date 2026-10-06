@@ -21,7 +21,7 @@ const models = {
   stories: ["교회 이야기", "공동체 활동과 사진 기록을 작성합니다.", { title: "제목", category: "분류", body: "본문", published_at: "공개일", status: "게시 상태" }],
   story_media: ["이야기 이미지", "교회 이야기 안에 추가로 넣는 이미지입니다.", { story: "교회 이야기", file: "이미지 파일", sort: "노출 순서" }],
   sermons: ["설교", "설교 제목, 본문, 영상 정보를 관리합니다.", { title: "제목", summary: "설교 요약", scripture: "성경 본문", preacher: "설교자", sermon_date: "설교일", video_file: "설교 영상", status: "게시 상태" }],
-  bulletins: ["주보", "주보와 예배 자료를 관리합니다.", { title: "제목", category: "분류", body: "본문", published_at: "공개일", status: "게시 상태" }],
+  bulletins: ["주보", "주보와 예배 자료를 관리합니다. PDF는 공개 화면에서 미리보기와 다운로드를 제공합니다.", { title: "제목", category: "분류", body: "본문", published_at: "공개일", status: "게시 상태" }],
   bulletin_media: ["주보 첨부 파일", "주보에는 이미지와 내려받을 자료를 함께 연결할 수 있습니다.", { bulletin: "주보", file: "첨부 파일", sort: "노출 순서" }],
   news_items: ["공지", "공지 내용을 자유롭게 작성합니다.", { title: "제목", body: "본문", published_at: "공개일", status: "게시 상태" }],
 };
