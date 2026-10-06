@@ -56,7 +56,7 @@ const collectionPayload = (collection, url) => {
   if (collection === "bulletins") return page(bulletins, url);
   if (collection === "news_items") return page(notices, url);
   if (collection === "church_ministers") return page(ministers, url);
-  if (collection === "story_media" || collection === "bulletin_media") return { data: [] };
+  if (collection === "bulletin_media") return { data: [] };
   if (collection === "sermons") return { data: [] };
   return { data: [] };
 };

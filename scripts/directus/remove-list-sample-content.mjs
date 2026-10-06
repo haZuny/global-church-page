@@ -19,9 +19,7 @@ const request = async (path, method = "GET", body) => {
 const samplePrefix = "[샘플]";
 const collections = ["stories", "bulletins", "news_items", "sermons"];
 const samples = Object.fromEntries(await Promise.all(collections.map(async (collection) => [collection, await request(`/items/${collection}?filter[title][_starts_with]=${encodeURIComponent(samplePrefix)}&limit=-1&fields=id`)])));
-const storyIds = samples.stories.map((item) => item.id);
 const bulletinIds = samples.bulletins.map((item) => item.id);
-if (storyIds.length) await request(`/items/story_media?filter[story][_in]=${storyIds.join(",")}&limit=-1&fields=id`, "GET").then((items) => items.length && request("/items/story_media", "DELETE", items.map((item) => item.id)));
 if (bulletinIds.length) await request(`/items/bulletin_media?filter[bulletin][_in]=${bulletinIds.join(",")}&limit=-1&fields=id`, "GET").then((items) => items.length && request("/items/bulletin_media", "DELETE", items.map((item) => item.id)));
 for (const collection of collections) if (samples[collection].length) await request(`/items/${collection}`, "DELETE", samples[collection].map((item) => item.id));
 
