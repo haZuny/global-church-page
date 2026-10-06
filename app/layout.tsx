@@ -13,8 +13,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   applicationName: "글로벌교회",
   icons: {
-    icon: [{ url: "/assets/images/logo1.png", type: "image/png", sizes: "500x500" }],
-    apple: [{ url: "/assets/images/logo1.png", type: "image/png", sizes: "500x500" }],
+    icon: [{ url: "/assets/images/favicon.png", type: "image/png", sizes: "240x240" }],
+    apple: [{ url: "/assets/images/favicon.png", type: "image/png", sizes: "240x240" }],
   },
   keywords: ["글로벌교회", "시흥글로벌교회", "시흥 교회", "시흥시 교회", "시흥 예배"],
   openGraph: {
