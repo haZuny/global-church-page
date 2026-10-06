@@ -285,6 +285,8 @@
 }
 
 @media (max-width: 760px) {
+  /* 짧은 소개 제목은 모바일에서 한 줄로 읽히고, 폭이 부족할 때만 자연스럽게 줄이 바뀝니다. */
+  .about :global(.about-title-break) { display:none; }
   .about :global(.subpage main), .worship :global(.subpage main), .stories :global(.subpage main), .news :global(.subpage main), .sermons :global(.subpage main) { padding-top:68px; }
   /* 교단·노회 설명이 끝난 뒤에는 푸터와 확실히 분리되는 여백을 둡니다. */
   .about :global(.denomination-section) {
