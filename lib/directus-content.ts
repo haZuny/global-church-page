@@ -32,6 +32,24 @@ const assetUrl = (file: unknown) => {
   const id = typeof file === "string" ? file : typeof file === "object" && file !== null && "id" in file && typeof file.id === "string" ? file.id : undefined;
   return id ? `${directusAssetsUrl}/assets/${id}` : undefined;
 };
+const htmlAttribute = (tag: string, attribute: string) => {
+  const match = tag.match(new RegExp(`\\b${attribute}=(?:"([^"]*)"|'([^']*)')`, "i"));
+  return (match?.[1] ?? match?.[2] ?? "").replaceAll("&amp;", "&").replaceAll("&quot;", '"');
+};
+const safeInlineImageUrl = (value: string) => {
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" || url.origin === new URL(directusUrl).origin ? url.toString() : undefined;
+  } catch {
+    return undefined;
+  }
+};
+const inlineImage = (html: unknown, fallbackAlt: string) => {
+  if (typeof html !== "string") return { image: "", alt: fallbackAlt };
+  const tag = html.match(/<img\b[^>]*>/i)?.[0];
+  const image = tag ? safeInlineImageUrl(htmlAttribute(tag, "src")) ?? "" : "";
+  return { image, alt: tag ? htmlAttribute(tag, "alt") || fallbackAlt : fallbackAlt };
+};
 const imageTransforms: Record<ContentImagePreset, { width: number; height?: number; fit?: "cover" | "contain"; quality: number }> = {
   "home-preview": { width: 1280, height: 800, fit: "cover", quality: 82 },
   "story-feature": { width: 1200, height: 900, fit: "cover", quality: 84 },
@@ -128,7 +146,8 @@ export async function getMinisters(): Promise<Minister[]> {
 
 function mapStories(items: any[]) {
   return items.map((item): StoryEntry => {
-    return { id: item.id, category: item.category === "교육부서" ? "교육부서" : "장년부", date: dateLabel(item.published_at), dateTime: item.published_at.slice(0, 10), title: item.title, image: "", alt: item.title, body: plainTextToRichText(item.body) };
+    const preview = inlineImage(item.body, item.title);
+    return { id: item.id, category: item.category === "교육부서" ? "교육부서" : "장년부", date: dateLabel(item.published_at), dateTime: item.published_at.slice(0, 10), title: item.title, image: preview.image, alt: preview.alt, body: plainTextToRichText(item.body) };
   });
 }
 

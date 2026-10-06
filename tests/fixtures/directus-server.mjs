@@ -25,7 +25,7 @@ const siteSettings = {
 };
 
 const stories = [
-  { id: 101, title: "함께한 주일의 기록", category: "장년부", body: "함께 예배하고 식탁을 나누었습니다.", published_at: "2026-09-25T00:00:00.000Z" },
+  { id: 101, title: "함께한 주일의 기록", category: "장년부", body: '<p>함께 예배하고 식탁을 나누었습니다.</p><img src="http://127.0.0.1:8056/assets/fixture-story-image" alt="함께한 주일 예배">', published_at: "2026-09-25T00:00:00.000Z" },
   { id: 102, title: "청소년부 가을 모임", category: "교육부서", body: "다음 세대가 함께 이야기했습니다.", published_at: "2026-09-20T00:00:00.000Z" },
 ];
 
@@ -72,6 +72,11 @@ createServer((request, response) => {
     shouldFail = url.searchParams.get("enabled") === "1";
     response.writeHead(200, { "content-type": "application/json" });
     response.end(JSON.stringify({ shouldFail }));
+    return;
+  }
+  if (url.pathname === "/assets/fixture-story-image") {
+    response.writeHead(200, { "content-type": "image/svg+xml" });
+    response.end('<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800"><rect width="100%" height="100%" fill="#a5b3a4"/></svg>');
     return;
   }
   if (shouldFail && url.pathname.startsWith("/items/")) {
