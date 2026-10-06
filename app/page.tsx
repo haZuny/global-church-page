@@ -14,7 +14,7 @@ const Arrow = () => (
 const worshipSchedule = [
   { name: "수요일 밤 예배", detail: "매주 수요일", time: "20:00" },
   { name: "금요일 밤 기도회", detail: "매주 금요일", time: "20:00" },
-  { name: "매일 밤 기도회", detail: "매주 월요일 · 화요일 · 목요일", time: "20:00" },
+  { name: "평일 밤 기도회", detail: "매주 월요일 ~ 금요일", time: "20:00" },
 ] as const;
 const sundayServices = [
   { name: "1부 예배", detail: "", time: "09:00" },
