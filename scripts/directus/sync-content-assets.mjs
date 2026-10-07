@@ -1,9 +1,15 @@
 import { readFile } from "node:fs/promises";
 import { defaultDirectusUrl } from "./local-development.mjs";
 
-const localEnv = Object.fromEntries((await readFile(new URL("../../.env", import.meta.url), "utf8")).split(/\r?\n/).map((line) => line.trim()).filter((line) => line && !line.startsWith("#")).map((line) => line.split(/=(.*)/s)));
+let localEnv = {};
+try {
+  localEnv = Object.fromEntries((await readFile(new URL("../../.env", import.meta.url), "utf8")).split(/\r?\n/).map((line) => line.trim()).filter((line) => line && !line.startsWith("#")).map((line) => line.split(/=(.*)/s)));
+} catch (error) {
+  if (error?.code !== "ENOENT") throw error;
+}
 const env = { ...localEnv, ...process.env };
 const baseUrl = env.DIRECTUS_URL ?? defaultDirectusUrl;
+if (!env.ADMIN_EMAIL || !env.ADMIN_PASSWORD) throw new Error("ADMIN_EMAIL and ADMIN_PASSWORD are required.");
 const login = await fetch(`${baseUrl}/auth/login`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email: env.ADMIN_EMAIL, password: env.ADMIN_PASSWORD }) });
 const loginBody = await login.json();
 if (!login.ok) throw new Error(loginBody.errors?.[0]?.message ?? "Directus login failed.");
@@ -25,4 +31,4 @@ const registeredIds = new Set(assets.map((asset) => asset.file));
 const missingIds = [...referencedIds].filter((id) => !registeredIds.has(id));
 if (missingIds.length) await request("/items/content_assets", "POST", missingIds.map((file) => ({ file, status: "published" })));
 
-console.log(`Content assets synchronized: ${missingIds.length} added, ${referencedIds.size} referenced.`);
+console.log(`Published content assets synchronized: ${missingIds.length} added, ${referencedIds.size} referenced.`);

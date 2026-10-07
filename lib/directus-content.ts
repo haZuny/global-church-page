@@ -98,8 +98,21 @@ async function readCollectionPage<T>(collection: string, { page, pageSize, query
     meta: "filter_count",
     ...query,
   });
-  const response = await fetch(`${directusUrl}/items/${collection}?${params}`, { cache: "no-store" });
-  if (!response.ok) throw new Error(`Directus content request failed: ${response.status}`);
+  const requestUrl = `${directusUrl}/items/${collection}?${params}`;
+  const response = await fetch(requestUrl, { cache: "no-store" });
+  if (!response.ok) {
+    const errorBody = await response.text();
+    const usesPinnedSort = query.sort?.includes("is_pinned");
+    const missingPinnedField = [400, 403].includes(response.status) && usesPinnedSort && /is_pinned/i.test(errorBody);
+    if (missingPinnedField) {
+      return readCollectionPage(collection, {
+        page: currentPage,
+        pageSize,
+        query: { ...query, sort: query.sort!.replace(/-?is_pinned,?/, "").replace(/^,|,$/, "") || "-published_at" },
+      });
+    }
+    throw new Error(`Directus content request failed: ${response.status}`);
+  }
   const payload = await response.json();
   const totalItems = Number(payload.meta?.filter_count ?? payload.data.length);
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));

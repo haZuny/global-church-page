@@ -38,6 +38,9 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/assets ./assets
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/scripts/directus/sync-content-assets.mjs ./scripts/directus/sync-content-assets.mjs
+COPY --from=builder --chown=nextjs:nodejs /app/scripts/directus/local-development.mjs ./scripts/directus/local-development.mjs
+COPY --from=builder --chown=nextjs:nodejs /app/config/local-development.json ./config/local-development.json
 
 USER nextjs
 EXPOSE 3000
