@@ -1,9 +1,10 @@
 import { readFile } from "node:fs/promises";
+import { defaultDirectusUrl } from "./local-development.mjs";
 
 if (process.env.REMOVE_SAMPLE_CONTENT !== "1") throw new Error("Set REMOVE_SAMPLE_CONTENT=1 to remove sample content.");
 
 const env = Object.fromEntries((await readFile(new URL("../../.env", import.meta.url), "utf8")).split(/\r?\n/).map((line) => line.trim()).filter((line) => line && !line.startsWith("#")).map((line) => line.split(/=(.*)/s)));
-const baseUrl = env.DIRECTUS_URL ?? "http://127.0.0.1:8055";
+const baseUrl = env.DIRECTUS_URL ?? defaultDirectusUrl;
 const login = await fetch(`${baseUrl}/auth/login`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email: env.ADMIN_EMAIL, password: env.ADMIN_PASSWORD }) });
 const { data: session } = await login.json();
 if (!session) throw new Error("Directus login failed.");
