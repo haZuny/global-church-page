@@ -11,6 +11,7 @@ const contentSecurityPolicy = [
     : "script-src 'self' 'unsafe-inline'",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https://cms.globalchurch.kr",
+  "media-src 'self' https://cms.globalchurch.kr",
   "frame-src https://www.google.com",
   "connect-src 'self'",
 ].join("; ");
