@@ -63,10 +63,10 @@ export default async function HomePage() {
         <div className="page-shell">
           <div className="home-updates__heading">
             <div className="section-heading">
-              <p className="eyebrow">CHURCH STORIES</p>
-              <h2 id="home-stories-title">우리의 소중한 순간들</h2>
+            <p className="eyebrow">교회 이야기</p>
+              <h2 id="home-stories-title">교회 이야기</h2>
             </div>
-            <p>최근의 사진과 기록으로 글로벌교회의 오늘을 전합니다.</p>
+            <p>예배와 행사 사진입니다.</p>
           </div>
           {latestStory ? <div className="home-updates__grid">
             <article className={`latest-story${latestStory.image ? "" : " latest-story--text-only"}`}>
@@ -78,7 +78,7 @@ export default async function HomePage() {
             {latestStories.length > 1 && <div className="update-list" aria-label="최근 교회 이야기 목록">
               {latestStories.slice(1).map((story) => <Link href={`/stories/${story.id}`} key={story.id}><time dateTime={story.dateTime}>{story.date}</time><div><strong>{story.title}</strong></div></Link>)}
             </div>}
-          </div> : <ContentState title="아직 공개된 교회 이야기가 없습니다." description="새로운 공동체 기록을 준비하고 있습니다. 예배 시간과 방문 정보는 아래에서 확인하실 수 있습니다."/>}
+          </div> : <ContentState title="등록된 교회 이야기가 없습니다."/>}
           {latestStory && <Link className="update-list__more" href="/stories">교회 이야기 전체 보기</Link>}
         </div>
       </section>
@@ -91,11 +91,11 @@ export default async function HomePage() {
         <div className="worship__orb worship__orb--two" />
         <div className="page-shell worship__grid">
           <div className="section-heading">
-            <p className="eyebrow">SUNDAY WITH US</p>
+            <p className="eyebrow">예배 시간</p>
             <h2 id="worship-title">
               예배 시간
             </h2>
-            <p>처음 오신 분도 별도 등록 없이 예배에 참여하실 수 있습니다.</p>
+            <p>처음 오셨다면 예배 시간과 위치를 확인해 주세요.</p>
           </div>
           <div className="schedule">
             <article className="schedule__sunday">
@@ -122,15 +122,15 @@ export default async function HomePage() {
       <section className="home-updates home-updates--news section" aria-labelledby="home-news-title">
         <div className="page-shell">
           <div className="home-updates__heading">
-            <div className="section-heading"><p className="eyebrow">BULLETIN &amp; NEWS</p><h2 id="home-news-title">주보와 소식</h2></div>
-            <p>가장 최근에 발행된 주보 또는 공지입니다.</p>
+            <div className="section-heading"><p className="eyebrow">주보·소식</p><h2 id="home-news-title">주보와 소식</h2></div>
+            <p>최근 주보와 소식입니다.</p>
           </div>
           {latestNews ? <article className={`latest-story latest-news-card${latestNews.image ? "" : " latest-story--text-only latest-news-card--text-only"}`}>
             <Link href={`/news/${latestNews.href}`} aria-label={`${latestNews.title} 보기`}>
               {latestNews.image && <div className="latest-story__image"><Image src={contentImageUrl(latestNews.image, "home-preview")!} alt={latestNews.title} fill unoptimized sizes="(max-width: 780px) 100vw, 52vw"/></div>}
               <div className="latest-story__copy"><p><time dateTime={latestNews.dateTime}>{latestNews.date}</time><span>{latestNews.category}</span></p><h3>{latestNews.title}</h3></div>
             </Link>
-          </article> : <ContentState title="아직 공개된 주보·소식이 없습니다." description="새 소식이 게시되면 이곳에서 바로 확인하실 수 있습니다."/>}
+          </article> : <ContentState title="등록된 주보·소식이 없습니다."/>}
           {latestNews && <Link className="update-list__more" href="/news">주보·소식 전체 보기</Link>}
         </div>
       </section>
@@ -149,7 +149,7 @@ export default async function HomePage() {
           />
         </div>
         <div className="location__card">
-          <p className="eyebrow">VISIT US</p>
+          <p className="eyebrow">오시는 길</p>
           <h2 id="location-title">
             {church.churchName}로
             <br />
@@ -163,18 +163,18 @@ export default async function HomePage() {
             {church.phone && <a href={`tel:${church.phone.replace(/[^\d+]/g, "")}`}>전화 문의</a>}
           </div>
           <dl>
-            <div>
+            {church.transitInfo && <div>
               <dt>대중교통</dt>
-              <dd>{church.transitInfo || "대중교통 정보는 교회에 문의해 주세요."}</dd>
-            </div>
-            <div>
+              <dd>{church.transitInfo}</dd>
+            </div>}
+            {church.parkingInfo && <div>
               <dt>주차</dt>
-              <dd>{church.parkingInfo || "주차 정보는 교회에 문의해 주세요."}</dd>
-            </div>
-            <div>
+              <dd>{church.parkingInfo}</dd>
+            </div>}
+            {church.phone && <div>
               <dt>문의</dt>
-              <dd>{church.phone || "연락처 정보는 준비 중입니다."}</dd>
-            </div>
+              <dd>{church.phone}</dd>
+            </div>}
           </dl>
           <div className="location__actions">
             <a

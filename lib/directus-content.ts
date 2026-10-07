@@ -13,7 +13,7 @@ export type NewsCategory = "전체" | "주보" | "공지" | "자료";
 export type ContentImagePreset = "home-preview" | "story-feature" | "story-card" | "story-detail" | "news-feature" | "resource-preview" | "document" | "profile";
 
 export const fallbackChurchInfo: ChurchInfo = {
-  churchName: "글로벌교회", englishName: "Global Community Church", heroTitle: "시흥에서 함께 예배하고 함께 자라는 공동체", heroCopy: "예배와 일상에서 함께 질문하고 자라갑니다.", introduction: "시흥에서 함께 예배하고 자라는 공동체입니다.", pastorTitle: "글로벌교회를 찾아주신 여러분을 환영합니다.", pastorLead: "처음 오신 분도 편안히 머물 수 있도록 돕겠습니다.", pastorBody: "", pastorName: "", pastorRole: "담임목사", aboutTitle: "시흥에서 함께 예배하고 함께 자라는 공동체", denominationHistory: "", address: "주소를 준비하고 있습니다.", showSermons: false,
+  churchName: "글로벌교회", englishName: "Global Community Church", heroTitle: "시흥 글로벌교회", heroCopy: "예배 시간과 위치를 안내합니다.", introduction: "시흥 글로벌교회입니다.", pastorTitle: "글로벌교회에 오신 것을 환영합니다.", pastorLead: "예배 시간과 오시는 길은 홈에서 확인하실 수 있습니다.", pastorBody: "", pastorName: "", pastorRole: "담임목사", aboutTitle: "글로벌교회", denominationHistory: "", address: "", showSermons: false,
 };
 
 const directusUrl = process.env.DIRECTUS_URL ?? "http://127.0.0.1:8055";

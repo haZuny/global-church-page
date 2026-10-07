@@ -8,8 +8,8 @@ import { absoluteUrl, siteUrl } from "@/lib/site-url";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: "글로벌교회 | 함께 비전을 세우는 공동체", template: "%s | 글로벌교회" },
-  description: "시흥 글로벌교회의 분위기와 예배, 공동체 이야기를 편안하게 소개합니다.",
+  title: { default: "글로벌교회 | 시흥", template: "%s | 글로벌교회" },
+  description: "예배 시간, 오시는 길, 주보와 교회 이야기.",
   alternates: { canonical: "/" },
   applicationName: "글로벌교회",
   icons: {
@@ -22,11 +22,11 @@ export const metadata: Metadata = {
     locale: "ko_KR",
     url: "/",
     siteName: "글로벌교회",
-    title: "글로벌교회 | 함께 비전을 세우는 공동체",
-    description: "시흥 글로벌교회의 분위기와 예배, 공동체 이야기를 편안하게 소개합니다.",
+    title: "글로벌교회 | 시흥",
+    description: "예배 시간, 오시는 길, 주보와 교회 이야기.",
     images: [{ url: "/assets/images/church-building.png", width: 1774, height: 887, alt: "글로벌교회 건물 전경" }],
   },
-  twitter: { card: "summary_large_image", title: "글로벌교회 | 함께 비전을 세우는 공동체", description: "시흥 글로벌교회의 분위기와 예배, 공동체 이야기를 편안하게 소개합니다.", images: ["/assets/images/church-building.png"] },
+  twitter: { card: "summary_large_image", title: "글로벌교회 | 시흥", description: "예배 시간, 오시는 길, 주보와 교회 이야기.", images: ["/assets/images/church-building.png"] },
   verification: { google: process.env.GOOGLE_SITE_VERIFICATION },
   other: process.env.NAVER_SITE_VERIFICATION ? { "naver-site-verification": process.env.NAVER_SITE_VERIFICATION } : undefined,
 };
