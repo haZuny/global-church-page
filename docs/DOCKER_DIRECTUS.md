@@ -1,11 +1,12 @@
-# Docker 기반 Directus 운영
+# Docker 기반 Directus 로컬 개발
 
 이 구성은 Directus를 Docker Compose로 실행하고, SQLite 데이터베이스·업로드 파일·확장 기능을 Docker 볼륨에 영속 보관합니다. 공개 웹은 계속 Directus REST API로만 콘텐츠를 조회합니다.
 
 ## 범위와 기본값
 
 - Directus 이미지는 `11.3.5`로 고정합니다.
-- 초기 포트는 `127.0.0.1:8056`입니다. 기존 로컬 개발 Directus(`8055`)와 동시에 점검할 수 있도록 한 값입니다.
+- 기본 포트는 `127.0.0.1:8057`이며 `.env.docker`의 `DIRECTUS_PORT`로 변경할 수 있습니다.
+- 기존 로컬·운영 인스턴스와 분리된 `global-church-preview-*` 전용 볼륨을 사용합니다.
 - 호스트를 `127.0.0.1`에만 바인딩하므로, 아직 도메인·리버스 프록시 없이 인터넷에 직접 노출되지 않습니다.
 - 운영 도메인, HTTPS, 리버스 프록시는 실제 배포 단계에서 별도로 결정합니다.
 
@@ -23,23 +24,33 @@
 4. 컨테이너를 실행합니다.
 
    ```bash
-   docker compose up -d
-   docker compose ps
+   docker compose --project-name global-church-preview --env-file .env.docker up -d
+   docker compose --project-name global-church-preview --env-file .env.docker ps
    ```
 
-5. `http://127.0.0.1:8056/server/health`가 정상 응답하는지 확인한 뒤, `http://127.0.0.1:8056/admin`으로 로그인합니다.
+5. `http://127.0.0.1:8057/server/health`가 정상 응답하는지 확인한 뒤, `http://127.0.0.1:8057/admin`으로 로그인합니다.
 
-`ADMIN_EMAIL`과 `ADMIN_PASSWORD`는 데이터베이스가 처음 생성될 때만 초기 관리자 계정에 사용됩니다. 생성 후에는 Directus 관리자에서 계정을 관리합니다. 포트는 기존 개발 서버와의 충돌을 막기 위해 Compose 파일에서 `8056`으로 고정했으며, 실제 전환 시에만 `docker-compose.yml`과 `PUBLIC_URL`을 함께 변경합니다.
+`ADMIN_EMAIL`과 `ADMIN_PASSWORD`는 DB가 처음 생성될 때 초기 관리자 계정에 사용됩니다. 생성 후에는 Directus 관리자에서 계정을 관리합니다. 이미 수동으로 실행한 `global-church-directus-preview` 컨테이너가 있어 이름 충돌이 나면, 아래의 기존 컨테이너 전환 절차를 한 번 진행하세요.
 
 ## 데이터 영속성
 
 | Docker 볼륨 | 내용 | 삭제하면 안 되는 이유 |
 | --- | --- | --- |
-| `global-church-directus-database` | SQLite DB, 스키마, 콘텐츠, 사용자·권한 | 전체 CMS 데이터가 사라집니다. |
-| `global-church-directus-uploads` | 업로드한 이미지·PDF·영상 파일 | 게시물의 파일이 깨집니다. |
-| `global-church-directus-extensions` | 설치한 Directus 확장 기능 | 확장 기능 설정·파일이 사라집니다. |
+| `global-church-preview-database` | 로컬 SQLite DB, 스키마, 콘텐츠, 사용자·권한 | 로컬 CMS 데이터가 사라집니다. |
+| `global-church-preview-uploads` | 업로드한 이미지·PDF·영상 파일 | 로컬 게시물의 파일이 깨집니다. |
+| `global-church-preview-extensions` | 설치한 Directus 확장 기능 | 확장 기능 설정·파일이 사라집니다. |
 
-일반적인 `docker compose down`은 위 볼륨을 삭제하지 않습니다. `docker compose down -v`는 세 볼륨을 모두 삭제하므로 복구가 필요한 운영 데이터에는 사용하지 않습니다.
+일반적인 `docker compose down`은 위 볼륨을 삭제하지 않습니다. `docker compose down -v`는 세 볼륨을 모두 삭제하므로 필요한 로컬 콘텐츠가 있으면 사용하지 마세요.
+
+### 이미 실행 중인 미리보기 컨테이너를 Compose로 전환
+
+기존 컨테이너가 Compose 밖에서 만들어져 이름이 충돌할 때만 실행합니다. DB와 업로드는 별도 Docker 볼륨에 있으므로 `docker rm`은 컨테이너만 제거합니다. `-v` 옵션은 붙이지 마세요.
+
+```bash
+docker stop global-church-directus-preview
+docker rm global-church-directus-preview
+npm run cms:docker:up
+```
 
 ## 기존 로컬 데이터 전환
 

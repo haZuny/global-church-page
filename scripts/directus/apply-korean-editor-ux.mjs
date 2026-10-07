@@ -1,9 +1,10 @@
 import { readFile } from "node:fs/promises";
+import { defaultDirectusUrl } from "./local-development.mjs";
 
 const envFile = await readFile(new URL("../../.env", import.meta.url), "utf8");
 const localEnv = Object.fromEntries(envFile.split(/\r?\n/).map((line) => line.trim()).filter((line) => line && !line.startsWith("#")).map((line) => line.split(/=(.*)/s)));
 const env = { ...localEnv, ...process.env };
-const baseUrl = env.DIRECTUS_URL ?? "http://127.0.0.1:8055";
+const baseUrl = env.DIRECTUS_URL ?? defaultDirectusUrl;
 const login = await fetch(`${baseUrl}/auth/login`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email: env.ADMIN_EMAIL, password: env.ADMIN_PASSWORD }) });
 const loginBody = await login.json();
 if (!login.ok) throw new Error(loginBody.errors?.[0]?.message ?? "Directus login failed.");

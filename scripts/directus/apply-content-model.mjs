@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { defaultDirectusUrl } from "./local-development.mjs";
 
 const envFile = await readFile(new URL("../../.env", import.meta.url), "utf8");
 const localEnv = Object.fromEntries(envFile
@@ -7,7 +8,7 @@ const localEnv = Object.fromEntries(envFile
   .filter((line) => line && !line.startsWith("#"))
   .map((line) => line.split(/=(.*)/s)));
 const env = { ...localEnv, ...process.env };
-const baseUrl = env.DIRECTUS_URL ?? "http://127.0.0.1:8055";
+const baseUrl = env.DIRECTUS_URL ?? defaultDirectusUrl;
 const email = env.ADMIN_EMAIL;
 const password = env.ADMIN_PASSWORD;
 

@@ -1,4 +1,5 @@
 import { plainTextToRichText } from "@/lib/rich-text";
+import localDevelopment from "@/config/local-development.json";
 
 export type StoryEntry = { id: number; category: "장년부" | "교육부서"; date: string; dateTime: string; title: string; image: string; alt: string; body: string };
 export type BulletinAttachment = { id: string; name: string; title?: string; type: string; size?: number; width?: number; height?: number; url: string };
@@ -16,7 +17,7 @@ export const fallbackChurchInfo: ChurchInfo = {
   churchName: "글로벌교회", englishName: "Global Community Church", heroTitle: "시흥 글로벌교회", heroCopy: "예배 시간과 위치를 안내합니다.", introduction: "시흥 글로벌교회입니다.", pastorTitle: "글로벌교회에 오신 것을 환영합니다.", pastorLead: "예배 시간과 오시는 길은 홈에서 확인하실 수 있습니다.", pastorBody: "", pastorName: "", pastorRole: "담임목사", aboutTitle: "글로벌교회", denominationHistory: "", address: "", showSermons: false,
 };
 
-const directusUrl = process.env.DIRECTUS_URL ?? "http://127.0.0.1:8055";
+const directusUrl = process.env.DIRECTUS_URL ?? localDevelopment.directusUrl;
 const directusAssetsUrl = process.env.DIRECTUS_ASSETS_URL ?? directusUrl;
 const dateLabel = (value: string) => value.slice(0, 10).replaceAll("-", ". ");
 const safeExternalUrl = (value: unknown) => {

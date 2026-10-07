@@ -1,4 +1,5 @@
 import Link from "next/link";
+import localDevelopment from "@/config/local-development.json";
 import styles from "./site-footer.module.scss";
 
 export type FooterInfo = {
@@ -29,7 +30,7 @@ function displayPastorName(name?: string, role?: string) {
 }
 
 export function SiteFooter({ info }: { info: FooterInfo }) {
-  const directusAdminUrl = process.env.NEXT_PUBLIC_DIRECTUS_ADMIN_URL ?? "http://127.0.0.1:8055/admin";
+  const directusAdminUrl = process.env.NEXT_PUBLIC_DIRECTUS_ADMIN_URL ?? localDevelopment.directusAdminUrl;
   const pastorName = displayPastorName(info.pastorName, info.pastorRole);
 
   return (
