@@ -78,7 +78,7 @@ export default async function HomePage() {
             {latestStories.length > 1 && <div className="update-list" aria-label="최근 교회 이야기 목록">
               {latestStories.slice(1).map((story) => <Link href={`/stories/${story.id}`} key={story.id}><time dateTime={story.dateTime}>{story.date}</time><div><strong>{story.title}</strong></div></Link>)}
             </div>}
-          </div> : <ContentState title="아직 공개된 교회 이야기가 없습니다." description="새로운 공동체 기록을 준비하고 있습니다. 예배 시간과 방문 정보는 아래에서 확인하실 수 있습니다."/>}
+          </div> : <ContentState title="아직 공개된 교회 이야기가 없습니다." description="새 소식이 올라오면 이곳에서 알려드릴게요. 예배 시간과 오시는 길은 아래에서 확인하실 수 있습니다."/>}
           {latestStory && <Link className="update-list__more" href="/stories">교회 이야기 전체 보기</Link>}
         </div>
       </section>
@@ -95,7 +95,7 @@ export default async function HomePage() {
             <h2 id="worship-title">
               예배 시간
             </h2>
-            <p>처음 오신 분도 별도 등록 없이 예배에 참여하실 수 있습니다.</p>
+            <p>처음 오시는 분도 편하게 예배에 함께하실 수 있어요.</p>
           </div>
           <div className="schedule">
             <article className="schedule__sunday">
