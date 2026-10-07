@@ -24,7 +24,9 @@
     "cms:roles": "node scripts/directus/apply-operator-roles.mjs",
     "cms:lists:configure": "node scripts/directus/apply-content-list-presets.mjs",
     "cms:sample-content:seed": "node scripts/directus/seed-list-sample-content.mjs",
-    "cms:sample-content:remove": "node scripts/directus/remove-list-sample-content.mjs"
+    "cms:sample-content:remove": "node scripts/directus/remove-list-sample-content.mjs",
+    "cms:cafe:import": "node scripts/directus/import-naver-cafe.mjs",
+    "cms:cafe:repair-bulletins": "node scripts/directus/repair-naver-bulletin-files.mjs"
   },
   "dependencies": {
     "directus": "11.3.5",
