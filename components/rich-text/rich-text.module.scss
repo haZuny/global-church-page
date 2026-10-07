@@ -12,4 +12,5 @@
 .content li + li { margin-top: .45em; }
 .content a { color: var(--forest-light); font-weight: 700; text-decoration: underline; text-underline-offset: .2em; }
 .content img { display: block; width: 100%; max-width: 100%; height: auto; margin-block: 1.8em; border-radius: 1rem; }
+.content video { display: block; width: 100%; max-width: 100%; margin-block: 1.8em; border-radius: 1rem; background: #101822; }
 .content hr { border: 0; border-top: 1px solid var(--line); }
