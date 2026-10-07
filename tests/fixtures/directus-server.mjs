@@ -25,18 +25,18 @@ const siteSettings = {
 };
 
 const stories = [
-  { id: 101, title: "함께한 주일의 기록", category: "장년부", body: '<p>함께 예배하고 식탁을 나누었습니다.</p><img src="http://127.0.0.1:8056/assets/fixture-story-image" alt="함께한 주일 예배">', published_at: "2026-09-25T00:00:00.000Z" },
+  { id: 101, title: "함께한 주일의 기록", category: "장년부", body: `<p>함께 예배하고 식탁을 나누었습니다.</p><img src="http://127.0.0.1:${port}/assets/fixture-story-image" alt="함께한 주일 예배">`, published_at: "2026-09-25T00:00:00.000Z" },
   { id: 102, title: "청소년부 가을 모임", category: "교육부서", body: "다음 세대가 함께 이야기했습니다.", published_at: "2026-09-20T00:00:00.000Z" },
 ];
 
 const bulletins = [
-  { id: 301, title: "9월 넷째 주 주보", category: "주보", body: "이번 주 예배 순서입니다.", published_at: "2026-09-24T00:00:00.000Z" },
-  { id: 302, title: "새가족 안내 자료", category: "자료", body: "방문 전 참고할 자료입니다.", published_at: "2026-09-10T00:00:00.000Z" },
+  { id: 301, title: "9월 넷째 주 주보", category: "주보", body: "이번 주 예배 순서입니다.", published_at: "2026-09-24T00:00:00.000Z", is_pinned: false },
+  { id: 302, title: "새가족 안내 자료", category: "자료", body: "방문 전 참고할 자료입니다.", published_at: "2026-09-10T00:00:00.000Z", is_pinned: true },
 ];
 
 const notices = [
-  { id: 201, title: "추석 예배 안내", body: "예배 시간과 방문 안내를 확인해 주세요.", published_at: "2026-09-26T00:00:00.000Z" },
-  { id: 202, title: "주차 안내", body: "주차장 이용 방법을 안내합니다.", published_at: "2026-09-18T00:00:00.000Z" },
+  { id: 201, title: "추석 예배 안내", body: "예배 시간과 방문 안내를 확인해 주세요.", published_at: "2026-09-26T00:00:00.000Z", is_pinned: false },
+  { id: 202, title: "주차 안내", body: "주차장 이용 방법을 안내합니다.", published_at: "2026-09-18T00:00:00.000Z", is_pinned: true },
 ];
 
 const ministers = [{ id: 1, name: "김민", role: "교육목사", description: "다음 세대와 함께 예배합니다.", status: "published", sort: 1 }];
@@ -46,9 +46,19 @@ const page = (items, url) => {
   const offset = Number(url.searchParams.get("offset") || 0);
   const category = url.searchParams.get("filter[category][_eq]");
   const id = url.searchParams.get("filter[id][_eq]");
+  const sortFields = (url.searchParams.get("sort") || "").split(",").filter(Boolean);
   const filteredByCategory = category ? items.filter((item) => item.category === category) : items;
   const filtered = id ? filteredByCategory.filter((item) => String(item.id) === id) : filteredByCategory;
-  return { data: filtered.slice(offset, offset + limit), meta: { filter_count: filtered.length } };
+  const sorted = [...filtered].sort((left, right) => {
+    for (const sortField of sortFields) {
+      const descending = sortField.startsWith("-");
+      const field = descending ? sortField.slice(1) : sortField;
+      if (left[field] === right[field]) continue;
+      return (left[field] < right[field] ? -1 : 1) * (descending ? -1 : 1);
+    }
+    return 0;
+  });
+  return { data: sorted.slice(offset, offset + limit), meta: { filter_count: filtered.length } };
 };
 
 const collectionPayload = (collection, url) => {

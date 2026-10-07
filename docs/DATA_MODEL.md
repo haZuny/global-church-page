@@ -9,6 +9,7 @@
 - 공개 상세 URL은 Directus가 자동 생성하는 `id`를 사용합니다. 기존 `slug`은 이전 데이터 식별용으로만 유지하며 관리자 화면에는 노출하지 않습니다.
 - 교회 이야기·공지·주보의 이미지는 리치 텍스트 본문에 삽입합니다. 본문 이미지 파일은 공개 파일 접근만 위해 숨겨진 `content_assets` 보관함에 연결하며, 게시물과 별도 이미지 관계를 만들지 않습니다.
 - 주보·자료의 `bulletin_media`는 PDF·문서처럼 내려받을 첨부 파일 전용입니다. 이미지는 본문에 삽입합니다.
+- 주보·자료와 공지는 `is_pinned`가 켜진 항목을 공개 목록 위쪽에 먼저 표시하고, 같은 고정 상태 안에서는 `published_at` 최신순으로 정렬합니다. `is_pinned`의 기본값은 `false`입니다.
 - 업로드 원본은 보존합니다. 공개 웹은 Directus Assets 변환을 사용해 목록·카드·프로필·상세·문서별로 정한 크기와 품질의 이미지를 요청하며, 카드 프레임은 `cover`, 주보 문서는 `contain`으로 표시합니다.
 - `archived`는 삭제가 아닌 복구 가능한 상태입니다.
 
@@ -129,6 +130,7 @@
 | `body` | text (rich text HTML) | 아니오 | 웹에서 함께 보여 줄 서식 있는 본문 안내 |
 | `media` | O2M `bulletin_media` | 아니오 | `주보 파일`에서 연결하는 PDF·문서·자료 파일 |
 | `published_at` | datetime | 조건부 | 발행일 |
+| `is_pinned` | boolean | 아니오 | 공개 주보·소식 목록 상단 고정 여부. 기본값 `false` |
 | `status` | select | 예 | `draft` / `published` / `archived` |
 
 ### `bulletin_media`
@@ -152,6 +154,7 @@
 | `title` | string | 예 | 제목 |
 | `body` | text (rich text HTML) | 아니오 | 제목, 굵게, 기울임, 글자 크기·색상, 목록, 인용, 링크를 지원하는 본문 |
 | `published_at` | datetime | 조건부 | 게시일 |
+| `is_pinned` | boolean | 아니오 | 공개 주보·소식 목록 상단 고정 여부. 기본값 `false` |
 | `status` | select | 예 | `draft` / `published` / `archived` |
 
 숨김 이력 필드: `slug`, `type`, `summary`, `event_starts_at`, `event_ends_at`, `location`.

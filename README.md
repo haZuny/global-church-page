@@ -68,38 +68,27 @@ docker-compose.production.yml 운영 Next.js + Directus 구성
 
 ## 로컬 개발
 
-필수: Node.js 22 이상, npm, 로컬 Directus 또는 Docker Desktop.
+필수: Node.js 22 이상, npm, Docker Desktop.
 
 ```bash
 npm ci
 cp .env.example .env
-# .env의 KEY, SECRET, ADMIN_EMAIL, ADMIN_PASSWORD를 실제 로컬 값으로 변경
-npm run cms:start
+cp .env.docker.example .env.docker
+# 두 파일의 관리자 이메일·비밀번호를 같은 로컬 값으로 설정
+npm run cms:docker:up
 ```
 
-별도 터미널에서 공개 웹을 실행합니다.
+웹과 CMS를 각각 실행합니다.
 
 ```bash
 npm run dev
 ```
 
 - 공개 웹: `http://localhost:3000`
-- 로컬 CMS: `http://127.0.0.1:8055/admin`
+- Directus 관리자: `http://127.0.0.1:8057/admin`
+- Directus API·파일: `http://127.0.0.1:8057`
 
-### 로컬 Docker CMS 점검
-
-로컬 Directus와 충돌하지 않게 Docker Compose는 `8056`을 사용합니다.
-
-```bash
-cp .env.docker.example .env.docker
-# KEY, SECRET, ADMIN_EMAIL, ADMIN_PASSWORD 변경
-docker compose up -d
-docker compose ps
-```
-
-- Docker CMS: `http://127.0.0.1:8056/admin`
-- 종료 시 데이터 볼륨을 지우지 않으려면 `docker compose down`만 사용합니다.
-- `docker compose down -v`는 DB·uploads를 삭제하므로 운영 데이터에 사용하면 안 됩니다.
+로컬 설정, 초기 스키마 구성, 종료·재시작 및 문제 해결은 [로컬 개발 매뉴얼](docs/LOCAL_DEVELOPMENT.md)을 따릅니다. 주소 기본값은 `config/local-development.json`에 있고 `.env`에서 덮어쓸 수 있습니다. Docker CMS는 Directus `11.3.5`와 별도 로컬 볼륨을 사용하며, 다른 Directus 인스턴스의 DB를 공유하지 않습니다.
 
 ## 콘텐츠 모델·권한
 
@@ -113,6 +102,7 @@ docker compose ps
 - [데이터 모델](docs/DATA_MODEL.md)
 - [Directus 역할](docs/DIRECTUS_ROLES.md)
 - [Directus 콘텐츠 목록](docs/DIRECTUS_CONTENT_LISTS.md)
+- [로컬 개발 매뉴얼](docs/LOCAL_DEVELOPMENT.md)
 
 ## 운영 배포
 

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import localDevelopment from "@/config/local-development.json";
 import styles from "./site-footer.module.scss";
 
 export type FooterInfo = {
@@ -29,7 +30,7 @@ function displayPastorName(name?: string, role?: string) {
 }
 
 export function SiteFooter({ info }: { info: FooterInfo }) {
-  const directusAdminUrl = process.env.NEXT_PUBLIC_DIRECTUS_ADMIN_URL ?? "http://127.0.0.1:8055/admin";
+  const directusAdminUrl = process.env.NEXT_PUBLIC_DIRECTUS_ADMIN_URL ?? localDevelopment.directusAdminUrl;
   const pastorName = displayPastorName(info.pastorName, info.pastorRole);
 
   return (
@@ -42,18 +43,18 @@ export function SiteFooter({ info }: { info: FooterInfo }) {
           </Link>
 
           <dl className={styles.details}>
-            <div>
+            {info.address && <div>
               <dt>주소</dt>
-              <dd className={styles.address}>{info.address || "주소 안내 준비 중"}</dd>
-            </div>
-            <div>
+              <dd className={styles.address}>{info.address}</dd>
+            </div>}
+            {info.phone && <div>
               <dt>연락처</dt>
-              <dd>{info.phone ? <a href={`tel:${info.phone.replaceAll("-", "")}`}>{info.phone}</a> : "연락처 안내 준비 중"}</dd>
-            </div>
-            <div>
+              <dd><a href={`tel:${info.phone.replaceAll("-", "")}`}>{info.phone}</a></dd>
+            </div>}
+            {pastorName && <div>
               <dt>담임목사</dt>
-              <dd>{pastorName || "담임목사 안내 준비 중"}</dd>
-            </div>
+              <dd>{pastorName}</dd>
+            </div>}
           </dl>
         </div>
 

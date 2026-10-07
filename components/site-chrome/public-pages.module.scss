@@ -1295,6 +1295,52 @@
   font-size: 10px;
 }
 
+.pinned-news {
+  margin-bottom: 56px;
+  border-top: 1px solid var(--ink);
+}
+
+.pinned-news > h2 {
+  padding-block: 18px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.pinned-news__list > a {
+  display: grid;
+  grid-template-columns: 150px 80px minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: center;
+  min-height: 72px;
+  border-top: 1px solid var(--line);
+  color: inherit;
+  text-decoration: none;
+}
+
+.pinned-news__list time {
+  color: var(--muted);
+  font-family: var(--serif);
+  font-size: 14px;
+}
+
+.pinned-news__list > a > span:not(.notice-list__pin) {
+  width: fit-content;
+  padding: 4px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.pinned-news__list strong {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
 .notice-list {
   margin-top: 100px;
   border-top: 1px solid var(--ink);
@@ -1346,6 +1392,19 @@
   font-size: 20px;
   font-weight: 600;
   letter-spacing: -0.04em;
+}
+
+.notice-list__pin {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 10px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--forest-light);
+  font-size: 10px;
+  font-weight: 700;
+  vertical-align: 2px;
 }
 
 .notice-list p {
@@ -2429,6 +2488,38 @@ img.minister-card__photo {
 
   .notice-list {
     margin-top: 72px;
+  }
+
+  .pinned-news {
+    margin-bottom: 40px;
+  }
+
+  .pinned-news__list > a {
+    grid-template-columns: 1fr auto;
+    gap: 10px 16px;
+    padding-block: 16px;
+  }
+
+  .pinned-news__list time {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .pinned-news__list > a > span:not(.notice-list__pin) {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .pinned-news__list strong {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: 17px;
+  }
+
+  .pinned-news__list .notice-list__pin {
+    grid-column: 2;
+    grid-row: 2;
+    margin-left: 0;
   }
 
   .notice-list__head {
