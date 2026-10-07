@@ -111,6 +111,23 @@ wait_for_url() {
   return 1
 }
 
+verify_news_page() {
+  local url="$1"
+  local body
+
+  if ! body="$(curl --fail --silent --show-error "$url")"; then
+    echo "Health check failed: candidate news page ($url)" >&2
+    return 1
+  fi
+
+  if grep -Fq '주보·소식을 불러오지 못했습니다.' <<<"$body"; then
+    echo "Health check failed: candidate news page rendered its content error state ($url)" >&2
+    return 1
+  fi
+
+  echo "Health check passed: candidate news page"
+}
+
 rollback() {
   local status=$?
 
@@ -190,7 +207,8 @@ wait_for_url "candidate web" "http://127.0.0.1:${CANDIDATE_PORT}/"
 wait_for_url "candidate CMS" "http://127.0.0.1:8055/server/ping"
 wait_for_url "candidate published stories" "http://127.0.0.1:8055/items/stories?limit=1"
 wait_for_url "candidate stories page" "http://127.0.0.1:${CANDIDATE_PORT}/stories"
-wait_for_url "candidate news page" "http://127.0.0.1:${CANDIDATE_PORT}/news"
+verify_news_page "http://127.0.0.1:${CANDIDATE_PORT}/news"
+docker exec "$CANDIDATE_NAME" node /app/scripts/directus/sync-content-assets.mjs
 remove_candidate
 
 SERVICES_CHANGED=true
