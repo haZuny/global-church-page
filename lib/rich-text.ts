@@ -1,8 +1,8 @@
 import sanitizeHtml from "sanitize-html";
 
 const richTextOptions = {
-  allowedTags: ["p", "br", "strong", "em", "u", "s", "h2", "h3", "blockquote", "ul", "ol", "li", "a", "img", "hr"],
-  allowedAttributes: { a: ["href", "target", "rel"], img: ["src", "alt", "width", "height"], "*": ["style"] },
+  allowedTags: ["p", "br", "strong", "em", "u", "s", "h2", "h3", "blockquote", "ul", "ol", "li", "a", "img", "video", "source", "hr"],
+  allowedAttributes: { a: ["href", "target", "rel"], img: ["src", "alt", "width", "height"], video: ["src", "controls", "preload", "poster"], source: ["src", "type"], "*": ["style"] },
   allowedSchemes: ["http", "https", "mailto", "tel"],
   allowedStyles: {
     "*": {
