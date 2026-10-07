@@ -16,8 +16,8 @@ const request = async (path, method = "GET", body) => {
 
 const listDefaults = {
   stories: { sort: ["-published_at"], note: "제목으로 검색하고, 게시 상태·분류 필터를 함께 사용해 원하는 이야기를 찾습니다. 목록은 최신순으로 25개씩 표시됩니다." },
-  bulletins: { sort: ["-published_at"], note: "제목으로 검색하고, 게시 상태·분류 필터를 함께 사용해 원하는 주보와 자료를 찾습니다. 목록은 최신순으로 25개씩 표시됩니다." },
-  news_items: { sort: ["-published_at"], note: "제목으로 검색하고, 게시 상태 필터를 함께 사용해 원하는 공지를 찾습니다. 목록은 최신순으로 25개씩 표시됩니다." },
+  bulletins: { sort: ["-is_pinned", "-published_at"], note: "제목으로 검색하고, 게시 상태·분류 필터를 함께 사용해 원하는 주보와 자료를 찾습니다. 고정 항목을 먼저, 나머지는 최신순으로 25개씩 표시합니다." },
+  news_items: { sort: ["-is_pinned", "-published_at"], note: "제목으로 검색하고, 게시 상태 필터를 함께 사용해 원하는 공지를 찾습니다. 고정 항목을 먼저, 나머지는 최신순으로 25개씩 표시합니다." },
   sermons: { sort: ["-sermon_date"], note: "제목과 설교 요약으로 검색하고, 게시 상태 필터를 함께 사용해 원하는 설교를 찾습니다. 목록은 설교일 최신순으로 25개씩 표시됩니다." },
 };
 

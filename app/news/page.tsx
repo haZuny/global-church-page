@@ -37,7 +37,10 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
     entries = result.items;
     pagination = result;
   } catch { failed = true; }
-  const latestEntry = entries[0];
+  const latestEntry = entries.find((entry) => !entry.isPinned);
+  const pinnedEntries = entries.filter((entry) => entry.isPinned).slice(0, 3);
+  const highlightedPins = new Set(pinnedEntries.map((entry) => `${entry.kind}-${entry.id}`));
+  const listEntries = entries.filter((entry) => !highlightedPins.has(`${entry.kind}-${entry.id}`));
   const animateList = selectedFilter === "전체" && requestedPage === 1;
   return (
     <div className="subpage">
@@ -71,7 +74,19 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
               </nav>
               <span>2026</span>
             </div>
-            {failed ? <ContentState title="주보·소식을 불러오지 못했습니다." description="잠시 후 다시 시도해 주세요."/> : latestEntry ? <><Link className={`bulletin-feature${animateList ? " reveal" : ""}`} href={`/news/${latestEntry.href}`} aria-label={`${latestEntry.title} 상세 보기`}>
+            {failed ? <ContentState title="주보·소식을 불러오지 못했습니다." description="잠시 후 다시 시도해 주세요."/> : entries.length ? <>
+            {pinnedEntries.length > 0 && <section className={`pinned-news${animateList ? " reveal" : ""}`} aria-labelledby="pinned-news-title">
+              <h2 id="pinned-news-title">고정된 소식</h2>
+              <div className="pinned-news__list">
+                {pinnedEntries.map((entry) => <Link href={`/news/${entry.href}`} key={`${entry.kind}-${entry.id}`}>
+                  <time dateTime={entry.dateTime}>{entry.date}</time>
+                  <span>{entry.category}</span>
+                  <strong>{entry.title}</strong>
+                  <span className="notice-list__pin">고정</span>
+                </Link>)}
+              </div>
+            </section>}
+            {latestEntry && <Link className={`bulletin-feature${animateList ? " reveal" : ""}`} href={`/news/${latestEntry.href}`} aria-label={`${latestEntry.title} 상세 보기`}>
               <div className="bulletin-feature__copy">
                 <p><span>NEW</span> 가장 최근 소식</p>
                 <time dateTime={latestEntry.dateTime}>{latestEntry.date}</time>
@@ -81,7 +96,7 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
               <div className={`bulletin-feature__visual${latestEntry.image ? " bulletin-feature__visual--image" : ""}`}>
                 {latestEntry.image ? <Image src={contentImageUrl(latestEntry.image, "news-feature")!} alt="" fill unoptimized sizes="(max-width: 780px) 100vw, 38vw" /> : <div className="bulletin-feature__paper" aria-hidden="true"><span>{latestEntry.category}</span><strong>{latestEntry.date.replaceAll(". ", ".\n")}</strong></div>}
               </div>
-            </Link>
+            </Link>}
             <div className={`notice-list${animateList ? " reveal" : ""}`} id="bulletin-list">
               <div className="notice-list__head" aria-hidden="true">
                 <span>날짜</span>
@@ -89,7 +104,7 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
                 <span>제목</span>
                 <span />
               </div>
-              {entries.map((entry) => (
+            {listEntries.map((entry) => (
                 <Link href={`/news/${entry.href}`} key={`${entry.kind}-${entry.id}`}>
                   <time dateTime={entry.dateTime}>
                     {entry.date}
@@ -97,6 +112,7 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
                   <span>{entry.category}</span>
                   <div>
                     <strong>{entry.title}</strong>
+                    {entry.isPinned && <span className="notice-list__pin">고정</span>}
                   </div>
                   <i aria-hidden="true">→</i>
                 </Link>

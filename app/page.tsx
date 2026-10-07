@@ -25,7 +25,7 @@ export default async function HomePage() {
   const [churchResult, storiesResult, newsResult] = await Promise.allSettled([
     getChurchInfo(),
     getStoriesPage({ page: 1, pageSize: 3 }),
-    getNewsEntriesPage({ page: 1, pageSize: 1 }),
+    getNewsEntriesPage({ page: 1, pageSize: 1, pinnedFirst: false }),
   ]);
   const church = churchResult.status === "fulfilled" ? churchResult.value : fallbackChurchInfo;
   const stories = storiesResult.status === "fulfilled" ? storiesResult.value.items : [];

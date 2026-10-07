@@ -44,9 +44,9 @@ const fields = {
   stories: [["title", "string", true], ["category", "string", true], ["body", "text", true], ["published_at", "timestamp", false], ["status", "string", true]],
   content_assets: [["file", "uuid", true], ["status", "string", true]],
   sermons: [["title", "string", true], ["summary", "text", true], ["scripture", "string", true], ["preacher", "string", true], ["sermon_date", "date", true], ["video_file", "uuid", false], ["status", "string", true]],
-  bulletins: [["title", "string", true], ["category", "string", true], ["body", "text", false], ["published_at", "timestamp", false], ["status", "string", true]],
+  bulletins: [["title", "string", true], ["category", "string", true], ["body", "text", false], ["published_at", "timestamp", false], ["is_pinned", "boolean", false], ["status", "string", true]],
   bulletin_media: [["bulletin", "integer", true], ["file", "uuid", true], ["sort", "integer", true]],
-  news_items: [["title", "string", true], ["body", "text", false], ["published_at", "timestamp", false], ["status", "string", true]],
+  news_items: [["title", "string", true], ["body", "text", false], ["published_at", "timestamp", false], ["is_pinned", "boolean", false], ["status", "string", true]],
 };
 
 for (const [collection, collectionFields] of Object.entries(fields)) {
