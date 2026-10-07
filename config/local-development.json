@@ -1,0 +1,6 @@
+{
+  "siteUrl": "http://localhost:3000",
+  "directusUrl": "http://127.0.0.1:8057",
+  "directusAdminUrl": "http://127.0.0.1:8057/admin",
+  "naverCafeCdpUrl": "http://127.0.0.1:9222"
+}

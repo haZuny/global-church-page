@@ -11,6 +11,9 @@
     "lint": "next lint",
     "cms:bootstrap": "directus bootstrap",
     "cms:start": "directus start",
+    "cms:docker:up": "docker compose --project-name global-church-preview --env-file .env.docker up -d",
+    "cms:docker:down": "docker compose --project-name global-church-preview --env-file .env.docker down",
+    "cms:docker:logs": "docker compose --project-name global-church-preview --env-file .env.docker logs -f directus",
     "cms:model:apply": "node scripts/directus/apply-content-model.mjs",
     "cms:permissions:apply": "node scripts/directus/apply-public-read-policy.mjs",
     "cms:files:permissions": "node scripts/directus/apply-published-file-read-policy.mjs",
@@ -24,7 +27,9 @@
     "cms:roles": "node scripts/directus/apply-operator-roles.mjs",
     "cms:lists:configure": "node scripts/directus/apply-content-list-presets.mjs",
     "cms:sample-content:seed": "node scripts/directus/seed-list-sample-content.mjs",
-    "cms:sample-content:remove": "node scripts/directus/remove-list-sample-content.mjs"
+    "cms:sample-content:remove": "node scripts/directus/remove-list-sample-content.mjs",
+    "cms:cafe:import": "node scripts/directus/import-naver-cafe.mjs",
+    "cms:cafe:repair-bulletins": "node scripts/directus/repair-naver-bulletin-files.mjs"
   },
   "dependencies": {
     "directus": "11.3.5",

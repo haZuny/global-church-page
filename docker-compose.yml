@@ -1,13 +1,15 @@
+name: global-church-preview
+
 services:
   directus:
-    image: directus/directus:12.4.1
-    container_name: global-church-directus
+    image: directus/directus:11.3.5
+    container_name: global-church-directus-preview
     restart: unless-stopped
     init: true
     env_file:
       - .env.docker
     ports:
-      - "127.0.0.1:8056:8055"
+      - "127.0.0.1:${DIRECTUS_PORT:-8057}:8055"
     environment:
       DB_CLIENT: sqlite3
       DB_FILENAME: /directus/database/directus.sqlite
@@ -34,8 +36,8 @@ services:
 
 volumes:
   directus-database:
-    name: global-church-directus-database
+    name: global-church-preview-database
   directus-uploads:
-    name: global-church-directus-uploads
+    name: global-church-preview-uploads
   directus-extensions:
-    name: global-church-directus-extensions
+    name: global-church-preview-extensions

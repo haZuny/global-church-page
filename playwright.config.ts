@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const directusPort = 8056;
+const directusPort = Number(process.env.TEST_DIRECTUS_PORT ?? 8056);
 
 export default defineConfig({
   testDir: "./tests/e2e",
