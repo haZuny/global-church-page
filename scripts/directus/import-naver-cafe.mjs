@@ -1,11 +1,12 @@
 import { chromium } from "playwright";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { defaultDirectusUrl, defaultNaverCafeCdpUrl } from "./local-development.mjs";
 
 const envFile = Object.fromEntries((await readFile(new URL("../../.env", import.meta.url), "utf8").catch(() => "")).split(/\r?\n/).map((line) => line.trim()).filter((line) => line && !line.startsWith("#")).map((line) => line.split(/=(.*)/s)));
 const env = { ...envFile, ...process.env };
-const baseUrl = env.DIRECTUS_URL ?? "https://cms.globalchurch.kr";
+const baseUrl = env.DIRECTUS_URL ?? defaultDirectusUrl;
 const token = env.DIRECTUS_TOKEN;
-const cdpUrl = env.NAVER_CAFE_CDP_URL ?? "http://127.0.0.1:9222";
+const cdpUrl = env.NAVER_CAFE_CDP_URL ?? defaultNaverCafeCdpUrl;
 if (!token) throw new Error("DIRECTUS_TOKEN is required.");
 
 const statePath = new URL("../../data/naver-cafe-import.json", import.meta.url);
