@@ -191,6 +191,7 @@ DB 또는 uploads를 덮어쓰는 작업 전에는 컨테이너를 멈추고, �
 ## 검증
 
 ```bash
+npm run test:content-assets
 npx tsc --noEmit
 npm run build
 npm run test:e2e

@@ -1,5 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { defaultDirectusUrl } from "./local-development.mjs";
+import { synchronizeContentAssets } from "./content-assets.mjs";
+import { installContentAssetsFlow } from "./content-assets-flow.mjs";
 
 let localEnv = {};
 try {
@@ -21,14 +23,7 @@ const request = async (path, method = "GET", body) => {
   if (!response.ok) throw new Error(json.errors?.[0]?.message ?? `${method} ${path} failed.`);
   return json.data;
 };
-const idsFromHtml = (html) => [...(html ?? "").matchAll(/assets\/([0-9a-f-]{36})/gi)].map((match) => match[1]);
-
-const collections = ["stories", "bulletins", "news_items"];
-const content = await Promise.all(collections.map((collection) => request(`/items/${collection}?filter[status][_eq]=published&fields=body&limit=-1`)));
-const referencedIds = new Set(content.flat().flatMap((item) => idsFromHtml(item.body)));
-const assets = await request("/items/content_assets?fields=file&limit=-1");
-const registeredIds = new Set(assets.map((asset) => asset.file));
-const missingIds = [...referencedIds].filter((id) => !registeredIds.has(id));
-if (missingIds.length) await request("/items/content_assets", "POST", missingIds.map((file) => ({ file, status: "published" })));
-
-console.log(`Published content assets synchronized: ${missingIds.length} added, ${referencedIds.size} referenced.`);
+const origins = [...new Set([baseUrl, env.DIRECTUS_ASSETS_URL, env.PUBLIC_URL].filter(Boolean).map((url) => new URL(url).origin.toLowerCase()))];
+await installContentAssetsFlow(request, origins);
+const result = await synchronizeContentAssets(request, origins);
+console.log(`본문 파일 자동 공개 설정 완료: ${result.created}개 등록, ${result.updated}개 상태 갱신.`);
