@@ -50,7 +50,10 @@ npm run cms:permissions:apply
 npm run cms:files:permissions
 npm run cms:editor:ko
 npm run cms:lists:configure
+npm run cms:content-assets:sync
 ```
+
+`cms:content-assets:sync`는 게시·수정·삭제 시 본문 파일의 공개 상태를 갱신하는 Directus 플로우도 설치합니다. 단위 검증은 `npm run test:content-assets`로 실행하며 실제 파일 접근까지 확인하는 절차는 [본문 파일 공개 검증](CONTENT_ASSET_VERIFICATION.md)을 참고합니다.
 
 목록 화면에 테스트용 콘텐츠가 필요한 경우에만 샘플을 추가합니다. 샘플은 `[샘플]` 제목으로 생성됩니다.
 
